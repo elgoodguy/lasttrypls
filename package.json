@@ -1,0 +1,22 @@
+{
+  "name": "mi-super-app-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Monorepo para la Super App",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "supabase:start": "cd supabase && supabase start",
+    "supabase:stop": "cd supabase && supabase stop",
+    "db:generate": "cd supabase && supabase gen types typescript --local > ../packages/types/src/database.types.ts",
+    "db:push": "cd supabase && supabase db push",
+    "db:reset": "cd supabase && supabase db reset"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@8.6.0"
+} 

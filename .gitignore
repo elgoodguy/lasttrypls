@@ -1,0 +1,24 @@
+node_modules/
+.turbo/
+dist/
+build/
+*.log
+.env
+.env.*
+!.env.example
+
+# Supabase specific
+supabase/.branches/
+supabase/.temp/
+supabase/db/volumes/
+supabase/volumes/
+supabase/.vscode/
+supabase/functions/.log/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDE specific
+.vscode/
+.idea/ 
