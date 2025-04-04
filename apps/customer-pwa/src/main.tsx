@@ -6,7 +6,7 @@ import '@repo/ui/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createSupabaseClient } from '@repo/api-client'
-import { SupabaseProvider } from './providers/SupabaseProvider.tsx'
+import { SupabaseProvider } from './providers/SupabaseProvider'
 
 // 1. Get Supabase URL and Key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
