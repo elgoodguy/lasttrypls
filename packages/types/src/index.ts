@@ -14,5 +14,5 @@ export enum OrderStatus {
   // ... otros estados de tu tabla orders
 }
 
-// Re-exporta los tipos generados de Supabase si quieres un solo punto de entrada
-// export * from './database.types'; 
+// Re-exporta los tipos generados de Supabase
+export * from './database.types'; 
