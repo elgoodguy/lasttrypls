@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lasttrypls/ui/*": ["packages/ui/src/*"],
+      "@lasttrypls/types/*": ["packages/types/src/*"],
+      "@lasttrypls/api-client/*": ["packages/api-client/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".turbo"]
+} 
