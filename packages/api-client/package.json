@@ -1,0 +1,31 @@
+{
+  "name": "@repo/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external @supabase/supabase-js --out-dir dist --metafile --sourcemap",
+    "dev": "pnpm build --watch",
+    "lint": "eslint src/ --ext .ts --report-unused-disable-directives --max-warnings 0",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.33.1"
+  },
+  "devDependencies": {
+    "@repo/tsconfig": "workspace:*",
+    "@repo/types": "workspace:*",
+    "eslint": "^8.45.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.0.2"
+  }
+} 
