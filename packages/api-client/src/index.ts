@@ -1,7 +1,7 @@
 // API client functions will be exported from here 
 import { createClient } from '@supabase/supabase-js';
-// Importa los tipos generados si los necesitas aquí
-import { Database } from '@repo/types/database';
+// Importa los tipos generados 
+import { Database } from '@repo/types';
 
 // Variables de entorno (MEJOR gestionarlas en cada app, no aquí)
 // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;

@@ -16,7 +16,7 @@ export const useOrders = async ({
   supabaseKey, 
   userId, 
   status 
-}: UseOrdersOptions) => {
+}: UseOrdersOptions): Promise<any[]> => {
   const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
   
   let query = supabase
@@ -37,7 +37,7 @@ export const useOrders = async ({
     throw new Error(`Error fetching orders: ${error.message}`);
   }
   
-  return data;
+  return data || [];
 };
 
 // Versión para React Query
