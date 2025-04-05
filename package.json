@@ -15,8 +15,9 @@
     "db:reset": "cd supabase && supabase db reset"
   },
   "devDependencies": {
+    "eslint-plugin-react": "^7.37.5",
     "prettier": "^3.0.0",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.6.0"
-} 
+}

@@ -1,64 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from '@repo/ui';
-import '@repo/ui/styles.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { MainLayout } from './components/layout/MainLayout';
+import {
+  HomePage,
+  FavoritesPage,
+  OrdersPage,
+  WalletPage,
+  CartPage,
+  ProfilePage,
+  LoginPage,
+  NotFoundPage,
+} from './pages';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const isLoggedIn = false; // TODO: Get from auth context
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>DeliverEase - Cliente</h1>
-      <div className="card">
-        <Button 
-          onClick={() => setCount((count) => count + 1)}
-          variant="primary"
-        >
-          Contador: {count}
-        </Button>
-        
-        <div className="button-showcase">
-          <h3 className="mt-6 mb-4">Ejemplos de botones:</h3>
-          <div className="flex flex-wrap gap-4">
-            <Button variant="default">Default</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="destructive">Destructive</Button>
-            <Button variant="success">Success</Button>
-            <Button variant="warning">Warning</Button>
-            <Button variant="link">Link</Button>
-          </div>
+    <Router>
+      <Routes>
+        {/* Routes that use the MainLayout (with Top and Bottom Nav) */}
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<HomePage />} />
           
-          <h3 className="mt-6 mb-4">Tamaños:</h3>
-          <div className="flex flex-wrap gap-4 items-center">
-            <Button size="sm">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">Large</Button>
-            <Button size="xl">Extra Large</Button>
-            <Button size="icon">🔔</Button>
-          </div>
-        </div>
-        
-        <p className="mt-8">
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+          {/* Protected Routes */}
+          <Route
+            path="favorites"
+            element={isLoggedIn ? <FavoritesPage /> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="orders"
+            element={isLoggedIn ? <OrdersPage /> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="wallet"
+            element={isLoggedIn ? <WalletPage /> : <Navigate to="/login" replace />}
+          />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="cart" element={<CartPage />} />
+
+          {/* Catch all route for MainLayout */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+
+        {/* Routes without the MainLayout */}
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
