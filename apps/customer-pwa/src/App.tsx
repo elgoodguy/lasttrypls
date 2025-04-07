@@ -1,19 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
+import { useAuth } from '@/providers/AuthProvider';
 import {
   HomePage,
   FavoritesPage,
   OrdersPage,
   WalletPage,
   CartPage,
-  ProfilePage,
   LoginPage,
   NotFoundPage,
 } from './pages';
+import { ProfilePage } from './pages/ProfilePage';
 
 function App() {
-  const isLoggedIn = false; // TODO: Get from auth context
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
 
   return (
     <Router>
@@ -35,7 +37,10 @@ function App() {
             path="wallet"
             element={isLoggedIn ? <WalletPage /> : <Navigate to="/login" replace />}
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route
+            path="profile"
+            element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" replace />}
+          />
           <Route path="cart" element={<CartPage />} />
 
           {/* Catch all route for MainLayout */}
