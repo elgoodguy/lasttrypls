@@ -17,4 +17,5 @@ export const createSupabaseClient = (url: string, anonKey: string) => {
 // export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Exporta hooks personalizados o funciones de API aquí
-export * from './hooks/useOrders'; 
+export * from './hooks/useOrders';
+export * from './profiles/queries'; 
