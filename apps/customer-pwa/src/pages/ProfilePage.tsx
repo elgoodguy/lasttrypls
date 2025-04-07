@@ -2,6 +2,7 @@ import { ProfileForm } from '../components/profile/ProfileForm';
 import { Button, Separator } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
+import { AddressManager } from '../components/profile/AddressManager';
 
 export const ProfilePage = () => {
   const { signOut } = useAuth();
@@ -19,12 +20,7 @@ export const ProfilePage = () => {
 
       <Separator />
 
-      {/* Placeholder Sections */}
-      <div>
-        <h3 className="text-lg font-medium">Manage Addresses</h3>
-        <p className="text-sm text-muted-foreground">Add or update your delivery addresses.</p>
-        <Button variant="outline" className="mt-2" disabled>Manage Addresses</Button>
-      </div>
+      <AddressManager />
 
       <Separator />
 
