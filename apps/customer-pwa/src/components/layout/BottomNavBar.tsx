@@ -1,26 +1,23 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@repo/ui'; // Example usage of shared component
-import { cn } from '../../lib/utils'; // Local utility for class names
+import { Button } from '@repo/ui';
+import { useAuth } from '@/providers/AuthProvider';
+import { cn } from '@repo/ui/lib/utils';
 
-interface NavItem {
-  path: string;
-  label: string;
-  icon: string;
-  loggedIn?: boolean;
-}
-
-// Define navigation items based on Client App.md (Bottom Nav)
-const navItems: NavItem[] = [
-  { path: '/', label: 'Home', icon: '🏠' }, // Replace with actual icons (Lucide)
-  { path: '/favorites', label: 'Favorites', icon: '❤️', loggedIn: true },
+// Define navigation items
+const navItems = [
+  { path: '/', label: 'Home', icon: '🏠', loggedIn: false },
+  { path: '/search', label: 'Search', icon: '🔍', loggedIn: false },
   { path: '/orders', label: 'Orders', icon: '📦', loggedIn: true },
-  { path: '/wallet', label: 'Wallet', icon: '💰', loggedIn: true },
+  { path: '/profile', label: 'Profile', icon: '👤', loggedIn: true },
 ];
 
 export const BottomNavBar: React.FC = () => {
   const location = useLocation();
-  const isLoggedIn = false; // TODO: Replace with actual auth state from context
+  const { user, isLoading } = useAuth();
+
+  // Determine isLoggedIn based on auth state (consider loading state)
+  const isLoggedIn = !isLoading && !!user;
 
   return (
     <nav className="fixed bottom-0 left-0 z-10 w-full border-t bg-background">
@@ -28,20 +25,22 @@ export const BottomNavBar: React.FC = () => {
         {navItems.map((item) => {
           // Conditionally render based on auth state if needed
           if (item.loggedIn && !isLoggedIn) {
-            return null;
+            return <div key={item.path} className="w-1/4"></div>; // Keep spacing consistent
           }
 
           const isActive = location.pathname === item.path;
 
           return (
-            <Link key={item.path} to={item.path} className="flex flex-col items-center">
+            <Link key={item.path} to={item.path} className="flex w-1/4 flex-col items-center" aria-current={isActive ? 'page' : undefined}>
               <Button
                 variant="ghost"
                 className={cn(
                   "flex h-auto flex-col items-center justify-center space-y-1 p-2",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground",
+                  "hover:bg-transparent hover:text-primary/80" // Adjust hover effect
                 )}
               >
+                 {/* TODO: Replace text icon with Lucide icon component */}
                 <span className="text-2xl">{item.icon}</span>
                 <span className="text-xs">{item.label}</span>
               </Button>
