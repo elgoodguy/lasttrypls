@@ -1,7 +1,6 @@
 import React from 'react';
 import { ProfileForm } from '@/components/profile/ProfileForm';
-import { Button } from '@repo/ui/components/ui/button';
-import { Separator } from '@repo/ui/components/ui/separator';
+import { Button, Separator } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
 
