@@ -1,5 +1,4 @@
-import React from 'react';
-import { ProfileForm } from '@/components/profile/ProfileForm';
+import { ProfileForm } from '../components/profile/ProfileForm';
 import { Button, Separator } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';

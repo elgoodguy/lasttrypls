@@ -5,10 +5,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
-  DialogClose,
-} from "@repo/ui";
+} from "@repo/ui/components/ui/dialog";
 import { Button } from "@repo/ui";
 import { Input } from "@repo/ui";
 import { Label } from "@repo/ui";

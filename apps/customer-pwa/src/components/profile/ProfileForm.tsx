@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Input, Label } from '@repo/ui';
 import { useSupabase } from '@/providers/SupabaseProvider';
