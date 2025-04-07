@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -34,6 +34,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          delivery_instructions: string | null
+          google_place_id: string | null
+          id: string
+          internal_number: string | null
+          is_primary: boolean
+          latitude: number | null
+          longitude: number | null
+          neighborhood: string | null
+          postal_code: string
+          street_address: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city: string
+          country?: string
+          created_at?: string
+          delivery_instructions?: string | null
+          google_place_id?: string | null
+          id?: string
+          internal_number?: string | null
+          is_primary?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          neighborhood?: string | null
+          postal_code: string
+          street_address: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          delivery_instructions?: string | null
+          google_place_id?: string | null
+          id?: string
+          internal_number?: string | null
+          is_primary?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          neighborhood?: string | null
+          postal_code?: string
+          street_address?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
