@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@repo/ui';
+import { Button, cn } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
-import { cn } from '@repo/ui/lib/utils';
 
 // Define navigation items
 const navItems = [
