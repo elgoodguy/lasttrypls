@@ -8,6 +8,10 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

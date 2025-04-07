@@ -12,8 +12,8 @@ import {
 import { Button } from "@repo/ui";
 import { Input } from "@repo/ui";
 import { Label } from "@repo/ui";
-import { useSupabase } from '../../providers/SupabaseProvider';
-import { useAuth } from '../../providers/AuthProvider';
+import { useSupabase } from '@/providers/SupabaseProvider';
+import { useAuth } from '@/providers/AuthProvider';
 import { Provider } from '@supabase/supabase-js';
 
 interface AuthModalProps {
