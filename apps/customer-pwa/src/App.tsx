@@ -7,14 +7,26 @@ import {
   OrdersPage,
   WalletPage,
   CartPage,
-  LoginPage,
   NotFoundPage,
 } from './pages';
 import { ProfilePage } from './pages/ProfilePage';
+import { AuthModal } from './components/auth/AuthModal';
+import { useState } from 'react';
 
 function App() {
   const { user } = useAuth();
   const isLoggedIn = !!user;
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
+
+  const handleRequireAuth = (path: string) => {
+    if (!isLoggedIn) {
+      setRedirectPath(path);
+      setShowAuthModal(true);
+      return <Navigate to="/" replace />;
+    }
+    return null;
+  };
 
   return (
     <Router>
@@ -26,29 +38,35 @@ function App() {
           {/* Protected Routes */}
           <Route
             path="favorites"
-            element={isLoggedIn ? <FavoritesPage /> : <Navigate to="/login" replace />}
+            element={handleRequireAuth('/favorites') || <FavoritesPage />}
           />
           <Route
             path="orders"
-            element={isLoggedIn ? <OrdersPage /> : <Navigate to="/login" replace />}
+            element={handleRequireAuth('/orders') || <OrdersPage />}
           />
           <Route
             path="wallet"
-            element={isLoggedIn ? <WalletPage /> : <Navigate to="/login" replace />}
+            element={handleRequireAuth('/wallet') || <WalletPage />}
           />
           <Route
             path="profile"
-            element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" replace />}
+            element={handleRequireAuth('/profile') || <ProfilePage />}
           />
           <Route path="cart" element={<CartPage />} />
 
           {/* Catch all route for MainLayout */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
-
-        {/* Routes without the MainLayout */}
-        <Route path="/login" element={<LoginPage />} />
       </Routes>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        open={showAuthModal} 
+        onOpenChange={(open) => {
+          setShowAuthModal(open);
+          if (!open) setRedirectPath(null);
+        }}
+      />
     </Router>
   );
 }
