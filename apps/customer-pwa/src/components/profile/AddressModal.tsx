@@ -2,12 +2,13 @@ import React from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@repo/ui/components/ui/dialog";
 import { AddressForm } from './AddressForm';
 import { Address } from '@repo/api-client';
+import { APIProvider } from '@vis.gl/react-google-maps';
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -24,21 +25,40 @@ export const AddressModal: React.FC<AddressModalProps> = ({
   isLoading,
   addressToEdit,
 }) => {
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+  if (!apiKey) {
+    console.error("Google Maps API Key is missing!");
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{addressToEdit ? 'Edit Address' : 'Add New Address'}</DialogTitle>
           <DialogDescription>
-            {addressToEdit ? 'Update your delivery address details.' : 'Enter the details for your new delivery address.'}
+            {addressToEdit ? 'Update your delivery address details below.' : 'Enter your delivery address details below.'}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <AddressForm
-            onSubmit={onSubmit}
-            initialData={addressToEdit}
-            isLoading={isLoading}
-          />
+          {apiKey ? (
+            <APIProvider apiKey={apiKey} libraries={['places']}>
+              <AddressForm
+                onSubmit={onSubmit}
+                initialData={addressToEdit}
+                isLoading={isLoading}
+              />
+            </APIProvider>
+          ) : (
+            <div className="text-red-500 text-center">
+              Google Maps Autocomplete is unavailable. Please configure API Key.
+              <AddressForm
+                onSubmit={onSubmit}
+                initialData={addressToEdit}
+                isLoading={isLoading}
+              />
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
