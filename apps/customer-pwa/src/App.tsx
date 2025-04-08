@@ -12,7 +12,7 @@ import {
 import { ProfilePage } from './pages/ProfilePage';
 import { AuthModal } from './components/auth/AuthModal';
 import { ForceAddressModal } from './components/auth/ForceAddressModal';
-import { useState } from 'react';
+import { useState, useCallback, ReactNode, FC } from 'react';
 import { Toaster } from 'sonner';
 
 // Global Loading Component
@@ -22,24 +22,38 @@ const GlobalLoader = () => (
   </div>
 );
 
+// Protected Route Component
+interface ProtectedRouteProps {
+  children: ReactNode;
+  path: string;
+}
+
+const ProtectedRoute: FC<ProtectedRouteProps> = ({ children, path }) => {
+  const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
+
+  if (!user) {
+    if (!showAuthModal) {
+      setShowAuthModal(true);
+    }
+    if (redirectPath !== path) {
+      setRedirectPath(path);
+    }
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 function App() {
   const { user, isLoading, isLoadingAddressCheck, requiresAddress } = useAuth();
-  const isLoggedIn = !!user;
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
   // Determine if we show the main app or a loader/forced action
   const showLoader = isLoading || isLoadingAddressCheck;
   const showForceAddressModal = !showLoader && requiresAddress;
-
-  const handleRequireAuth = (path: string) => {
-    if (!isLoggedIn) {
-      setRedirectPath(path);
-      setShowAuthModal(true);
-      return <Navigate to="/" replace />;
-    }
-    return null;
-  };
 
   return (
     <>
@@ -60,21 +74,37 @@ function App() {
               <Route index element={<HomePage />} />
               
               {/* Protected Routes */}
-              <Route
-                path="favorites"
-                element={handleRequireAuth('/favorites') || <FavoritesPage />}
+              <Route 
+                path="favorites" 
+                element={
+                  <ProtectedRoute path="/favorites">
+                    <FavoritesPage />
+                  </ProtectedRoute>
+                } 
               />
-              <Route
-                path="orders"
-                element={handleRequireAuth('/orders') || <OrdersPage />}
+              <Route 
+                path="orders" 
+                element={
+                  <ProtectedRoute path="/orders">
+                    <OrdersPage />
+                  </ProtectedRoute>
+                } 
               />
-              <Route
-                path="wallet"
-                element={handleRequireAuth('/wallet') || <WalletPage />}
+              <Route 
+                path="wallet" 
+                element={
+                  <ProtectedRoute path="/wallet">
+                    <WalletPage />
+                  </ProtectedRoute>
+                } 
               />
-              <Route
-                path="profile"
-                element={handleRequireAuth('/profile') || <ProfilePage />}
+              <Route 
+                path="profile" 
+                element={
+                  <ProtectedRoute path="/profile">
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } 
               />
               <Route path="cart" element={<CartPage />} />
 
