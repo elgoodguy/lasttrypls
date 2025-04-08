@@ -3,21 +3,28 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export interface Address {
   id: string;
   user_id: string;
-  street: string;
+  street_address: string;
+  internal_number: string | null;
+  neighborhood: string | null;
   city: string;
-  state: string;
   postal_code: string;
   country: string;
-  is_default: boolean;
+  is_primary: boolean;
+  delivery_instructions: string | null;
+  google_place_id: string | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
   updated_at: string;
 }
+
+export type AddressInsert = Omit<Address, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
 
 export const getAddresses = async (supabase: SupabaseClient): Promise<Address[]> => {
   const { data, error } = await supabase
     .from('addresses')
     .select('*')
-    .order('is_default', { ascending: false })
+    .order('is_primary', { ascending: false })
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -30,7 +37,7 @@ export const getAddresses = async (supabase: SupabaseClient): Promise<Address[]>
 
 export const addAddress = async (
   supabase: SupabaseClient,
-  address: Omit<Address, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+  address: AddressInsert
 ): Promise<Address> => {
   const { data, error } = await supabase
     .from('addresses')
