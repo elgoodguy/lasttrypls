@@ -1,216 +1,141 @@
-import React, { useEffect, useCallback } from 'react';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@repo/ui/components/ui/button';
 import { Input } from '@repo/ui/components/ui/input';
 import { Label } from '@repo/ui/components/ui/label';
-import { Textarea } from '@repo/ui/components/ui/textarea';
-import { Checkbox } from '@repo/ui/components/ui/checkbox';
 import { Address } from '@repo/api-client';
-import { AutocompleteInput } from '@/components/common/AutocompleteInput';
+import AutocompleteInput from '../common/AutocompleteInput';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { ArrowLeft } from 'lucide-react';
 
-type AddressFormData = {
-  autocomplete_search: string;
-  street_address: string;
-  internal_number?: string | null;
-  neighborhood?: string | null;
-  postal_code: string;
-  city: string;
-  country: string;
-  delivery_instructions?: string | null;
-  is_primary: boolean;
-  latitude?: number | null;
-  longitude?: number | null;
-  google_place_id?: string | null;
-};
+const addressSchema = z.object({
+  street_address: z.string().min(1, "La dirección es requerida"),
+  city: z.string().min(1, "La ciudad es requerida"),
+  neighborhood: z.string().nullable(),
+  postal_code: z.string().min(1, "El código postal es requerido"),
+  country: z.string().min(1, "El país es requerido"),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  google_place_id: z.string().nullable(),
+  is_primary: z.boolean().optional(),
+  internal_number: z.string().nullable(),
+  delivery_instructions: z.string().nullable(),
+});
 
-interface AddressFormProps {
-  onSubmit: (data: Omit<AddressFormData, 'autocomplete_search'>, addressId?: string) => void;
-  initialData?: Address | null;
-  isLoading: boolean;
+type AddressFormData = z.infer<typeof addressSchema>;
+
+export interface AddressFormProps {
+  onSubmit: (data: AddressFormData) => void;
+  isLoading?: boolean;
+  isGoogleMapsLoaded: boolean;
+  initialData?: Partial<AddressFormData> | null;
+  initialAutocompleteValue?: string;
+  onBack?: () => void;
 }
 
-const getAddressComponent = (components: google.maps.GeocoderAddressComponent[], type: string): string => {
-  return components.find(comp => comp.types.includes(type))?.long_name || '';
-};
-
-export const AddressForm: React.FC<AddressFormProps> = ({ onSubmit, initialData, isLoading }) => {
-  const { register, handleSubmit, reset, control, setValue, watch, formState: { errors } } = useForm<AddressFormData>({
+export function AddressForm({
+  onSubmit,
+  isLoading = false,
+  isGoogleMapsLoaded,
+  initialData,
+  initialAutocompleteValue = '',
+  onBack
+}: AddressFormProps) {
+  const form = useForm<AddressFormData>({
+    resolver: zodResolver(addressSchema),
     defaultValues: {
-      autocomplete_search: '',
-      street_address: '',
-      internal_number: '',
-      neighborhood: '',
-      postal_code: '',
-      city: '',
-      country: 'MX',
-      delivery_instructions: '',
-      is_primary: false,
-      latitude: null,
-      longitude: null,
-      google_place_id: null,
-      ...(initialData ? {
-        ...initialData,
-        autocomplete_search: `${initialData.street_address}, ${initialData.city}`
-      } : {}),
-    },
+      street_address: initialData?.street_address || '',
+      city: initialData?.city || '',
+      neighborhood: initialData?.neighborhood || null,
+      postal_code: initialData?.postal_code || '',
+      country: initialData?.country || 'MX',
+      latitude: initialData?.latitude || null,
+      longitude: initialData?.longitude || null,
+      google_place_id: initialData?.google_place_id || null,
+      is_primary: initialData?.is_primary || false,
+      internal_number: initialData?.internal_number || null,
+      delivery_instructions: initialData?.delivery_instructions || null,
+    }
   });
 
-  useEffect(() => {
-    const defaultVals = {
-      autocomplete_search: '', street_address: '', internal_number: '', neighborhood: '', 
-      postal_code: '', city: '', country: 'MX', delivery_instructions: '', 
-      is_primary: false, latitude: null, longitude: null, google_place_id: null
-    };
-    if (initialData) {
-      reset({
-        ...defaultVals,
-        ...initialData,
-        autocomplete_search: `${initialData.street_address}, ${initialData.city}`,
-        internal_number: initialData.internal_number || '',
-        neighborhood: initialData.neighborhood || '',
-        delivery_instructions: initialData.delivery_instructions || '',
-        latitude: initialData.latitude || null,
-        longitude: initialData.longitude || null,
-        google_place_id: initialData.google_place_id || null,
-      });
-    } else {
-      reset(defaultVals);
-    }
-  }, [initialData, reset]);
-
-  const handlePlaceSelected = useCallback((place: google.maps.places.PlaceResult | null) => {
-    console.log("Place selected:", place);
-    if (place && place.address_components) {
-      const components = place.address_components;
-
-      const streetNumber = getAddressComponent(components, 'street_number');
-      const route = getAddressComponent(components, 'route');
-      const sublocality = getAddressComponent(components, 'sublocality_level_1') || getAddressComponent(components, 'sublocality');
-      const locality = getAddressComponent(components, 'locality');
-      const postalCode = getAddressComponent(components, 'postal_code');
-      const countryCode = getAddressComponent(components, 'country');
-
-      setValue('street_address', `${route} ${streetNumber}`.trim(), { shouldValidate: true, shouldDirty: true });
-      setValue('neighborhood', sublocality, { shouldValidate: true, shouldDirty: true });
-      setValue('city', locality, { shouldValidate: true, shouldDirty: true });
-      setValue('postal_code', postalCode, { shouldValidate: true, shouldDirty: true });
-      setValue('country', countryCode || 'MX', { shouldValidate: true, shouldDirty: true });
-
-      setValue('latitude', place.geometry?.location?.lat() || null);
-      setValue('longitude', place.geometry?.location?.lng() || null);
-      setValue('google_place_id', place.place_id || null);
-
-      setValue('autocomplete_search', place.formatted_address || '');
-    } else {
-      console.log("Invalid place selected or cleared");
-    }
-  }, [setValue]);
-
-  const handleFormSubmit: SubmitHandler<AddressFormData> = (data) => {
-    const { autocomplete_search, ...submitData } = data;
-    onSubmit(submitData, initialData?.id);
-  };
+  const handleSubmit = form.handleSubmit((data) => {
+    onSubmit(data);
+  });
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-      <AutocompleteInput
-        label="Search for Address"
-        initialValue={watch('autocomplete_search')}
-        {...register('autocomplete_search')}
-        onPlaceSelect={handlePlaceSelected}
-        disabled={isLoading}
-        country="mx"
-      />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {onBack && (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onBack}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Volver
+        </Button>
+      )}
 
-      <p className="text-xs text-muted-foreground">Or fill in the details manually below:</p>
-      <hr/>
+      {initialAutocompleteValue && (
+        <div className="mb-4">
+          <Label>Ubicación seleccionada</Label>
+          <p className="text-sm text-muted-foreground border p-2 rounded">
+            {initialAutocompleteValue}
+          </p>
+        </div>
+      )}
 
-      <div className="grid gap-1.5">
-        <Label htmlFor="street_address">Street Address *</Label>
-        <Input 
-          id="street_address" 
-          {...register('street_address', { required: 'Street address is required' })} 
-          disabled={isLoading} 
-        />
-        {errors.street_address && <p className="text-red-500 text-sm">{errors.street_address.message}</p>}
+      <div>
+        <Label>Dirección</Label>
+        <Input {...form.register('street_address')} disabled={isLoading} />
+        {form.formState.errors.street_address && (
+          <p className="text-sm text-red-500 mt-1">{form.formState.errors.street_address.message}</p>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="grid gap-1.5">
-          <Label htmlFor="internal_number">Apt / Suite #</Label>
-          <Input id="internal_number" {...register('internal_number')} disabled={isLoading} />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="neighborhood">Neighborhood</Label>
-          <Input id="neighborhood" {...register('neighborhood')} disabled={isLoading} />
-        </div>
+      <div>
+        <Label>Número interior (opcional)</Label>
+        <Input {...form.register('internal_number')} disabled={isLoading} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="grid gap-1.5">
-          <Label htmlFor="postal_code">Postal Code *</Label>
-          <Input 
-            id="postal_code" 
-            {...register('postal_code', { required: 'Postal code is required' })} 
-            disabled={isLoading} 
-          />
-          {errors.postal_code && <p className="text-red-500 text-sm">{errors.postal_code.message}</p>}
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="city">City *</Label>
-          <Input 
-            id="city" 
-            {...register('city', { required: 'City is required' })} 
-            disabled={isLoading} 
-          />
-          {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="country">Country *</Label>
-          <Input 
-            id="country" 
-            {...register('country', { required: 'Country is required' })} 
-            disabled={isLoading} 
-          />
-          {errors.country && <p className="text-red-500 text-sm">{errors.country.message}</p>}
-        </div>
+      <div>
+        <Label>Ciudad</Label>
+        <Input {...form.register('city')} disabled={isLoading} />
+        {form.formState.errors.city && (
+          <p className="text-sm text-red-500 mt-1">{form.formState.errors.city.message}</p>
+        )}
       </div>
 
-      <div className="grid gap-1.5">
-        <Label htmlFor="delivery_instructions">Delivery Instructions</Label>
-        <Textarea 
-          id="delivery_instructions" 
-          {...register('delivery_instructions')} 
-          placeholder="E.g., leave at front door, gate code #1234" 
-          disabled={isLoading} 
-        />
+      <div>
+        <Label>Colonia</Label>
+        <Input {...form.register('neighborhood')} disabled={isLoading} />
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Controller
-          name="is_primary"
-          control={control}
-          render={({ field }) => (
-            <Checkbox 
-              id="is_primary" 
-              checked={field.value} 
-              onCheckedChange={field.onChange} 
-              disabled={isLoading} 
-            />
-          )}
-        />
-        <Label htmlFor="is_primary" className="text-sm font-medium leading-none">
-          Set as primary
-        </Label>
+      <div>
+        <Label>Código Postal</Label>
+        <Input {...form.register('postal_code')} disabled={isLoading} />
+        {form.formState.errors.postal_code && (
+          <p className="text-sm text-red-500 mt-1">{form.formState.errors.postal_code.message}</p>
+        )}
       </div>
 
-      <input type="hidden" {...register('latitude')} />
-      <input type="hidden" {...register('longitude')} />
-      <input type="hidden" {...register('google_place_id')} />
+      <div>
+        <Label>País</Label>
+        <Input {...form.register('country')} disabled={isLoading} />
+        {form.formState.errors.country && (
+          <p className="text-sm text-red-500 mt-1">{form.formState.errors.country.message}</p>
+        )}
+      </div>
+
+      <div>
+        <Label>Instrucciones de entrega (opcional)</Label>
+        <Input {...form.register('delivery_instructions')} disabled={isLoading} />
+      </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Saving...' : (initialData ? 'Update Address' : 'Add Address')}
+        {isLoading ? 'Guardando...' : (initialData ? 'Actualizar Dirección' : 'Confirmar Dirección')}
       </Button>
     </form>
   );
-}; 
+} 
