@@ -22,6 +22,9 @@ export const HomePage: React.FC = () => {
   const { activeAddress, isLoading: isLoadingAddressStore } = useAddressStore();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
+  // Get the active postal code
+  const activePostalCode = activeAddress?.postal_code;
+
   // --- Data Fetching ---
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery<ProductCategory[]>({
     queryKey: ['productCategories'],
@@ -29,9 +32,12 @@ export const HomePage: React.FC = () => {
   });
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
-    queryKey: ['storesHome', selectedCategoryId, activeAddress?.id],
-    queryFn: () => getStoresForHome(supabase /*, { categoryId: selectedCategoryId, location: activeAddress?.coords } */),
-    enabled: !!activeAddress || !isLoadingAddressStore,
+    queryKey: ['storesHome', selectedCategoryId, activePostalCode],
+    queryFn: () => getStoresForHome(supabase, { 
+      postalCode: activePostalCode,
+      categoryId: selectedCategoryId 
+    }),
+    enabled: !!activePostalCode && !isLoadingAddressStore,
   });
 
   // --- Event Handlers ---
@@ -41,7 +47,7 @@ export const HomePage: React.FC = () => {
 
   // --- Render Logic ---
   if (isLoadingAddressStore && !activeAddress) {
-    return <div>Loading location...</div>;
+    return <div className="text-center text-muted-foreground">Loading location...</div>;
   }
 
   if (!activeAddress && !isLoadingAddressStore) {
@@ -93,24 +99,29 @@ export const HomePage: React.FC = () => {
       {/* Secciones Verticales */}
       <section className="space-y-4">
         <h3 className="text-xl font-semibold tracking-tight">
-            {selectedCategoryId ? categories.find(c=>c.id === selectedCategoryId)?.name : 'Featured Stores'}
+          {selectedCategoryId 
+            ? `${categories.find(c => c.id === selectedCategoryId)?.name} near ${activePostalCode}`
+            : `Stores near ${activePostalCode}`}
         </h3>
 
-         {/* Scroll Horizontal Tiendas */}
+        {/* Scroll Horizontal Tiendas */}
         <div className="overflow-x-auto pb-4 -mx-4 px-4">
-           <div className="flex space-x-4">
+          <div className="flex space-x-4">
             {(isLoadingAddressStore || isLoadingStores) ? (
-                 Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
+              Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
             ) : stores.length === 0 ? (
-                 <p className="text-muted-foreground">No stores found for your current address.</p>
+              <p className="text-muted-foreground">
+                No stores found delivering to {activePostalCode}
+                {selectedCategoryId && ` in the selected category`}.
+              </p>
             ) : (
-                stores.map(store => (
-                     <Link key={store.id} to={`/store/${store.id}`} className="block flex-shrink-0">
-                        <StoreCard store={store} />
-                     </Link>
-                ))
+              stores.map(store => (
+                <Link key={store.id} to={`/store/${store.id}`} className="block flex-shrink-0">
+                  <StoreCard store={store} />
+                </Link>
+              ))
             )}
-           </div>
+          </div>
         </div>
       </section>
     </div>

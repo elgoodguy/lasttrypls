@@ -12,27 +12,42 @@ export type StoreCardData = Pick<Store,
 };
 
 /**
- * Fetches active stores, potentially filtered and ordered.
- * For MVP Home, fetch all active stores initially. Add filtering later.
+ * Fetches active stores, filtered by postal code and category if provided.
  */
 export const getStoresForHome = async (
   supabase: SupabaseClient<Database>,
-  // Add filter parameters later (e.g., categoryId, userLocation, searchTerm)
-): Promise<Store[]> => { // Return full Store type for now
-  const { data: stores, error } = await supabase
+  filters: {
+    postalCode?: string | null;
+    categoryId?: string | null;
+  } = {}
+): Promise<Store[]> => {
+  let query = supabase
     .from('stores')
-    .select('*') // Select specific columns for StoreCardData later for optimization
-    // Basic filters for Home MVP:
-    .eq('is_active', true) // Only active stores
-    // .in('address_postal_code', userPostalCodes) // TODO: Filter by user location later
-    // .filter('categories', 'cs', `{${categoryId}}`) // TODO: Filter by category later
-    // Ordering (example: by creation date, or add a 'featured_score' field)
-    .order('created_at', { ascending: false });
+    .select('*')
+    .eq('is_active', true);
+
+  // Apply postal code filter if provided
+  if (filters.postalCode) {
+    query = query.contains('accepted_postal_codes', [filters.postalCode]);
+  }
+
+  // TODO: Add category filtering in the future
+  if (filters.categoryId) {
+    console.warn('Category filtering not yet implemented in getStoresForHome');
+  }
+
+  // Apply ordering
+  query = query.order('created_at', { ascending: false });
+
+  const { data: stores, error } = await query;
 
   if (error) {
     console.error('Error fetching stores for home:', error);
     throw error;
   }
+
+  // Log the number of stores found for debugging
+  console.log(`Found ${stores?.length || 0} stores${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}`);
 
   return (stores as unknown as Store[]) || [];
 };

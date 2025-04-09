@@ -11,6 +11,7 @@ import { AutocompleteInput } from '@/components/common/AutocompleteInput';
 import { useGoogleMapsScript } from '@/hooks/useGoogleMapsScript';
 import { AddressForm } from './AddressForm';
 import { Address } from '@repo/api-client';
+import { ArrowLeft } from 'lucide-react';
 
 type PrefilledAddressData = {
   id?: string;
@@ -160,19 +161,38 @@ export function AddressModal({
   };
 
   const handleBack = () => {
-    if (!addressToEdit && !isForceModal) {
+    if (!addressToEdit) {
       setStep('initial');
+      setPrefilledData(null);
+      setAutocompleteValue('');
     }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={isForceModal ? undefined : onClose}>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="relative pb-2">
           {step === 'initial' && !addressToEdit && (
             <>
               <DialogTitle>Selecciona tu dirección</DialogTitle>
               <DialogDescription>Elige cómo quieres ingresar tu dirección</DialogDescription>
+            </>
+          )}
+          {step === 'form' && !addressToEdit && (
+            <>
+              <Button
+                variant="ghost"
+                onClick={handleBack}
+                className="absolute left-4 top-2 h-auto p-0"
+                size="sm"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Volver
+              </Button>
+              <div className="pt-10 text-center">
+                <DialogTitle>Confirma tu dirección</DialogTitle>
+                <DialogDescription>Por favor revisa y completa los detalles de tu dirección</DialogDescription>
+              </div>
             </>
           )}
         </DialogHeader>

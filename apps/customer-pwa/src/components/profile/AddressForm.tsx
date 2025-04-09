@@ -83,25 +83,7 @@ export function AddressForm({
   });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 py-4 relative">
-      {onBack && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="absolute top-4 left-4 z-10"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Volver
-        </Button>
-      )}
-
-      <div className="pt-16 text-center mb-4">
-        <h3 className="text-lg font-medium">Confirma tu dirección</h3>
-        <p className="text-sm text-muted-foreground">Por favor revisa y completa los detalles de tu dirección</p>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-4 py-4">
       <div>
         <Label>Dirección</Label>
         <Input {...form.register('street_address')} disabled={isLoading} />

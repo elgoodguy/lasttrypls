@@ -152,4 +152,112 @@ VALUES
   (uuid_generate_v4(), '33333333-3333-3333-3333-333333333333', 5, 20.00, 50.00, true),
   (uuid_generate_v4(), '44444444-4444-4444-4444-444444444444', 3, 15.00, 30.00, true),
   (uuid_generate_v4(), '55555555-5555-5555-5555-555555555555', 4, 10.00, 20.00, true),
-  (uuid_generate_v4(), '66666666-6666-6666-6666-666666666666', 2, 12.00, 25.00, true); 
+  (uuid_generate_v4(), '66666666-6666-6666-6666-666666666666', 2, 12.00, 25.00, true);
+
+-- Insert test stores with postal codes
+INSERT INTO public.stores (
+  id,
+  group_id,
+  name,
+  is_active,
+  address_street,
+  address_internal,
+  address_neighborhood,
+  address_postal_code,
+  address_city,
+  address_country,
+  latitude,
+  longitude,
+  contact_phone,
+  logo_url,
+  banner_url,
+  operating_hours,
+  special_hours,
+  delivery_fee,
+  minimum_order_amount,
+  estimated_delivery_time_minutes,
+  accepted_postal_codes
+) VALUES 
+(
+  '77777777-7777-7777-7777-777777777777',
+  '11111111-1111-1111-1111-111111111111',
+  'Tienda San Pedro',
+  true,
+  'Av. Principal 123',
+  'Local 5',
+  'Valle',
+  '66250',
+  'San Pedro',
+  'MX',
+  25.6667,
+  -100.4000,
+  '+528112345678',
+  'https://picsum.photos/200',
+  'https://picsum.photos/800/400',
+  '{"monday":{"open":"09:00","close":"22:00"},"tuesday":{"open":"09:00","close":"22:00"},"wednesday":{"open":"09:00","close":"22:00"},"thursday":{"open":"09:00","close":"22:00"},"friday":{"open":"09:00","close":"23:00"},"saturday":{"open":"09:00","close":"23:00"},"sunday":{"open":"10:00","close":"21:00"}}',
+  null,
+  50.00,
+  200.00,
+  30,
+  ARRAY['66250', '66220', '66230']
+),
+(
+  '88888888-8888-8888-8888-888888888888',
+  '11111111-1111-1111-1111-111111111111',
+  'Tienda Valle',
+  true,
+  'Av. Secundaria 456',
+  'Local 12',
+  'Del Valle',
+  '66220',
+  'San Pedro',
+  'MX',
+  25.6500,
+  -100.3833,
+  '+528123456789',
+  'https://picsum.photos/200',
+  'https://picsum.photos/800/400',
+  '{"monday":{"open":"08:00","close":"21:00"},"tuesday":{"open":"08:00","close":"21:00"},"wednesday":{"open":"08:00","close":"21:00"},"thursday":{"open":"08:00","close":"21:00"},"friday":{"open":"08:00","close":"22:00"},"saturday":{"open":"09:00","close":"22:00"},"sunday":{"open":"10:00","close":"20:00"}}',
+  null,
+  45.00,
+  150.00,
+  25,
+  ARRAY['66220', '66250']
+),
+(
+  '99999999-9999-9999-9999-999999999999',
+  '11111111-1111-1111-1111-111111111111',
+  'Tienda Obispado',
+  true,
+  'Av. Terciaria 789',
+  'PB',
+  'Obispado',
+  '64000',
+  'Monterrey',
+  'MX',
+  25.6747,
+  -100.3506,
+  '+528134567890',
+  'https://picsum.photos/200',
+  'https://picsum.photos/800/400',
+  '{"monday":{"open":"10:00","close":"21:00"},"tuesday":{"open":"10:00","close":"21:00"},"wednesday":{"open":"10:00","close":"21:00"},"thursday":{"open":"10:00","close":"21:00"},"friday":{"open":"10:00","close":"22:00"},"saturday":{"open":"10:00","close":"22:00"},"sunday":{"open":"11:00","close":"20:00"}}',
+  null,
+  60.00,
+  180.00,
+  35,
+  ARRAY['64000', '64010']
+);
+
+-- Insert cashback rules for new stores
+INSERT INTO public.cashback_rules (
+  id,
+  store_id,
+  percentage,
+  minimum_order_amount,
+  maximum_cashback_amount,
+  is_active
+)
+VALUES 
+  (uuid_generate_v4(), '77777777-7777-7777-7777-777777777777', 6, 200.00, 60.00, true),
+  (uuid_generate_v4(), '88888888-8888-8888-8888-888888888888', 5, 150.00, 45.00, true),
+  (uuid_generate_v4(), '99999999-9999-9999-9999-999999999999', 4, 180.00, 50.00, true); 
