@@ -2,7 +2,7 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { Card, CardContent, CardHeader } from "./card"
 import { Badge } from "./badge"
-import { Clock, DollarSign, ShoppingCart, Percent } from 'lucide-react'
+import { Clock, Truck, ShoppingCart, Percent } from 'lucide-react'
 import { StoreStatusIndicator } from "../store/StoreStatusIndicator"
 
 // Define the data structure the card expects
@@ -61,7 +61,7 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
                 <span>{store.estimated_delivery_time_minutes ? `${store.estimated_delivery_time_minutes} min` : 'N/A'}</span>
              </div>
              <div className="flex items-center">
-                 <DollarSign className="mr-1 h-4 w-4" />
+                 <Truck className="mr-1 h-4 w-4" />
                  <span>{formatFee(store.delivery_fee)}</span>
              </div>
            </div>

@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { getProductCategories, getStoresForHome, ProductCategory, Store } from '@repo/api-client';
-import { CategoryChip } from '@repo/ui';
-import { StoreCard } from '@repo/ui';
+import { CategoryChip, StoreCard } from '@repo/ui';
 import { Input } from '@repo/ui';
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -35,10 +34,18 @@ export const HomePage: React.FC = () => {
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
     queryKey: ['storesHome', selectedCategoryId, activePostalCode],
-    queryFn: () => getStoresForHome(supabase, { 
-      postalCode: activePostalCode,
-      categoryId: selectedCategoryId 
-    }),
+    queryFn: async () => {
+      const stores = await getStoresForHome(supabase, { 
+        postalCode: activePostalCode,
+        categoryId: selectedCategoryId 
+      });
+
+      // Transform stores to include cashback percentage for StoreCard
+      return stores.map(store => ({
+        ...store,
+        cashback_percentage: store.cashback_rules?.[0]?.percentage || null
+      }));
+    },
     enabled: !!activePostalCode && !isLoadingAddressStore,
   });
 
@@ -116,24 +123,22 @@ export const HomePage: React.FC = () => {
             : `Stores near ${activePostalCode}`}
         </h3>
 
-        {/* Scroll Horizontal Tiendas */}
-        <div className="overflow-x-auto pb-4 -mx-4 px-4">
-          <div className="flex space-x-4">
-            {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
-            ) : stores.length === 0 ? (
-              <p className="text-muted-foreground">
-                No stores found delivering to {activePostalCode}
-                {selectedCategoryId && ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}.
-              </p>
-            ) : (
-              stores.map(store => (
-                <Link key={store.id} to={`/store/${store.id}`} className="block flex-shrink-0">
-                  <StoreCard store={store} />
-                </Link>
-              ))
-            )}
-          </div>
+        {/* Grid de Tiendas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
+          ) : stores.length === 0 ? (
+            <p className="text-muted-foreground">
+              No stores found delivering to {activePostalCode}
+              {selectedCategoryId && ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}.
+            </p>
+          ) : (
+            stores.map(store => (
+              <Link key={store.id} to={`/store/${store.id}`}>
+                <StoreCard store={store} className="w-full" />
+              </Link>
+            ))
+          )}
         </div>
       </section>
     </div>

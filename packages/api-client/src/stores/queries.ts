@@ -1,10 +1,17 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@repo/types';
 
-export type Store = Database['public']['Tables']['stores']['Row'];
+export type Store = Database['public']['Tables']['stores']['Row'] & {
+  cashback_rules?: Array<{
+    percentage: number;
+    minimum_order_amount: number | null;
+    maximum_cashback_amount: number | null;
+  }> | null;
+};
+
 // Consider defining a more specific type for the Store Card, maybe joining with group or cashback info?
 export type StoreCardData = Pick<Store,
-   'id' | 'name' | 'logo_url' | 'estimated_delivery_time_minutes' | 'delivery_fee' | 'minimum_order_amount' | 'group_id' // Add other needed fields
+   'id' | 'name' | 'logo_url' | 'estimated_delivery_time_minutes' | 'delivery_fee' | 'minimum_order_amount' | 'group_id' | 'is_active' // Add other needed fields
 > & {
     // Potentially add cashback info here later
     cashback_percentage?: number | null;
@@ -17,6 +24,11 @@ export type StoreDetails = Store & {
     category_id: string;
     name: string;
   }[];
+  cashback_rule?: {
+    percentage: number;
+    minimum_order_amount: number | null;
+    maximum_cashback_amount: number | null;
+  } | null;
 };
 
 // Types for the Supabase response
@@ -29,6 +41,11 @@ type StoreWithCategories = {
       name: string;
     };
   }>;
+  cashback_rules: Array<{
+    percentage: number;
+    minimum_order_amount: number | null;
+    maximum_cashback_amount: number | null;
+  }> | null;
 };
 
 /**
@@ -47,6 +64,11 @@ export const getStoresForHome = async (
       *,
       store_categories!inner (
         category_id
+      ),
+      cashback_rules (
+        percentage,
+        minimum_order_amount,
+        maximum_cashback_amount
       )
     `)
     .eq('is_active', true);
@@ -98,6 +120,11 @@ export const getStoreDetailsById = async (
             id,
             name
           )
+        ),
+        cashback_rules (
+          percentage,
+          minimum_order_amount,
+          maximum_cashback_amount
         )
       `)
       .eq('id', storeId)
@@ -123,7 +150,8 @@ export const getStoreDetailsById = async (
       categories: storeWithCategories.store_categories?.map(sc => ({
         category_id: sc.product_categories.id,
         name: sc.product_categories.name
-      })) || []
+      })) || [],
+      cashback_rule: storeWithCategories.cashback_rules?.[0] || null
     };
 
     return storeDetails;
