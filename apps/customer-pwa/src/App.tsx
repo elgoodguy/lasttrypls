@@ -3,7 +3,7 @@ import { MainLayout } from './components/layout/MainLayout';
 import { useAuth } from './providers/AuthProvider';
 import { ForceAddressModal } from './components/auth/ForceAddressModal';
 import { Toaster } from 'sonner';
-import { useAddressStore } from './store/addressStore';
+import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { useEffect } from 'react';
 
 // --- Import Page Components ---
@@ -28,6 +28,9 @@ function App() {
     error: addressError,
     isInitialized: isAddressStoreInitialized 
   } = useAddressStore();
+
+  // Initialize address store
+  useInitializeAddressStore();
 
   // Show loader if session is loading OR if there's a user but the address store hasn't finished its initial load yet
   const showLoader = isLoadingSession || (!!user && !isAddressStoreInitialized);
