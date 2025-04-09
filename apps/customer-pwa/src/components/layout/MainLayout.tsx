@@ -4,11 +4,15 @@ import { TopNavBar } from './TopNavBar';
 import { BottomNavBar } from './BottomNavBar';
 import { Button } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
+import { useInitializeAddressStore } from '@/store/addressStore';
 
 export const MainLayout: React.FC = () => {
   const { user, isLoading } = useAuth();
   const cartItemCount = 0; // TODO: Get actual cart count from state/context
   const isLoggedIn = !isLoading && !!user;
+
+  // Initialize address store
+  useInitializeAddressStore();
 
   return (
     <div className="flex min-h-screen flex-col">

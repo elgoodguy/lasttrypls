@@ -1,17 +1,12 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { useSupabase } from './SupabaseProvider'; // Hook to get Supabase client
-import { useQuery } from '@tanstack/react-query';
-import { getAddresses, Address } from '@repo/api-client';
 
 interface AuthContextType {
   session: Session | null;
   user: User | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
-  requiresAddress: boolean;
-  isLoadingAddressCheck: boolean;
-  // Add signIn methods later
 }
 
 // Create the context with a default value
@@ -60,48 +55,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, [supabase]); // Re-run effect if Supabase client instance changes
 
-  // Query to fetch user's addresses only if we have a user
-  const addressQuery = useQuery<Address[]>({
-    queryKey: ['addresses', user?.id],
-    queryFn: () => {
-      console.log('AuthProvider: Fetching addresses for user', { userId: user?.id });
-      return getAddresses(supabase);
-    },
-    enabled: !!user && !isLoadingSession, // Only run if we have a user and session is loaded
-    gcTime: 1000 * 60 * 30, // 30 minutes
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 2 // Retry failed requests twice
-  });
-
-  // Memoize derived states to prevent unnecessary re-renders
-  const { addresses, isLoadingAddresses, isAddressError, isLoadingAddressCheck, requiresAddress } = useMemo(() => {
-    const addresses = addressQuery.data || [];
-    const isLoadingAddresses = addressQuery.isLoading;
-    const isAddressError = addressQuery.isError;
-    const isLoadingAddressCheck = isLoadingSession || (!!user && isLoadingAddresses);
-    const requiresAddress = !isLoadingSession && !!user && !isLoadingAddressCheck && !isAddressError && addresses.length === 0;
-
-    return {
-      addresses,
-      isLoadingAddresses,
-      isAddressError,
-      isLoadingAddressCheck,
-      requiresAddress
-    };
-  }, [addressQuery.data, addressQuery.isLoading, addressQuery.isError, isLoadingSession, user]);
-
-  // Log state changes
-  useEffect(() => {
-    console.log('AuthProvider: Current state', {
-      isLoadingSession,
-      isLoadingAddresses,
-      isLoadingAddressCheck,
-      requiresAddress,
-      hasUser: !!user,
-      addressCount: addresses.length
-    });
-  }, [isLoadingSession, isLoadingAddresses, isLoadingAddressCheck, requiresAddress, user, addresses]);
-
   // Sign out function
   const signOut = async () => {
     console.log('AuthProvider: Signing out');
@@ -117,10 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isLoading: isLoadingSession,
     signOut,
-    requiresAddress,
-    isLoadingAddressCheck,
-    // Add signIn methods here later
-  }), [session, user, isLoadingSession, requiresAddress, isLoadingAddressCheck]);
+  }), [session, user, isLoadingSession]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -3,6 +3,7 @@ import { MainLayout } from './components/layout/MainLayout';
 import { useAuth } from './providers/AuthProvider';
 import { ForceAddressModal } from './components/auth/ForceAddressModal';
 import { Toaster } from 'sonner';
+import { useAddressStore } from './store/addressStore';
 
 // --- Import Page Components ---
 import HomePage from './pages/HomePage';
@@ -18,9 +19,14 @@ const NotFoundPage = () => <div>404 - Page Not Found</div>;
 const GlobalLoader = () => <div>Loading...</div>;
 
 function App() {
-  const { isLoading, isLoadingAddressCheck, requiresAddress } = useAuth();
-  const showLoader = isLoading || isLoadingAddressCheck;
-  const showForceAddressModal = !showLoader && requiresAddress;
+  const { isLoading: isLoadingSession, user } = useAuth();
+  const { isLoading: isLoadingAddresses, activeAddress } = useAddressStore();
+
+  // Show loader if session is loading OR (user exists AND addresses are loading)
+  const showLoader = isLoadingSession || (!!user && isLoadingAddresses);
+
+  // Show force address modal if NOT loading, user exists, and no active address
+  const showForceAddressModal = !showLoader && !!user && !activeAddress;
 
   return (
     <>

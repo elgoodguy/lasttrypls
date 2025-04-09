@@ -9,6 +9,7 @@ import { Input } from '@repo/ui';
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useAddressStore } from '@/store/addressStore';
 
 // Skeleton Loader Components
 const Skeleton: React.FC<{ className?: string }> = ({ className }) => <div className={cn("animate-pulse rounded-md bg-muted", className)} />;
@@ -18,6 +19,7 @@ const StoreCardSkeleton: React.FC = () => <Skeleton className="h-[260px] w-[280p
 export const HomePage: React.FC = () => {
   const supabase = useSupabase();
   const { user } = useAuth();
+  const { activeAddress, isLoading: isLoadingAddressStore } = useAddressStore();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   // --- Data Fetching ---
@@ -27,14 +29,24 @@ export const HomePage: React.FC = () => {
   });
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
-    queryKey: ['storesHome', selectedCategoryId],
-    queryFn: () => getStoresForHome(supabase),
+    queryKey: ['storesHome', selectedCategoryId, activeAddress?.id],
+    queryFn: () => getStoresForHome(supabase /*, { categoryId: selectedCategoryId, location: activeAddress?.coords } */),
+    enabled: !!activeAddress || !isLoadingAddressStore,
   });
 
   // --- Event Handlers ---
   const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategoryId(categoryId);
   };
+
+  // --- Render Logic ---
+  if (isLoadingAddressStore && !activeAddress) {
+    return <div>Loading location...</div>;
+  }
+
+  if (!activeAddress && !isLoadingAddressStore) {
+    return <div className="text-center text-muted-foreground">Please select or add a delivery address to see stores.</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -87,10 +99,10 @@ export const HomePage: React.FC = () => {
          {/* Scroll Horizontal Tiendas */}
         <div className="overflow-x-auto pb-4 -mx-4 px-4">
            <div className="flex space-x-4">
-            {isLoadingStores ? (
+            {(isLoadingAddressStore || isLoadingStores) ? (
                  Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
             ) : stores.length === 0 ? (
-                 <p className="text-muted-foreground">No stores found matching your criteria.</p>
+                 <p className="text-muted-foreground">No stores found for your current address.</p>
             ) : (
                 stores.map(store => (
                      <Link key={store.id} to={`/store/${store.id}`} className="block flex-shrink-0">
