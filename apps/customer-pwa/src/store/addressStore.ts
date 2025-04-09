@@ -122,30 +122,28 @@ export const useInitializeAddressStore = () => {
 
   useEffect(() => {
     if (user && !isInitialized) {
-      if (!isLoading) {
-        setLoading(true);
-        console.log("Initializing address store for user:", user.id);
+      setLoading(true);
+      console.log("Initializing address store for user:", user.id);
 
-        const cachedAddresses = queryClient.getQueryData<Address[]>(['addresses', user.id]);
-        if (cachedAddresses) {
-          console.log("Using cached addresses for store initialization");
-          setAddresses(cachedAddresses);
-        } else {
-          getAddresses(supabase)
-            .then(data => {
-              console.log("Fetched addresses for store initialization:", data);
-              setAddresses(data);
-              queryClient.setQueryData(['addresses', user.id], data);
-            })
-            .catch(err => {
-              console.error("Failed to initialize address store:", err);
-              setError(err);
-            });
-        }
+      const cachedAddresses = queryClient.getQueryData<Address[]>(['addresses', user.id]);
+      if (cachedAddresses) {
+        console.log("Using cached addresses for store initialization");
+        setAddresses(cachedAddresses);
+      } else {
+        getAddresses(supabase)
+          .then(data => {
+            console.log("Fetched addresses for store initialization:", data);
+            setAddresses(data);
+            queryClient.setQueryData(['addresses', user.id], data);
+          })
+          .catch(err => {
+            console.error("Failed to initialize address store:", err);
+            setError(err);
+          });
       }
     } else if (!user && isInitialized) {
       console.log("Resetting address store due to user logout");
       resetStore();
     }
-  }, [user, isInitialized, isLoading, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);
+  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);
 }; 
