@@ -1,8 +1,14 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@repo/types';
 
-type Group = Database['public']['Tables']['groups']['Row'];
+export type Group = Database['public']['Tables']['groups']['Row'];
 
-export async function getGroups(supabase: any) {
+/**
+ * Fetches all active groups, ordered by sort_order.
+ */
+export const getGroups = async (
+  supabase: SupabaseClient<Database>
+): Promise<Group[]> => {
   const { data: groups, error } = await supabase
     .from('groups')
     .select('*')
@@ -10,8 +16,9 @@ export async function getGroups(supabase: any) {
     .order('sort_order', { ascending: true });
 
   if (error) {
+    console.error('Error fetching groups:', error);
     throw error;
   }
 
-  return groups as Group[];
-} 
+  return (groups as unknown as Group[]) || [];
+}; 
