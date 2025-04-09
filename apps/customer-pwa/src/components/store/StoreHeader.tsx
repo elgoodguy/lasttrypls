@@ -1,6 +1,6 @@
 import { StoreDetails } from '@repo/api-client';
-import { Badge } from '@repo/ui';
-import { Clock, Heart, Star, Truck } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
+import { StoreStatusIndicator } from './StoreStatusIndicator';
 
 interface StoreHeaderProps {
   store: StoreDetails;
@@ -28,11 +28,22 @@ export function StoreHeader({ store }: StoreHeaderProps) {
           </button>
         </div>
 
-        {/* Status and Rating */}
-        <div className="mt-2 flex items-center gap-2">
-          <Badge variant={isOpen ? "success" : "destructive"}>
-            {isOpen ? "Abierto" : "Cerrado"}
-          </Badge>
+        {/* Status, Delivery Info and Rating in one row */}
+        <div className="mt-4 flex items-center gap-6">
+          <StoreStatusIndicator status={isOpen ? 'open' : 'closed'} />
+          
+          {store.estimated_delivery_time_minutes && (
+            <span className="text-sm">
+              {store.estimated_delivery_time_minutes} min
+            </span>
+          )}
+
+          {store.delivery_fee !== null && (
+            <span className="text-sm">
+              ${store.delivery_fee.toFixed(2)}
+            </span>
+          )}
+
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm">4.5</span>
@@ -40,32 +51,14 @@ export function StoreHeader({ store }: StoreHeaderProps) {
           </div>
         </div>
 
-        {/* Delivery Info */}
-        <div className="mt-4 flex flex-wrap gap-4">
-          {store.estimated_delivery_time_minutes && (
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">
-                {store.estimated_delivery_time_minutes} min
-              </span>
-            </div>
-          )}
-          {store.delivery_fee !== null && (
-            <div className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">
-                ${store.delivery_fee.toFixed(2)}
-              </span>
-            </div>
-          )}
-          {store.minimum_order_amount !== null && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                Pedido mínimo: ${store.minimum_order_amount.toFixed(2)}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* Minimum Order in separate row */}
+        {store.minimum_order_amount !== null && (
+          <div className="mt-2">
+            <span className="text-sm text-muted-foreground">
+              Pedido mínimo: ${store.minimum_order_amount.toFixed(2)}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

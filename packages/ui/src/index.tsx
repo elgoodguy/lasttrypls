@@ -18,4 +18,6 @@ export * from './components/ui/card';
 export * from './components/ui/badge';
 export * from './components/ui/category-chip';
 export * from './components/ui/store-card';
+export * from './components/ui/tooltip';
+export * from './components/store/StoreStatusIndicator';
 // export * from './MyComponent'; // Ejemplo componente propio 

@@ -10,6 +10,7 @@ import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAddressStore } from '@/store/addressStore';
+import { StoreStatusIndicator } from '@/components/store/StoreStatusIndicator';
 
 // Skeleton Loader Components
 const Skeleton: React.FC<{ className?: string }> = ({ className }) => <div className={cn("animate-pulse rounded-md bg-muted", className)} />;
@@ -98,6 +99,13 @@ export const HomePage: React.FC = () => {
             </>
           )}
         </div>
+      </div>
+
+      {/* Status Indicators Legend */}
+      <div className="flex items-center gap-6 px-4">
+        <StoreStatusIndicator status="open" showLabel />
+        <StoreStatusIndicator status="scheduled" showLabel />
+        <StoreStatusIndicator status="closed" showLabel />
       </div>
 
       {/* Secciones Verticales */}

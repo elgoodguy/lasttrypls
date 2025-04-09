@@ -3,6 +3,7 @@ import { cn } from "../../lib/utils"
 import { Card, CardContent, CardHeader } from "./card"
 import { Badge } from "./badge"
 import { Clock, DollarSign, ShoppingCart, Percent } from 'lucide-react'
+import { StoreStatusIndicator } from "../store/StoreStatusIndicator"
 
 // Define the data structure the card expects
 export interface StoreCardData {
@@ -13,6 +14,7 @@ export interface StoreCardData {
   delivery_fee: number | null;
   minimum_order_amount?: number | null;
   cashback_percentage?: number | null;
+  is_active: boolean;
 }
 
 export interface StoreCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -45,7 +47,10 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
         </div>
 
         <CardHeader className="p-4">
-          <h3 className="font-semibold tracking-tight text-lg truncate">{store.name}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold tracking-tight text-lg truncate">{store.name}</h3>
+            <StoreStatusIndicator isActive={store.is_active} />
+          </div>
         </CardHeader>
 
         <CardContent className="p-4 pt-0 space-y-2">
