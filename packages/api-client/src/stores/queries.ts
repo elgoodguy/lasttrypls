@@ -65,13 +65,15 @@ export const getStoresForHome = async (
       store_categories!inner (
         category_id
       ),
-      cashback_rules (
+      cashback_rules!inner (
         percentage,
         minimum_order_amount,
         maximum_cashback_amount
       )
     `)
-    .eq('is_active', true);
+    .eq('is_active', true)
+    .eq('cashback_rules.is_active', true)
+    .order('cashback_rules.percentage', { ascending: false });
 
   // Apply postal code filter if provided
   if (filters.postalCode) {

@@ -13,7 +13,11 @@ export interface StoreCardData {
   estimated_delivery_time_minutes: number | null;
   delivery_fee: number | null;
   minimum_order_amount?: number | null;
-  cashback_percentage?: number | null;
+  cashback_rules?: Array<{
+    percentage: number;
+    minimum_order_amount: number | null;
+    maximum_cashback_amount: number | null;
+  }> | null;
   is_active: boolean;
 }
 
@@ -72,11 +76,12 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
                     {store.minimum_order_amount ? `Min. $${store.minimum_order_amount.toFixed(2)}` : 'No minimum'}
                 </span>
                  {/* Display Cashback Badge if applicable */}
-                 {store.cashback_percentage && store.cashback_percentage > 0 && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
-                       <Percent className="mr-1 h-3 w-3" /> {store.cashback_percentage}% Cashback
-                    </Badge>
-                 )}
+                 {store.cashback_rules && store.cashback_rules.length > 0 && (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                        <Percent className="mr-1 h-3 w-3" /> 
+                        {Math.max(...store.cashback_rules.map(rule => rule.percentage))}% Cashback
+                      </Badge>
+                   )}
             </div>
         </CardContent>
       </Card>

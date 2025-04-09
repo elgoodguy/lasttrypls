@@ -34,18 +34,10 @@ export const HomePage: React.FC = () => {
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
     queryKey: ['storesHome', selectedCategoryId, activePostalCode],
-    queryFn: async () => {
-      const stores = await getStoresForHome(supabase, { 
-        postalCode: activePostalCode,
-        categoryId: selectedCategoryId 
-      });
-
-      // Transform stores to include cashback percentage for StoreCard
-      return stores.map(store => ({
-        ...store,
-        cashback_percentage: store.cashback_rules?.[0]?.percentage || null
-      }));
-    },
+    queryFn: () => getStoresForHome(supabase, { 
+      postalCode: activePostalCode,
+      categoryId: selectedCategoryId 
+    }),
     enabled: !!activePostalCode && !isLoadingAddressStore,
   });
 
