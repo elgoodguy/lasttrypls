@@ -5,6 +5,7 @@ import { useSupabase } from '@/providers/SupabaseProvider';
 import { getAddresses } from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { AddressFormData } from '@/lib/validations/address';
 
 interface AddressState {
   addresses: Address[];
@@ -21,6 +22,10 @@ interface AddressState {
   addOrUpdateAddress: (address: Address) => void;
   removeAddress: (addressId: string) => void;
   resetStore: () => void;
+  addAddress: (address: AddressFormData) => Promise<void>;
+  updateAddress: (id: string, address: AddressFormData) => Promise<void>;
+  deleteAddress: (id: string) => Promise<void>;
+  setPrimaryAddress: (id: string) => Promise<void>;
 }
 
 const initialState = {
@@ -112,12 +117,56 @@ export const useAddressStore = create<AddressState>((set, get) => ({
   }),
 
   resetStore: () => set(initialState),
+
+  addAddress: async (address: AddressFormData) => {
+    const newAddress: Address = {
+      ...address,
+      id: Math.random().toString(36).substr(2, 9),
+      user_id: '', // This will be set by the backend
+      is_primary: get().addresses.length === 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    set((state) => ({
+      addresses: [...state.addresses, newAddress]
+    }));
+  },
+
+  updateAddress: async (id: string, address: AddressFormData) => {
+    set((state) => ({
+      addresses: state.addresses.map((a) =>
+        a.id === id
+          ? {
+              ...a,
+              ...address,
+              updated_at: new Date().toISOString()
+            }
+          : a
+      )
+    }));
+  },
+
+  deleteAddress: async (id: string) => {
+    set((state) => ({
+      addresses: state.addresses.filter((a) => a.id !== id)
+    }));
+  },
+
+  setPrimaryAddress: async (id: string) => {
+    set((state) => ({
+      addresses: state.addresses.map((a) => ({
+        ...a,
+        is_primary: a.id === id,
+        updated_at: new Date().toISOString()
+      }))
+    }));
+  }
 }));
 
 export const useInitializeAddressStore = () => {
   const { user } = useAuth();
   const supabase = useSupabase();
-  const { isLoading, isInitialized, setLoading, setError, setAddresses, resetStore } = useAddressStore();
+  const { isInitialized, setLoading, setError, setAddresses, resetStore } = useAddressStore();
   const queryClient = useQueryClient();
 
   useEffect(() => {

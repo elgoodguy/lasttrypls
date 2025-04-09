@@ -2,24 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Input } from '@repo/ui';
 import { useGoogleMapsScript } from '@/hooks/useGoogleMapsScript';
 
-// Define the type for the PlaceAutocompleteElement
-declare global {
-  namespace google {
-    namespace maps {
-      namespace places {
-        interface PlaceResult {
-          address_components?: google.maps.GeocoderAddressComponent[];
-          formatted_address?: string;
-          geometry?: {
-            location: google.maps.LatLng;
-          };
-          place_id?: string;
-        }
-      }
-    }
-  }
-}
-
 interface AutocompleteInputProps {
   value?: string;
   onChange?: (value: string) => void;

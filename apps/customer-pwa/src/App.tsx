@@ -10,15 +10,12 @@ import { useEffect } from 'react';
 import HomePage from './pages/HomePage';
 import { ProfilePage } from './pages/ProfilePage';
 import StoreDetailPage from './pages/StoreDetailPage';
-
-// Placeholder components
-const FavoritesPage = () => <div>Favorites Page Content</div>;
-const OrdersPage = () => <div>Orders Page Content</div>;
-const WalletPage = () => <div>Wallet Page Content</div>;
-const CartPage = () => <div>Cart Page Content</div>;
-const LoginPage = () => <div>Login Modal Trigger Area</div>;
-const NotFoundPage = () => <div>404 - Page Not Found</div>;
-const GlobalLoader = () => <div>Loading...</div>;
+import { FavoritesPage } from './pages/FavoritesPage';
+import { OrdersPage } from './pages/OrdersPage';
+import { WalletPage } from './pages/WalletPage';
+import { CartPage } from './pages/CartPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
