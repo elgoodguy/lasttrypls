@@ -6,12 +6,12 @@ import { Toaster } from 'sonner';
 
 // --- Import Page Components ---
 import HomePage from './pages/HomePage';
+import { ProfilePage } from './pages/ProfilePage';
 
 // Placeholder components
 const FavoritesPage = () => <div>Favorites Page Content</div>;
 const OrdersPage = () => <div>Orders Page Content</div>;
 const WalletPage = () => <div>Wallet Page Content</div>;
-const ProfilePage = () => <div>Profile Page Content</div>;
 const CartPage = () => <div>Cart Page Content</div>;
 const LoginPage = () => <div>Login Modal Trigger Area</div>;
 const NotFoundPage = () => <div>404 - Page Not Found</div>;
