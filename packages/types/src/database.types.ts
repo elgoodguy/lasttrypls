@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -88,6 +88,111 @@ export type Database = {
         }
         Relationships: []
       }
+      cashback_rules: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          group_id: string | null
+          id: string
+          is_active: boolean
+          maximum_cashback_amount: number | null
+          minimum_order_amount: number | null
+          percentage: number
+          start_date: string
+          store_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          group_id?: string | null
+          id?: string
+          is_active?: boolean
+          maximum_cashback_amount?: number | null
+          minimum_order_amount?: number | null
+          percentage: number
+          start_date?: string
+          store_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          group_id?: string | null
+          id?: string
+          is_active?: boolean
+          maximum_cashback_amount?: number | null
+          minimum_order_amount?: number | null
+          percentage?: number
+          start_date?: string
+          store_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashback_rules_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cashback_rules_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -117,6 +222,92 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      stores: {
+        Row: {
+          accepted_postal_codes: string[] | null
+          address_city: string
+          address_country: string
+          address_internal: string | null
+          address_neighborhood: string | null
+          address_postal_code: string
+          address_street: string
+          banner_url: string | null
+          contact_phone: string | null
+          created_at: string
+          delivery_fee: number
+          estimated_delivery_time_minutes: number | null
+          group_id: string | null
+          id: string
+          is_active: boolean
+          latitude: number
+          logo_url: string | null
+          longitude: number
+          minimum_order_amount: number | null
+          name: string
+          operating_hours: Json
+          special_hours: Json | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_postal_codes?: string[] | null
+          address_city: string
+          address_country?: string
+          address_internal?: string | null
+          address_neighborhood?: string | null
+          address_postal_code: string
+          address_street: string
+          banner_url?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          delivery_fee?: number
+          estimated_delivery_time_minutes?: number | null
+          group_id?: string | null
+          id?: string
+          is_active?: boolean
+          latitude: number
+          logo_url?: string | null
+          longitude: number
+          minimum_order_amount?: number | null
+          name: string
+          operating_hours?: Json
+          special_hours?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_postal_codes?: string[] | null
+          address_city?: string
+          address_country?: string
+          address_internal?: string | null
+          address_neighborhood?: string | null
+          address_postal_code?: string
+          address_street?: string
+          banner_url?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          delivery_fee?: number
+          estimated_delivery_time_minutes?: number | null
+          group_id?: string | null
+          id?: string
+          is_active?: boolean
+          latitude?: number
+          logo_url?: string | null
+          longitude?: number
+          minimum_order_amount?: number | null
+          name?: string
+          operating_hours?: Json
+          special_hours?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stores_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
