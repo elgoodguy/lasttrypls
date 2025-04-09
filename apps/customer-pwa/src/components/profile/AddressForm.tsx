@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { ArrowLeft } from 'lucide-react';
 
 const addressSchema = z.object({
+  id: z.string().optional(),
   street_address: z.string().min(1, "La dirección es requerida"),
   city: z.string().min(1, "La ciudad es requerida"),
   neighborhood: z.string().nullable(),
@@ -23,10 +24,10 @@ const addressSchema = z.object({
   delivery_instructions: z.string().nullable(),
 });
 
-type AddressFormData = z.infer<typeof addressSchema>;
+export type AddressFormData = z.infer<typeof addressSchema>;
 
 export interface AddressFormProps {
-  onSubmit: (data: AddressFormData) => void;
+  onSubmit: (data: AddressFormData, addressId?: string) => void;
   isLoading?: boolean;
   isGoogleMapsLoaded: boolean;
   initialData?: Partial<AddressFormData> | null;
@@ -39,12 +40,13 @@ export function AddressForm({
   isLoading = false,
   isGoogleMapsLoaded,
   initialData,
-  initialAutocompleteValue = '',
+  initialAutocompleteValue,
   onBack
 }: AddressFormProps) {
   const form = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
+      id: initialData?.id || undefined,
       street_address: initialData?.street_address || '',
       city: initialData?.city || '',
       neighborhood: initialData?.neighborhood || null,
@@ -59,32 +61,46 @@ export function AddressForm({
     }
   });
 
+  useEffect(() => {
+    form.reset({
+      id: initialData?.id || undefined,
+      street_address: initialData?.street_address || '',
+      city: initialData?.city || '',
+      neighborhood: initialData?.neighborhood || null,
+      postal_code: initialData?.postal_code || '',
+      country: initialData?.country || 'MX',
+      latitude: initialData?.latitude || null,
+      longitude: initialData?.longitude || null,
+      google_place_id: initialData?.google_place_id || null,
+      is_primary: initialData?.is_primary || false,
+      internal_number: initialData?.internal_number || null,
+      delivery_instructions: initialData?.delivery_instructions || null,
+    });
+  }, [initialData, form.reset]);
+
   const handleSubmit = form.handleSubmit((data) => {
-    onSubmit(data);
+    onSubmit(data, data.id);
   });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 py-4 relative">
       {onBack && (
         <Button
           type="button"
           variant="ghost"
+          size="sm"
           onClick={onBack}
-          className="mb-4"
+          className="absolute top-4 left-4 z-10"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Volver
         </Button>
       )}
 
-      {initialAutocompleteValue && (
-        <div className="mb-4">
-          <Label>Ubicación seleccionada</Label>
-          <p className="text-sm text-muted-foreground border p-2 rounded">
-            {initialAutocompleteValue}
-          </p>
-        </div>
-      )}
+      <div className="pt-16 text-center mb-4">
+        <h3 className="text-lg font-medium">Confirma tu dirección</h3>
+        <p className="text-sm text-muted-foreground">Por favor revisa y completa los detalles de tu dirección</p>
+      </div>
 
       <div>
         <Label>Dirección</Label>
@@ -134,7 +150,7 @@ export function AddressForm({
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Guardando...' : (initialData ? 'Actualizar Dirección' : 'Confirmar Dirección')}
+        {isLoading ? 'Guardando...' : (initialData?.id ? 'Actualizar Dirección' : 'Confirmar Dirección')}
       </Button>
     </form>
   );

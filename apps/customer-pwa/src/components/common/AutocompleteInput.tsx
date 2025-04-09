@@ -1,63 +1,117 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Input } from "@repo/ui/components/ui/input";
-import { Label } from "@repo/ui/components/ui/label";
+import { useEffect, useRef, useState } from 'react';
+import { Input } from '@repo/ui';
+import { useGoogleMapsScript } from '@/hooks/useGoogleMapsScript';
 
-export interface AutocompleteInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
-  isGoogleMapsLoaded: boolean;
-  initialValue?: string;
+// Define the type for the PlaceAutocompleteElement
+declare global {
+  namespace google {
+    namespace maps {
+      namespace places {
+        interface PlaceResult {
+          address_components?: google.maps.GeocoderAddressComponent[];
+          formatted_address?: string;
+          geometry?: {
+            location: google.maps.LatLng;
+          };
+          place_id?: string;
+        }
+      }
+    }
+  }
+}
+
+interface AutocompleteInputProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  onPlaceSelected?: (place: google.maps.places.PlaceResult) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
   label?: string;
 }
 
-const AutocompleteInput = React.forwardRef<HTMLInputElement, AutocompleteInputProps>(
-  ({ onPlaceSelect, isGoogleMapsLoaded, initialValue = '', disabled, label, className, ...props }, ref) => {
-    const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
-    const inputRef = useRef<HTMLInputElement | null>(null);
+export function AutocompleteInput({
+  value,
+  onChange,
+  onPlaceSelected,
+  placeholder = 'Ingresa una dirección',
+  disabled = false,
+  className = '',
+  label,
+}: AutocompleteInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [internalValue, setInternalValue] = useState(value || '');
+  const { isLoaded, loadError } = useGoogleMapsScript();
 
-    useEffect(() => {
-      if (!isGoogleMapsLoaded || !inputRef.current) return;
+  // Sincronizar el valor interno con el valor externo
+  useEffect(() => {
+    if (value !== undefined && value !== internalValue) {
+      setInternalValue(value);
+    }
+  }, [value]);
 
-      try {
-        const autocompleteInstance = new google.maps.places.Autocomplete(inputRef.current, {
-          types: ['address'],
-          componentRestrictions: { country: 'mx' }
-        });
+  // Inicializar el Autocomplete cuando Google Maps esté cargado
+  useEffect(() => {
+    if (!isLoaded || !inputRef.current || !window.google?.maps) {
+      return;
+    }
 
-        autocompleteInstance.addListener('place_changed', () => {
-          const place = autocompleteInstance.getPlace();
-          onPlaceSelect(place);
-        });
+    try {
+      const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+        types: ['address'],
+        fields: ['address_components', 'formatted_address', 'geometry', 'place_id'],
+        componentRestrictions: { country: 'mx' }
+      });
 
-        setAutocomplete(autocompleteInstance);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place) {
+          onPlaceSelected?.(place);
+          setInternalValue(place.formatted_address || '');
+          onChange?.(place.formatted_address || '');
+        }
+      });
 
-        return () => {
-          google.maps.event.clearInstanceListeners(autocompleteInstance);
-        };
-      } catch (error) {
-        console.error('Error initializing Google Places Autocomplete:', error);
-      }
-    }, [isGoogleMapsLoaded, onPlaceSelect]);
+      autocompleteRef.current = autocomplete;
 
-    // Merge refs
-    React.useImperativeHandle(ref, () => inputRef.current!, []);
+      return () => {
+        if (window.google?.maps) {
+          window.google.maps.event.clearInstanceListeners(autocomplete);
+          autocompleteRef.current = null;
+        }
+      };
+    } catch (error) {
+      console.error('Error initializing Google Maps Autocomplete:', error);
+    }
+  }, [isLoaded, onPlaceSelected, onChange]);
 
-    return (
-      <div className="grid gap-1.5">
-        {label && <Label>{label}</Label>}
-        <Input
-          ref={inputRef}
-          type="text"
-          className={className}
-          placeholder={disabled || !isGoogleMapsLoaded ? "Cargando Google Maps..." : props.placeholder || "Empieza a escribir una dirección"}
-          disabled={disabled || !isGoogleMapsLoaded}
-          defaultValue={initialValue}
-          {...props}
-        />
-      </div>
-    );
-  }
-);
+  const getPlaceholder = () => {
+    if (loadError) return 'Error al cargar Google Maps';
+    if (!isLoaded) return 'Cargando...';
+    return placeholder;
+  };
 
-AutocompleteInput.displayName = 'AutocompleteInput';
+  return (
+    <div className="grid gap-2">
+      {label && (
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+      )}
+      <Input
+        ref={inputRef}
+        type="text"
+        value={internalValue}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          setInternalValue(newValue);
+          onChange?.(newValue);
+        }}
+        placeholder={getPlaceholder()}
+        disabled={disabled || !isLoaded || !!loadError}
+        className={`w-full ${className}`}
+      />
+    </div>
+  );
+}
 
 export default AutocompleteInput; 

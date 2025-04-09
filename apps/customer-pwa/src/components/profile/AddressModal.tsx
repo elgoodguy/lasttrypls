@@ -1,320 +1,224 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Button } from '@repo/ui';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@repo/ui/components/ui/dialog";
-import { Button } from "@repo/ui/components/ui/button";
+} from '@repo/ui';
+import { AutocompleteInput } from '@/components/common/AutocompleteInput';
+import { useGoogleMapsScript } from '@/hooks/useGoogleMapsScript';
 import { AddressForm } from './AddressForm';
 import { Address } from '@repo/api-client';
-import { MapPin, Search } from 'lucide-react';
-import { toast } from 'sonner';
-import AutocompleteInput from '../common/AutocompleteInput';
-import { APIProvider, useMapsLibrary } from '@vis.gl/react-google-maps';
-import { Label } from "@repo/ui/components/ui/label";
-import { cn } from "@repo/ui/lib/utils";
+
+type PrefilledAddressData = {
+  id?: string;
+  street_address: string;
+  neighborhood: string | null;
+  city: string;
+  postal_code: string;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+  google_place_id: string | null;
+  is_primary: boolean;
+  internal_number: string | null;
+  delivery_instructions: string | null;
+};
 
 interface AddressModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: any, addressId?: string) => void;
-  isLoading: boolean;
-  addressToEdit?: Address | null;
+  isLoading?: boolean;
   isForceModal?: boolean;
+  addressToEdit?: Address | null;
 }
 
-type PrefilledAddressData = Partial<Address>;
-
-const AddressModalContent: React.FC<AddressModalProps> = ({
+export function AddressModal({
   isOpen,
   onClose,
   onSubmit,
-  isLoading,
-  addressToEdit,
+  isLoading = false,
   isForceModal = false,
-}) => {
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  const geocoding = useMapsLibrary('geocoding');
-  const places = useMapsLibrary('places');
-
+  addressToEdit = null,
+}: AddressModalProps) {
   const [step, setStep] = useState<'initial' | 'form'>('initial');
   const [prefilledData, setPrefilledData] = useState<PrefilledAddressData | null>(null);
-  const [isGeocoding, setIsGeocoding] = useState(false);
-  const [geocodingError, setGeocodingError] = useState<string | null>(null);
-  const [autocompleteValue, setAutocompleteValue] = useState<string>('');
-  const [librariesLoaded, setLibrariesLoaded] = useState(false);
-
-  useEffect(() => {
-    console.log('Google Maps API Key:', GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing');
-    console.log('Geocoding Library:', geocoding ? 'Loaded' : 'Not loaded');
-    console.log('Places Library:', places ? 'Loaded' : 'Not loaded');
-    
-    if (geocoding && places) {
-      setLibrariesLoaded(true);
-    }
-  }, [GOOGLE_MAPS_API_KEY, geocoding, places]);
+  const [autocompleteValue, setAutocompleteValue] = useState('');
+  const { isLoaded, loadError } = useGoogleMapsScript();
 
   useEffect(() => {
     if (isOpen) {
       if (addressToEdit) {
         setPrefilledData(addressToEdit);
+        setAutocompleteValue(addressToEdit.street_address || '');
         setStep('form');
       } else {
         setStep('initial');
         setPrefilledData(null);
-        setGeocodingError(null);
         setAutocompleteValue('');
       }
     }
   }, [isOpen, addressToEdit]);
 
   const handleUseCurrentLocation = () => {
-    console.log('Current location button clicked');
-    console.log('Geocoding available:', !!geocoding);
-    console.log('Geolocation available:', !!navigator.geolocation);
-
     if (!navigator.geolocation) {
-      toast.error("La geolocalización no está soportada en tu navegador");
+      alert('La geolocalización no está soportada en tu navegador');
       return;
     }
-
-    if (!geocoding) {
-      toast.error("El servicio de geocodificación no está disponible");
-      return;
-    }
-
-    setIsGeocoding(true);
-    setGeocodingError(null);
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
+        const { latitude: lat, longitude: lng } = position.coords;
         try {
-          const geocoder = new geocoding.Geocoder();
-          const response = await geocoder.geocode({ location: { lat, lng } });
+          const geocoder = new google.maps.Geocoder();
+          const result = await geocoder.geocode({
+            location: { lat, lng },
+          });
 
-          if (response.results && response.results.length > 0) {
-            const place = response.results[0];
-
-            const getAddressComponent = (type: string): string => {
+          if (result.results[0]) {
+            const place = result.results[0];
+            const getComponent = (type: string): string => {
               const component = place.address_components?.find(c => c.types.includes(type));
               return component ? component.long_name : '';
             };
 
-            const streetNumber = getAddressComponent('street_number');
-            const route = getAddressComponent('route');
-            const neighborhood = getAddressComponent('sublocality_level_1') || getAddressComponent('sublocality');
-            const city = getAddressComponent('locality');
-            const postalCode = getAddressComponent('postal_code');
-            const country = getAddressComponent('country');
+            const streetNumber = getComponent('street_number');
+            const route = getComponent('route');
+            const neighborhood = getComponent('sublocality_level_1') || getComponent('sublocality');
+            const city = getComponent('locality');
+            const postalCode = getComponent('postal_code');
+            const country = getComponent('country');
 
             const data: PrefilledAddressData = {
               street_address: `${route} ${streetNumber}`.trim(),
               neighborhood: neighborhood || null,
-              city,
-              postal_code: postalCode,
+              city: city || '',
+              postal_code: postalCode || '',
               country: country || 'MX',
               latitude: lat,
               longitude: lng,
               google_place_id: place.place_id || null,
               is_primary: true,
+              internal_number: null,
+              delivery_instructions: null,
             };
 
             setPrefilledData(data);
             setAutocompleteValue(place.formatted_address || '');
             setStep('form');
-          } else {
-            setGeocodingError("No se pudieron encontrar detalles de la dirección para tu ubicación.");
           }
-        } catch (error: any) {
-          console.error("Error en geocodificación inversa:", error);
-          setGeocodingError("Error al buscar los detalles de la dirección: " + (error?.message || 'Error desconocido'));
-        } finally {
-          setIsGeocoding(false);
+        } catch (error) {
+          console.error('Error al obtener la dirección:', error);
+          alert('No se pudo obtener la dirección de tu ubicación actual');
         }
       },
       (error) => {
-        console.error("Error de geolocalización:", error);
-        let message = "No se pudo obtener tu ubicación.";
-        if (error.code === error.PERMISSION_DENIED) {
-          message = "Permiso de ubicación denegado. Por favor, actívalo en la configuración de tu navegador.";
-        }
-        setGeocodingError(message);
-        setIsGeocoding(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        console.error('Error al obtener la ubicación:', error);
+        alert('No se pudo obtener tu ubicación actual');
+      }
     );
   };
 
-  const handlePlaceSelected = (place: google.maps.places.PlaceResult | null) => {
-    console.log('Place selected:', place ? 'Yes' : 'No');
-    if (place && place.address_components) {
-      const getAddressComponent = (type: string): string => {
-        const component = place.address_components?.find(c => c.types.includes(type));
-        return component ? component.long_name : '';
-      };
-
-      const streetNumber = getAddressComponent('street_number');
-      const route = getAddressComponent('route');
-      const neighborhood = getAddressComponent('sublocality_level_1') || getAddressComponent('sublocality');
-      const city = getAddressComponent('locality');
-      const postalCode = getAddressComponent('postal_code');
-      const country = getAddressComponent('country');
-
-      const data: PrefilledAddressData = {
-        street_address: `${route} ${streetNumber}`.trim(),
-        neighborhood: neighborhood || null,
-        city,
-        postal_code: postalCode,
-        country: country || 'MX',
-        latitude: place.geometry?.location?.lat() || null,
-        longitude: place.geometry?.location?.lng() || null,
-        google_place_id: place.place_id || null,
-        is_primary: true,
-      };
-
-      setPrefilledData(data);
-      setAutocompleteValue(place.formatted_address || '');
-      setStep('form');
+  const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
+    if (!place.address_components) {
+      console.warn('Place has no address components:', place);
+      return;
     }
+
+    const getComponent = (type: string): string => {
+      const component = place.address_components?.find(c => c.types.includes(type));
+      return component ? component.long_name : '';
+    };
+
+    const streetNumber = getComponent('street_number');
+    const route = getComponent('route');
+    const neighborhood = getComponent('sublocality') || getComponent('sublocality_level_1');
+    const city = getComponent('locality');
+    const postalCode = getComponent('postal_code');
+    const country = getComponent('country');
+
+    const data: PrefilledAddressData = {
+      street_address: `${route} ${streetNumber}`.trim(),
+      neighborhood: neighborhood || null,
+      city: city || '',
+      postal_code: postalCode || '',
+      country: country || 'MX',
+      latitude: place.geometry?.location?.lat() || null,
+      longitude: place.geometry?.location?.lng() || null,
+      google_place_id: place.place_id || null,
+      is_primary: true,
+      internal_number: null,
+      delivery_instructions: null,
+    };
+
+    setPrefilledData(data);
+    setAutocompleteValue(place.formatted_address || '');
+    setStep('form');
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open && !isForceModal) {
-      onClose();
+  const handleBack = () => {
+    if (!addressToEdit && !isForceModal) {
+      setStep('initial');
     }
-  };
-
-  if (!GOOGLE_MAPS_API_KEY) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-        <DialogContent aria-describedby="error-message">
-          <DialogHeader>
-            <DialogTitle>Error de Configuración</DialogTitle>
-          </DialogHeader>
-          <p id="error-message" className="text-red-500 py-4">
-            La clave de API de Google Maps no está configurada. Las funciones de dirección no están disponibles.
-          </p>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  if (!librariesLoaded) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-        <DialogContent aria-describedby="loading-message">
-          <DialogHeader>
-            <DialogTitle>Cargando...</DialogTitle>
-          </DialogHeader>
-          <p id="loading-message" className="text-muted-foreground py-4">
-            Cargando servicios de Google Maps...
-          </p>
-        </DialogContent>
-      </Dialog>
-    );
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent 
-        className={cn(
-          "sm:max-w-[600px]",
-          isForceModal && "[&_button[aria-label='Close']]:hidden"
-        )}
-        aria-describedby="dialog-description"
-      >
+    <Dialog open={isOpen} onOpenChange={isForceModal ? undefined : onClose}>
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{addressToEdit ? 'Editar Dirección' : 'Agregar Dirección'}</DialogTitle>
-          <DialogDescription id="dialog-description">
-            {!addressToEdit && step === 'initial' && '¿Cómo quieres ingresar tu dirección?'}
-            {!addressToEdit && step === 'form' && 'Por favor revisa y completa los detalles de tu dirección.'}
-            {addressToEdit && 'Actualiza los detalles de tu dirección de entrega.'}
-          </DialogDescription>
+          {step === 'initial' && !addressToEdit && (
+            <>
+              <DialogTitle>Selecciona tu dirección</DialogTitle>
+              <DialogDescription>Elige cómo quieres ingresar tu dirección</DialogDescription>
+            </>
+          )}
         </DialogHeader>
 
-        <div className="py-4 space-y-4">
-          {!addressToEdit && step === 'initial' && (
-            <div className="space-y-4">
-              {geocodingError && (
-                <p className="text-red-500 text-sm">{geocodingError}</p>
-              )}
-              
-              <Button
-                variant="outline"
-                className="w-full h-auto py-4 justify-start"
-                onClick={handleUseCurrentLocation}
-                disabled={isGeocoding || !geocoding}
-              >
-                <MapPin className="mr-2 h-4 w-4 shrink-0" />
-                <span className="text-left">
-                  {isGeocoding ? 'Obteniendo ubicación...' : 'Usar mi ubicación actual'}
-                </span>
-              </Button>
+        {step === 'initial' && !addressToEdit ? (
+          <div className="grid gap-4 py-4">
+            <Button
+              variant="outline"
+              onClick={handleUseCurrentLocation}
+              disabled={!isLoaded || !!loadError}
+              className="w-full"
+            >
+              Usar mi ubicación actual
+            </Button>
 
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">O</span>
-                </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
               </div>
-
-              <div className="space-y-2">
-                <Label>Buscar dirección manualmente</Label>
-                <AutocompleteInput
-                  onPlaceSelect={handlePlaceSelected}
-                  isGoogleMapsLoaded={!!geocoding}
-                  disabled={isLoading}
-                  initialValue=""
-                  placeholder="Empieza a escribir tu dirección"
-                  className="w-full"
-                />
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">O</span>
               </div>
             </div>
-          )}
 
-          {step === 'form' && (
-            <AddressForm
-              onSubmit={onSubmit}
-              isLoading={isLoading}
-              isGoogleMapsLoaded={!!geocoding}
-              initialData={addressToEdit || prefilledData}
-              initialAutocompleteValue={autocompleteValue}
-              onBack={!addressToEdit ? () => setStep('initial') : undefined}
+            <AutocompleteInput
+              onPlaceSelected={handlePlaceSelected}
+              placeholder="Buscar dirección manualmente"
+              disabled={!isLoaded || !!loadError}
             />
-          )}
-        </div>
 
-        {isForceModal && step === 'initial' && (
-          <DialogFooter className="text-center text-xs text-muted-foreground">
-            Necesitas agregar una dirección para continuar usando la aplicación.
-          </DialogFooter>
+            {loadError && (
+              <p className="text-sm text-red-500">
+                Error al cargar Google Maps. Por favor, intenta más tarde.
+              </p>
+            )}
+          </div>
+        ) : (
+          <AddressForm
+            onSubmit={onSubmit}
+            isLoading={isLoading}
+            isGoogleMapsLoaded={isLoaded}
+            initialData={prefilledData}
+            onBack={addressToEdit ? undefined : handleBack}
+          />
         )}
       </DialogContent>
     </Dialog>
   );
-};
-
-export const AddressModal: React.FC<AddressModalProps> = (props) => {
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-  if (!GOOGLE_MAPS_API_KEY) {
-    return <AddressModalContent {...props} />;
-  }
-
-  return (
-    <APIProvider 
-      apiKey={GOOGLE_MAPS_API_KEY} 
-      libraries={['places', 'geocoding']}
-    >
-      <AddressModalContent {...props} />
-    </APIProvider>
-  );
-}; 
+} 
