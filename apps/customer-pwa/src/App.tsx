@@ -4,6 +4,7 @@ import { useAuth } from './providers/AuthProvider';
 import { ForceAddressModal } from './components/auth/ForceAddressModal';
 import { Toaster } from 'sonner';
 import { useAddressStore } from './store/addressStore';
+import { useEffect } from 'react';
 
 // --- Import Page Components ---
 import HomePage from './pages/HomePage';
@@ -20,21 +21,44 @@ const GlobalLoader = () => <div>Loading...</div>;
 
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
-  const { isLoading: isLoadingAddresses, activeAddress } = useAddressStore();
+  const { 
+    isLoading: isLoadingAddresses, 
+    addresses, 
+    activeAddress, 
+    error: addressError 
+  } = useAddressStore();
 
   // Show loader if session is loading OR (user exists AND addresses are loading)
   const showLoader = isLoadingSession || (!!user && isLoadingAddresses);
 
-  // Show force address modal if NOT loading, user exists, and no active address
-  const showForceAddressModal = !showLoader && !!user && !activeAddress;
+  // Show force address modal if:
+  // - NOT loading (neither session nor addresses)
+  // - User exists
+  // - No error loading addresses
+  // - No addresses exist
+  const requiresAddress = !showLoader && !!user && !addressError && (!addresses || addresses.length === 0);
+
+  // Debugging logs
+  useEffect(() => {
+    console.log({
+      isLoadingSession,
+      hasUser: !!user,
+      isLoadingAddresses,
+      addressCount: addresses?.length || 0,
+      hasActiveAddress: !!activeAddress,
+      hasAddressError: !!addressError,
+      showLoader,
+      requiresAddress
+    });
+  }, [isLoadingSession, user, isLoadingAddresses, addresses, activeAddress, addressError, showLoader, requiresAddress]);
 
   return (
     <>
        <Toaster richColors position="top-center" />
        {showLoader && <GlobalLoader />}
-       {showForceAddressModal && <ForceAddressModal isOpen={true} />}
+       {requiresAddress && <ForceAddressModal isOpen={true} />}
 
-       <div className={showLoader || showForceAddressModal ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
+       <div className={showLoader || requiresAddress ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
             <Router>
               <Routes>
                 <Route path="/" element={<MainLayout />}>
