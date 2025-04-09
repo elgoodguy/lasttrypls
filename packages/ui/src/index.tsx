@@ -16,4 +16,6 @@ export * from './components/ui/checkbox';
 export * from './components/ui/textarea';
 export * from './components/ui/card';
 export * from './components/ui/badge';
+export * from './components/ui/category-chip';
+export * from './components/ui/store-card';
 // export * from './MyComponent'; // Ejemplo componente propio 
