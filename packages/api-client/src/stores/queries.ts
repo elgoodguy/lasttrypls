@@ -23,7 +23,12 @@ export const getStoresForHome = async (
 ): Promise<Store[]> => {
   let query = supabase
     .from('stores')
-    .select('*')
+    .select(`
+      *,
+      store_categories!inner (
+        category_id
+      )
+    `)
     .eq('is_active', true);
 
   // Apply postal code filter if provided
@@ -31,9 +36,9 @@ export const getStoresForHome = async (
     query = query.contains('accepted_postal_codes', [filters.postalCode]);
   }
 
-  // TODO: Add category filtering in the future
+  // Apply category filter if provided
   if (filters.categoryId) {
-    console.warn('Category filtering not yet implemented in getStoresForHome');
+    query = query.eq('store_categories.category_id', filters.categoryId);
   }
 
   // Apply ordering
@@ -47,7 +52,11 @@ export const getStoresForHome = async (
   }
 
   // Log the number of stores found for debugging
-  console.log(`Found ${stores?.length || 0} stores${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}`);
+  console.log(
+    `Found ${stores?.length || 0} stores` +
+    `${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}` +
+    `${filters.categoryId ? ` in category ${filters.categoryId}` : ''}`
+  );
 
   return (stores as unknown as Store[]) || [];
 };

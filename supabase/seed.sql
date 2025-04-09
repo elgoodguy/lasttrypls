@@ -4,6 +4,7 @@ TRUNCATE TABLE public.groups CASCADE;
 TRUNCATE TABLE public.stores CASCADE;
 TRUNCATE TABLE public.product_categories CASCADE;
 TRUNCATE TABLE public.cashback_rules CASCADE;
+TRUNCATE TABLE public.store_categories CASCADE;
 
 -- First, enable the auth schema extensions if not already enabled
 create extension if not exists "uuid-ossp";
@@ -135,9 +136,11 @@ VALUES
 -- Insert test product categories
 INSERT INTO public.product_categories (id, name, sort_order, is_active)
 VALUES 
-  ('77777777-7777-7777-7777-777777777777', 'Carnes', 1, true),
-  ('88888888-8888-8888-8888-888888888888', 'Postres', 2, true),
-  ('99999999-9999-9999-9999-999999999999', 'Bebidas', 3, true);
+  ('11111111-2222-3333-4444-555555555555', 'Restaurantes', 1, true),
+  ('22222222-3333-4444-5555-666666666666', 'Cafeterías', 2, true),
+  ('33333333-4444-5555-6666-777777777777', 'Comida Rápida', 3, true),
+  ('44444444-5555-6666-7777-888888888888', 'Postres', 4, true),
+  ('55555555-6666-7777-8888-999999999999', 'Bebidas', 5, true);
 
 -- Insert test cashback rules
 INSERT INTO public.cashback_rules (
@@ -260,4 +263,19 @@ INSERT INTO public.cashback_rules (
 VALUES 
   (uuid_generate_v4(), '77777777-7777-7777-7777-777777777777', 6, 200.00, 60.00, true),
   (uuid_generate_v4(), '88888888-8888-8888-8888-888888888888', 5, 150.00, 45.00, true),
-  (uuid_generate_v4(), '99999999-9999-9999-9999-999999999999', 4, 180.00, 50.00, true); 
+  (uuid_generate_v4(), '99999999-9999-9999-9999-999999999999', 4, 180.00, 50.00, true);
+
+-- Insert store-category relationships
+INSERT INTO public.store_categories (store_id, category_id)
+VALUES
+  -- Tienda San Pedro (Restaurantes, Comida Rápida)
+  ('77777777-7777-7777-7777-777777777777', '11111111-2222-3333-4444-555555555555'),
+  ('77777777-7777-7777-7777-777777777777', '33333333-4444-5555-6666-777777777777'),
+  
+  -- Tienda Valle (Cafeterías, Postres)
+  ('88888888-8888-8888-8888-888888888888', '22222222-3333-4444-5555-666666666666'),
+  ('88888888-8888-8888-8888-888888888888', '44444444-5555-6666-7777-888888888888'),
+  
+  -- Tienda Obispado (Restaurantes, Bebidas)
+  ('99999999-9999-9999-9999-999999999999', '11111111-2222-3333-4444-555555555555'),
+  ('99999999-9999-9999-9999-999999999999', '55555555-6666-7777-8888-999999999999'); 

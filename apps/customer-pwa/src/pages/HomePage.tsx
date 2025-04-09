@@ -29,6 +29,7 @@ export const HomePage: React.FC = () => {
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery<ProductCategory[]>({
     queryKey: ['productCategories'],
     queryFn: () => getProductCategories(supabase),
+    enabled: !!activePostalCode && !isLoadingAddressStore,
   });
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
@@ -45,6 +46,9 @@ export const HomePage: React.FC = () => {
     setSelectedCategoryId(categoryId);
   };
 
+  // --- Loading States ---
+  const isLoading = isLoadingAddressStore || isLoadingCategories || isLoadingStores;
+
   // --- Render Logic ---
   if (isLoadingAddressStore && !activeAddress) {
     return <div className="text-center text-muted-foreground">Loading location...</div>;
@@ -59,7 +63,7 @@ export const HomePage: React.FC = () => {
       {/* Saludo */}
       {user && <h2 className="text-2xl font-bold">Hi, {user.user_metadata?.full_name || 'there'}! 👋</h2>}
 
-      {/* Barra de Búsqueda (Placeholder) */}
+      {/* Barra de Búsqueda */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -71,29 +75,29 @@ export const HomePage: React.FC = () => {
 
       {/* Scroll Horizontal Categorías */}
       <div className="overflow-x-auto pb-2 -mx-4 px-4">
-         <div className="flex space-x-2 whitespace-nowrap">
-            {isLoadingCategories ? (
-               Array.from({ length: 5 }).map((_, i) => <CategoryChipSkeleton key={i} />)
-            ) : (
-                <>
-                    <CategoryChip
-                        selected={selectedCategoryId === null}
-                        onClick={() => handleCategoryClick(null)}
-                    >
-                        All
-                    </CategoryChip>
-                    {categories.map(category => (
-                    <CategoryChip
-                        key={category.id}
-                        selected={selectedCategoryId === category.id}
-                        onClick={() => handleCategoryClick(category.id)}
-                    >
-                        {category.name}
-                    </CategoryChip>
-                    ))}
-                </>
-             )}
-         </div>
+        <div className="flex space-x-2 whitespace-nowrap">
+          {isLoadingCategories ? (
+            Array.from({ length: 5 }).map((_, i) => <CategoryChipSkeleton key={i} />)
+          ) : (
+            <>
+              <CategoryChip
+                selected={selectedCategoryId === null}
+                onClick={() => handleCategoryClick(null)}
+              >
+                All
+              </CategoryChip>
+              {categories.map(category => (
+                <CategoryChip
+                  key={category.id}
+                  selected={selectedCategoryId === category.id}
+                  onClick={() => handleCategoryClick(category.id)}
+                >
+                  {category.name}
+                </CategoryChip>
+              ))}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Secciones Verticales */}
@@ -107,12 +111,12 @@ export const HomePage: React.FC = () => {
         {/* Scroll Horizontal Tiendas */}
         <div className="overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex space-x-4">
-            {(isLoadingAddressStore || isLoadingStores) ? (
+            {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
             ) : stores.length === 0 ? (
               <p className="text-muted-foreground">
                 No stores found delivering to {activePostalCode}
-                {selectedCategoryId && ` in the selected category`}.
+                {selectedCategoryId && ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}.
               </p>
             ) : (
               stores.map(store => (
