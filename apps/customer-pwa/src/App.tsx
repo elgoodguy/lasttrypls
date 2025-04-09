@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 // --- Import Page Components ---
 import HomePage from './pages/HomePage';
 import { ProfilePage } from './pages/ProfilePage';
+import StoreDetailPage from './pages/StoreDetailPage';
 
 // Placeholder components
 const FavoritesPage = () => <div>Favorites Page Content</div>;
@@ -68,6 +69,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<MainLayout />}>
                   <Route index element={<HomePage />} />
+                  <Route path="store/:storeId" element={<StoreDetailPage />} />
                   <Route path="favorites" element={<FavoritesPage />} />
                   <Route path="orders" element={<OrdersPage />} />
                   <Route path="wallet" element={<WalletPage />} />

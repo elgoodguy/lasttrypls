@@ -11,6 +11,26 @@ export type StoreCardData = Pick<Store,
     group_logo_url?: string | null; // If fetching group logo too
 };
 
+// Extended type for store details view
+export type StoreDetails = Store & {
+  categories?: {
+    category_id: string;
+    name: string;
+  }[];
+};
+
+// Types for the Supabase response
+type StoreWithCategories = {
+  [K in keyof Store]: Store[K];
+} & {
+  store_categories: Array<{
+    product_categories: {
+      id: string;
+      name: string;
+    };
+  }>;
+};
+
 /**
  * Fetches active stores, filtered by postal code and category if provided.
  */
@@ -59,6 +79,58 @@ export const getStoresForHome = async (
   );
 
   return (stores as unknown as Store[]) || [];
+};
+
+/**
+ * Fetches detailed store information by ID
+ */
+export const getStoreDetailsById = async (
+  supabase: SupabaseClient<Database>,
+  storeId: string
+): Promise<StoreDetails | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('stores')
+      .select(`
+        *,
+        store_categories (
+          product_categories (
+            id,
+            name
+          )
+        )
+      `)
+      .eq('id', storeId)
+      .single();
+
+    if (error) {
+      // If store not found (error code 406), return null
+      if (error.code === '406') {
+        return null;
+      }
+      console.error('Error fetching store details:', error);
+      throw error;
+    }
+
+    if (!data) {
+      return null;
+    }
+
+    // Transform the data to match StoreDetails type
+    const storeWithCategories = data as unknown as StoreWithCategories;
+    const storeDetails: StoreDetails = {
+      ...storeWithCategories,
+      categories: storeWithCategories.store_categories?.map(sc => ({
+        category_id: sc.product_categories.id,
+        name: sc.product_categories.name
+      })) || []
+    };
+
+    return storeDetails;
+  } catch (error) {
+    console.error('Error in getStoreDetailsById:', error);
+    throw error;
+  }
 };
 
 // Add functions later for:
