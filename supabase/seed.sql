@@ -278,4 +278,80 @@ VALUES
   
   -- Tienda Obispado (Restaurantes, Bebidas)
   ('99999999-9999-9999-9999-999999999999', '11111111-2222-3333-4444-555555555555'),
-  ('99999999-9999-9999-9999-999999999999', '55555555-6666-7777-8888-999999999999'); 
+  ('99999999-9999-9999-9999-999999999999', '55555555-6666-7777-8888-999999999999');
+
+-- Insert products
+INSERT INTO products (name, description, base_price, compare_at_price, image_urls, product_type) VALUES
+('Coca-Cola', 'Refresco de cola 500ml', 25.00, 30.00, ARRAY['https://picsum.photos/200'], 'physical'),
+('Hamburguesa Clásica', 'Hamburguesa con carne, lechuga, tomate y mayonesa', 75.00, 85.00, ARRAY['https://picsum.photos/200'], 'prepared'),
+('Papas Fritas', 'Porción de papas fritas crujientes', 35.00, 40.00, ARRAY['https://picsum.photos/200'], 'prepared'),
+('Helado de Vainilla', 'Helado suave de vainilla', 45.00, 50.00, ARRAY['https://picsum.photos/200'], 'prepared'),
+('Nuggets de Pollo', '6 piezas de nuggets de pollo', 55.00, 60.00, ARRAY['https://picsum.photos/200'], 'prepared');
+
+-- Insert store_products for all stores
+INSERT INTO store_products (product_id, store_id, is_available_in_store)
+SELECT p.id, s.id, true
+FROM products p
+CROSS JOIN stores s
+WHERE s.is_active = true;
+
+-- Insert modifier groups for Hamburguesa Clásica
+INSERT INTO product_modifier_groups (product_id, name, selection_type, is_required, sort_order)
+SELECT id, 'Tamaño', 'single', true, 1
+FROM products
+WHERE name = 'Hamburguesa Clásica';
+
+INSERT INTO product_modifier_groups (product_id, name, selection_type, is_required, sort_order)
+SELECT id, 'Extras', 'multiple', false, 2
+FROM products
+WHERE name = 'Hamburguesa Clásica';
+
+-- Insert modifier options for Hamburguesa Clásica
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Individual', 0, 1
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Hamburguesa Clásica' AND g.name = 'Tamaño';
+
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Doble', 30.00, 2
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Hamburguesa Clásica' AND g.name = 'Tamaño';
+
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Queso Extra', 10.00, 1
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Hamburguesa Clásica' AND g.name = 'Extras';
+
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Tocino', 15.00, 2
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Hamburguesa Clásica' AND g.name = 'Extras';
+
+-- Insert modifier groups for Papas Fritas
+INSERT INTO product_modifier_groups (product_id, name, selection_type, is_required, sort_order)
+SELECT id, 'Tamaño', 'single', true, 1
+FROM products
+WHERE name = 'Papas Fritas';
+
+-- Insert modifier options for Papas Fritas
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Chica', 0, 1
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Papas Fritas' AND g.name = 'Tamaño';
+
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Mediana', 10.00, 2
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Papas Fritas' AND g.name = 'Tamaño';
+
+INSERT INTO product_modifiers (group_id, name, additional_price, sort_order)
+SELECT g.id, 'Grande', 20.00, 3
+FROM product_modifier_groups g
+JOIN products p ON g.product_id = p.id
+WHERE p.name = 'Papas Fritas' AND g.name = 'Tamaño'; 
