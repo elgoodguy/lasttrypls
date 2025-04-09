@@ -63,6 +63,7 @@ export const TopNavBar: React.FC = () => {
     onSuccess: (newAddress) => {
       toast.success("Address added successfully!");
       addOrUpdateAddress(newAddress);
+      setActiveAddress(newAddress);
       queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
       setIsAddressModalOpen(false);
     },
