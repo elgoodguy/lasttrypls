@@ -1,12 +1,14 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@repo/types';
 
-type ProductCategory = Database['public']['Tables']['product_categories']['Row'];
+export type ProductCategory = Database['public']['Tables']['product_categories']['Row'];
 
 /**
  * Fetches all active product categories, ordered by sort_order.
  */
-export async function getProductCategories(supabase: any) {
+export const getProductCategories = async (
+  supabase: SupabaseClient<Database>
+): Promise<ProductCategory[]> => {
   const { data: categories, error } = await supabase
     .from('product_categories')
     .select('*')
@@ -14,8 +16,9 @@ export async function getProductCategories(supabase: any) {
     .order('sort_order', { ascending: true });
 
   if (error) {
+    console.error('Error fetching product categories:', error);
     throw error;
   }
 
-  return categories as ProductCategory[];
-} 
+  return (categories as unknown as ProductCategory[]) || [];
+}; 
