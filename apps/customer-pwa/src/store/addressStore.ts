@@ -12,6 +12,7 @@ interface AddressState {
   primaryAddress: Address | null;
   isLoading: boolean;
   error: Error | null;
+  isInitialized: boolean;
 
   setAddresses: (addresses: Address[]) => void;
   setActiveAddress: (address: Address | null) => void;
@@ -19,18 +20,24 @@ interface AddressState {
   setError: (error: Error | null) => void;
   addOrUpdateAddress: (address: Address) => void;
   removeAddress: (addressId: string) => void;
+  resetStore: () => void;
 }
 
-export const useAddressStore = create<AddressState>((set, get) => ({
+const initialState = {
   addresses: [],
   activeAddress: null,
   primaryAddress: null,
   isLoading: true,
   error: null,
+  isInitialized: false,
+};
 
-  setLoading: (loading) => set({ isLoading: loading, error: null }),
+export const useAddressStore = create<AddressState>((set, get) => ({
+  ...initialState,
 
-  setError: (error) => set({ error: error, isLoading: false }),
+  setLoading: (loading) => set({ isLoading: loading, error: null, isInitialized: false }),
+
+  setError: (error) => set({ error: error, isLoading: false, isInitialized: true }),
 
   setAddresses: (addresses) => {
     const primary = addresses.find(addr => addr.is_primary) || null;
@@ -45,6 +52,7 @@ export const useAddressStore = create<AddressState>((set, get) => ({
       activeAddress: newActive,
       isLoading: false,
       error: null,
+      isInitialized: true,
     });
   },
 
@@ -102,40 +110,42 @@ export const useAddressStore = create<AddressState>((set, get) => ({
       activeAddress: newActive,
     };
   }),
+
+  resetStore: () => set(initialState),
 }));
 
 export const useInitializeAddressStore = () => {
   const { user } = useAuth();
   const supabase = useSupabase();
-  const { isLoading, setLoading, setError, setAddresses } = useAddressStore();
+  const { isLoading, isInitialized, setLoading, setError, setAddresses, resetStore } = useAddressStore();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (user && isLoading) {
-      setLoading(true);
-      console.log("Initializing address store for user:", user.id);
+    if (user && !isInitialized) {
+      if (!isLoading) {
+        setLoading(true);
+        console.log("Initializing address store for user:", user.id);
 
-      const cachedAddresses = queryClient.getQueryData<Address[]>(['addresses', user.id]);
-      if (cachedAddresses) {
-        console.log("Using cached addresses for store initialization");
-        setAddresses(cachedAddresses);
-      } else {
-        getAddresses(supabase)
-          .then(data => {
-            console.log("Fetched addresses for store initialization:", data);
-            setAddresses(data);
-            queryClient.setQueryData(['addresses', user.id], data);
-          })
-          .catch(err => {
-            console.error("Failed to initialize address store:", err);
-            setError(err);
-          });
+        const cachedAddresses = queryClient.getQueryData<Address[]>(['addresses', user.id]);
+        if (cachedAddresses) {
+          console.log("Using cached addresses for store initialization");
+          setAddresses(cachedAddresses);
+        } else {
+          getAddresses(supabase)
+            .then(data => {
+              console.log("Fetched addresses for store initialization:", data);
+              setAddresses(data);
+              queryClient.setQueryData(['addresses', user.id], data);
+            })
+            .catch(err => {
+              console.error("Failed to initialize address store:", err);
+              setError(err);
+            });
+        }
       }
-    } else if (!user && !isLoading) {
+    } else if (!user && isInitialized) {
       console.log("Resetting address store due to user logout");
-      setAddresses([]);
-      setLoading(true);
-      setError(null);
+      resetStore();
     }
-  }, [user, isLoading, setLoading, setError, setAddresses, supabase, queryClient]);
+  }, [user, isInitialized, isLoading, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);
 }; 

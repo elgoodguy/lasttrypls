@@ -25,32 +25,34 @@ function App() {
     isLoading: isLoadingAddresses, 
     addresses, 
     activeAddress, 
-    error: addressError 
+    error: addressError,
+    isInitialized: isAddressStoreInitialized 
   } = useAddressStore();
 
-  // Show loader if session is loading OR (user exists AND addresses are loading)
-  const showLoader = isLoadingSession || (!!user && isLoadingAddresses);
+  // Show loader if session is loading OR if there's a user but the address store hasn't finished its initial load yet
+  const showLoader = isLoadingSession || (!!user && !isAddressStoreInitialized);
 
   // Show force address modal if:
-  // - NOT loading (neither session nor addresses)
+  // - Not loading (session loaded and address store initialized)
   // - User exists
   // - No error loading addresses
   // - No addresses exist
-  const requiresAddress = !showLoader && !!user && !addressError && (!addresses || addresses.length === 0);
+  const requiresAddress = !showLoader && !!user && !addressError && addresses.length === 0;
 
   // Debugging logs
   useEffect(() => {
-    console.log({
+    console.log("App State:", {
       isLoadingSession,
       hasUser: !!user,
       isLoadingAddresses,
+      isAddressStoreInitialized,
       addressCount: addresses?.length || 0,
       hasActiveAddress: !!activeAddress,
       hasAddressError: !!addressError,
       showLoader,
       requiresAddress
     });
-  }, [isLoadingSession, user, isLoadingAddresses, addresses, activeAddress, addressError, showLoader, requiresAddress]);
+  }, [isLoadingSession, user, isLoadingAddresses, isAddressStoreInitialized, addresses, activeAddress, addressError, showLoader, requiresAddress]);
 
   return (
     <>
