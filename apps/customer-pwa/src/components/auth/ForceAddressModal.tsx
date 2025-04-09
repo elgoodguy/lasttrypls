@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { AddressModal } from '@/components/profile/AddressModal';
+import { useAddressStore } from '@/store/addressStore';
 
 interface ForceAddressModalProps {
   isOpen: boolean;
@@ -14,11 +15,13 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
   const supabase = useSupabase();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { addOrUpdateAddress } = useAddressStore();
 
   const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
     mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
-    onSuccess: () => {
+    onSuccess: (newAddress) => {
       toast.success("¡Dirección agregada exitosamente!");
+      addOrUpdateAddress(newAddress);
       queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
     },
     onError: (error) => {
