@@ -70,23 +70,6 @@ CREATE POLICY "Allow admins to manage products"
     ON public.products FOR ALL
     USING (public.is_admin());
 
--- 7. Update order policies
-DROP POLICY IF EXISTS "Allow users to view their own orders" ON public.orders;
-DROP POLICY IF EXISTS "Allow users to create orders" ON public.orders;
-DROP POLICY IF EXISTS "Allow staff to update orders" ON public.orders;
-
-CREATE POLICY "Allow users to view their own orders"
-    ON public.orders FOR SELECT
-    USING (user_id = auth.uid() OR public.is_staff());
-
-CREATE POLICY "Allow users to create orders"
-    ON public.orders FOR INSERT
-    WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "Allow staff to update orders"
-    ON public.orders FOR UPDATE
-    USING (public.is_staff());
-
 -- 8. Add trigger for updated_at on staff_assignments
 CREATE TRIGGER on_staff_assignments_updated
     BEFORE UPDATE ON public.staff_assignments
