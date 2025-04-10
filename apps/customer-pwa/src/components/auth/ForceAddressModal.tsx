@@ -37,7 +37,7 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
   return (
     <AddressModal
       isOpen={isOpen}
-      onClose={() => {}} // No-op para el modal forzado
+      onClose={() => {}} // No podemos cerrar el modal forzado
       onSubmit={handleForceSubmit}
       isLoading={isAddingAddress}
       addressToEdit={null}

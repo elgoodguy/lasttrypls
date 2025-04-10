@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '@repo/ui';
-import { useGoogleMapsScript } from '@/hooks/useGoogleMapsScript';
+import { useGoogleMapsScript } from '@repo/hooks';
 
 interface AutocompleteInputProps {
   value?: string;

@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-
-interface Location {
-  latitude: number;
-  longitude: number;
-}
+import { Location } from './types/google-maps';
 
 export function useGeolocation() {
   const [isLoading, setIsLoading] = useState(false);

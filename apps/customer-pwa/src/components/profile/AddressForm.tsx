@@ -5,9 +5,7 @@ import { addressSchema, AddressFormData } from '@/lib/validations/address';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui';
 import { MapPin, Search } from 'lucide-react';
 import { useState } from 'react';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { useGooglePlacesAutocomplete } from '@/hooks/useGooglePlacesAutocomplete';
-import { useLoadGoogleMaps } from '@/hooks/useLoadGoogleMaps';
+import { useGeolocation, useGooglePlacesAutocomplete, useGoogleMapsScript } from '@repo/hooks';
 import { toast } from 'sonner';
 
 interface Prediction {
@@ -39,7 +37,7 @@ export function AddressForm({
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
   const { searchPlaces, predictions, getPlaceDetails, isLoading: isLoadingSearch } = useGooglePlacesAutocomplete();
-  const { isLoaded: isGoogleMapsLoaded, error: googleMapsError } = useLoadGoogleMaps();
+  const { isLoaded: isGoogleMapsLoaded, loadError: googleMapsError } = useGoogleMapsScript();
 
   const form = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -124,7 +122,6 @@ export function AddressForm({
 
   if (googleMapsError) {
     toast.error('Error al cargar Google Maps');
-    return null;
   }
 
   return (
@@ -139,10 +136,10 @@ export function AddressForm({
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Buscar dirección..."
+                placeholder={googleMapsError ? "Google Maps no disponible" : "Buscar dirección..."}
                 className="w-full pl-8 p-2 border rounded-md bg-white text-foreground"
                 onChange={(e) => searchPlaces(e.target.value)}
-                disabled={!isGoogleMapsLoaded}
+                disabled={!isGoogleMapsLoaded || !!googleMapsError}
               />
             </div>
             {isLoadingSearch ? (
@@ -171,7 +168,7 @@ export function AddressForm({
             variant="outline"
             className="flex-1"
             onClick={() => setIsSearchModalOpen(true)}
-            disabled={!isGoogleMapsLoaded}
+            disabled={!isGoogleMapsLoaded || !!googleMapsError}
           >
             <Search className="mr-2 h-4 w-4" />
             Buscar dirección
@@ -181,12 +178,18 @@ export function AddressForm({
             variant="outline"
             className="flex-1"
             onClick={handleUseCurrentLocation}
-            disabled={isLoadingLocation || !isGoogleMapsLoaded}
+            disabled={isLoadingLocation || !isGoogleMapsLoaded || !!googleMapsError}
           >
             <MapPin className="mr-2 h-4 w-4" />
             {isLoadingLocation ? 'Obteniendo...' : 'Usar mi ubicación'}
           </Button>
         </div>
+
+        {googleMapsError && (
+          <div className="text-sm text-yellow-600 bg-yellow-50 p-3 rounded-md">
+            Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manualmente.
+          </div>
+        )}
 
         <div className="grid gap-2">
           <label htmlFor="street_address" className="text-sm font-medium">

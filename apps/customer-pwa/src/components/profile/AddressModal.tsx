@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@repo/ui';
 import { AddressForm } from './AddressForm';
 import { AddressFormData } from '@/lib/validations/address';
 
@@ -26,6 +26,11 @@ export function AddressModal({
           <DialogTitle>
             {addressToEdit ? 'Editar dirección' : 'Agregar dirección'}
           </DialogTitle>
+          <DialogDescription>
+            {isForceModal 
+              ? 'Para continuar, necesitamos que agregues una dirección de entrega.'
+              : 'Ingresa los detalles de tu dirección de entrega.'}
+          </DialogDescription>
         </DialogHeader>
         <AddressForm
           onSubmit={onSubmit}

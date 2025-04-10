@@ -1,95 +1,14 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { PlaceResult } from './types/google-maps';
 
 interface Prediction {
   place_id: string;
   description: string;
 }
 
-interface PlaceResult {
-  street_address: string;
-  city: string;
-  neighborhood: string | null;
-  postal_code: string;
-  latitude: number;
-  longitude: number;
-  google_place_id: string;
-}
-
-// Define Google Maps types in a namespace
-declare namespace google.maps {
-  interface GeocoderAddressComponent {
-    long_name: string;
-    short_name: string;
-    types: string[];
-  }
-
-  namespace places {
-    class AutocompleteService {
-      getPlacePredictions(request: {
-        input: string;
-        componentRestrictions: { country: string };
-        types: string[];
-      }): Promise<{
-        predictions: Array<{
-          place_id: string;
-          description: string;
-        }>;
-      }>;
-    }
-
-    class PlacesService {
-      constructor(attributionNode: Element);
-      getDetails(
-        request: {
-          placeId: string;
-          fields: string[];
-        },
-        callback: (
-          place: PlaceResult | null,
-          status: PlacesServiceStatus
-        ) => void
-      ): void;
-    }
-
-    type PlacesServiceStatus = string;
-
-    interface PlaceResult {
-      formatted_address?: string;
-      address_components?: Array<{
-        long_name: string;
-        short_name: string;
-        types: string[];
-      }>;
-      geometry?: {
-        location: {
-          lat(): number;
-          lng(): number;
-        };
-      };
-    }
-  }
-
-  class Geocoder {
-    geocode(request: {
-      location: { lat: number; lng: number };
-    }): Promise<GeocoderResponse>;
-  }
-
-  interface GeocoderResponse {
-    results: Array<{
-      formatted_address: string;
-      address_components: Array<{
-        long_name: string;
-        short_name: string;
-        types: string[];
-      }>;
-    }>;
-  }
-}
-
 const getAddressComponent = (
-  components: google.maps.places.PlaceResult['address_components'] = [],
+  components: google.maps.GeocoderAddressComponent[] = [],
   type: string
 ): string => {
   const component = components?.find((c) => c.types.includes(type));
