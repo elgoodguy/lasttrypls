@@ -50,4 +50,4 @@ declare module '@tanstack/react-query' {
   export function useQueryClient(): {
     invalidateQueries: (options: { queryKey: unknown[] }) => void;
   };
-} 
+}

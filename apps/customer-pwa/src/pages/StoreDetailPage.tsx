@@ -12,11 +12,11 @@ export default function StoreDetailPage() {
     data: storeDetails,
     isLoading,
     isError,
-    error
+    error,
   } = useQuery<StoreDetails | null>({
     queryKey: ['storeDetails', storeId],
     queryFn: () => getStoreDetailsById(supabase, storeId!),
-    enabled: !!storeId
+    enabled: !!storeId,
   });
 
   if (isLoading) {
@@ -58,4 +58,4 @@ export default function StoreDetailPage() {
       <StoreHeader store={storeDetails} />
     </div>
   );
-} 
+}

@@ -28,4 +28,4 @@ export const BottomNavBar: React.FC = () => {
       onNavigate={navigate}
     />
   );
-}; 
+};

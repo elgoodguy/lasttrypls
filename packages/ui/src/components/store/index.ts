@@ -1,1 +1,1 @@
-export * from './StoreStatusIndicator'; 
+export * from './StoreStatusIndicator';

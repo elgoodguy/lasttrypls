@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
         name: '@repo/hooks',
-        fileName: (format) => `index.${format}.js`,
+        fileName: format => `index.${format}.js`,
       },
       rollupOptions: {
         external: ['react', 'sonner'],
@@ -37,4 +37,4 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY),
     },
   };
-}); 
+});

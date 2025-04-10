@@ -24,4 +24,4 @@ export * from './components/common/GlobalLoader';
 export * from './components/navigation/BottomNavBar';
 export * from './components/navigation/UserMenu';
 export * from './components/address/AddressSelector';
-// export * from './MyComponent'; // Ejemplo componente propio 
+// export * from './MyComponent'; // Ejemplo componente propio

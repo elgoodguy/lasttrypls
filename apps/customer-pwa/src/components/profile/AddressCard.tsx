@@ -1,8 +1,8 @@
 import React from 'react';
 import { Address } from '@repo/api-client';
 import { Button } from '@repo/ui/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/ui/components/ui/card";
-import { Badge } from "@repo/ui/components/ui/badge";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/components/ui/card';
+import { Badge } from '@repo/ui/components/ui/badge';
 import { Edit3, Trash2, Star } from 'lucide-react';
 
 interface AddressCardProps {
@@ -22,7 +22,11 @@ export const AddressCard: React.FC<AddressCardProps> = ({
   isDeleting,
   isSettingPrimary,
 }) => {
-  const fullAddress = `${address.street_address}${address.internal_number ? ` #${address.internal_number}` : ''}, ${address.neighborhood ? `${address.neighborhood}, ` : ''}${address.city}, ${address.postal_code}, ${address.country}`;
+  const fullAddress = `${address.street_address}${
+    address.internal_number ? ` #${address.internal_number}` : ''
+  }, ${address.neighborhood ? `${address.neighborhood}, ` : ''}${address.city}, ${
+    address.postal_code
+  }, ${address.country}`;
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this address?')) {
@@ -32,7 +36,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
 
   const handleSetPrimary = () => {
     onSetPrimary(address.id);
-  }
+  };
 
   return (
     <Card>
@@ -40,7 +44,11 @@ export const AddressCard: React.FC<AddressCardProps> = ({
         <CardTitle className="text-sm font-medium">
           {address.is_primary ? 'Primary Address' : 'Address'}
         </CardTitle>
-        {address.is_primary && <Badge variant="outline"><Star className="mr-1 h-3 w-3 fill-current" /> Primary</Badge>}
+        {address.is_primary && (
+          <Badge variant="outline">
+            <Star className="mr-1 h-3 w-3 fill-current" /> Primary
+          </Badge>
+        )}
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">{fullAddress}</p>
@@ -82,4 +90,4 @@ export const AddressCard: React.FC<AddressCardProps> = ({
       </CardFooter>
     </Card>
   );
-}; 
+};

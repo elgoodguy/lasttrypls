@@ -21,4 +21,4 @@ export const getProductCategories = async (
   }
 
   return (categories as unknown as ProductCategory[]) || [];
-}; 
+};

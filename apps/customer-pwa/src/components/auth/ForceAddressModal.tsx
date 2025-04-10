@@ -19,14 +19,14 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
 
   const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
     mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
-    onSuccess: (newAddress) => {
-      toast.success("¡Dirección agregada exitosamente!");
+    onSuccess: newAddress => {
+      toast.success('¡Dirección agregada exitosamente!');
       addOrUpdateAddress(newAddress);
       queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error al agregar dirección:', error);
-      toast.error("No se pudo agregar la dirección. Por favor intenta de nuevo.");
+      toast.error('No se pudo agregar la dirección. Por favor intenta de nuevo.');
     },
   });
 
@@ -44,4 +44,4 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
       isForceModal={true}
     />
   );
-}; 
+};

@@ -39,11 +39,7 @@ export const addAddress = async (
   supabase: SupabaseClient,
   address: AddressInsert
 ): Promise<Address> => {
-  const { data, error } = await supabase
-    .from('addresses')
-    .insert([address])
-    .select()
-    .single();
+  const { data, error } = await supabase.from('addresses').insert([address]).select().single();
 
   if (error) {
     console.error('Error adding address:', error);
@@ -51,4 +47,4 @@ export const addAddress = async (
   }
 
   return data;
-}; 
+};

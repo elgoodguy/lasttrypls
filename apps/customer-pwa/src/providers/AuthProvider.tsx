@@ -26,28 +26,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('AuthProvider: Initializing session check');
     setIsLoadingSession(true);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('AuthProvider: Initial session loaded', { hasSession: !!session });
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoadingSession(false);
-    }).catch((error) => {
-      console.error("AuthProvider: Error getting initial session:", error);
-      setIsLoadingSession(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        console.log('AuthProvider: Initial session loaded', { hasSession: !!session });
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsLoadingSession(false);
+      })
+      .catch(error => {
+        console.error('AuthProvider: Error getting initial session:', error);
+        setIsLoadingSession(false);
+      });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        console.log('AuthProvider: Auth state changed', { event: _event, hasSession: !!session });
-        if (_event === 'SIGNED_IN' && session) {
-          setSession(session);
-          setUser(session.user);
-        } else if (_event === 'SIGNED_OUT') {
-          setSession(null);
-          setUser(null);
-        }
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('AuthProvider: Auth state changed', { event: _event, hasSession: !!session });
+      if (_event === 'SIGNED_IN' && session) {
+        setSession(session);
+        setUser(session.user);
+      } else if (_event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
       }
-    );
+    });
 
     return () => {
       console.log('AuthProvider: Cleaning up auth listener');
@@ -65,12 +66,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // State will be updated by the onAuthStateChange listener
   };
 
-  const value = useMemo(() => ({
-    session,
-    user,
-    isLoading: isLoadingSession,
-    signOut,
-  }), [session, user, isLoadingSession]);
+  const value = useMemo(
+    () => ({
+      session,
+      user,
+      isLoading: isLoadingSession,
+      signOut,
+    }),
+    [session, user, isLoadingSession]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
@@ -82,4 +86,4 @@ export const useAuth = (): AuthContextType => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};

@@ -10,12 +10,20 @@ export type Store = Database['public']['Tables']['stores']['Row'] & {
 };
 
 // Consider defining a more specific type for the Store Card, maybe joining with group or cashback info?
-export type StoreCardData = Pick<Store,
-   'id' | 'name' | 'logo_url' | 'estimated_delivery_time_minutes' | 'delivery_fee' | 'minimum_order_amount' | 'group_id' | 'is_active' // Add other needed fields
+export type StoreCardData = Pick<
+  Store,
+  | 'id'
+  | 'name'
+  | 'logo_url'
+  | 'estimated_delivery_time_minutes'
+  | 'delivery_fee'
+  | 'minimum_order_amount'
+  | 'group_id'
+  | 'is_active' // Add other needed fields
 > & {
-    // Potentially add cashback info here later
-    cashback_percentage?: number | null;
-    group_logo_url?: string | null; // If fetching group logo too
+  // Potentially add cashback info here later
+  cashback_percentage?: number | null;
+  group_logo_url?: string | null; // If fetching group logo too
 };
 
 // Extended type for store details view
@@ -60,7 +68,8 @@ export const getStoresForHome = async (
 ): Promise<Store[]> => {
   let query = supabase
     .from('stores')
-    .select<string, Store>(`
+    .select<string, Store>(
+      `
       *,
       store_categories!inner (
         category_id
@@ -70,7 +79,8 @@ export const getStoresForHome = async (
         minimum_order_amount,
         maximum_cashback_amount
       )
-    `)
+    `
+    )
     .eq('is_active', true)
     .eq('cashback_rules.is_active', true)
     .order('created_at', { ascending: false });
@@ -109,8 +119,8 @@ export const getStoresForHome = async (
   // Log the number of stores found for debugging
   console.log(
     `Found ${sortedStores.length} stores` +
-    `${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}` +
-    `${filters.categoryId ? ` in category ${filters.categoryId}` : ''}`
+      `${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}` +
+      `${filters.categoryId ? ` in category ${filters.categoryId}` : ''}`
   );
 
   return sortedStores;
@@ -126,7 +136,8 @@ export const getStoreDetailsById = async (
   try {
     const { data, error } = await supabase
       .from('stores')
-      .select(`
+      .select(
+        `
         *,
         store_categories (
           product_categories (
@@ -139,7 +150,8 @@ export const getStoreDetailsById = async (
           minimum_order_amount,
           maximum_cashback_amount
         )
-      `)
+      `
+      )
       .eq('id', storeId)
       .single();
 
@@ -160,11 +172,12 @@ export const getStoreDetailsById = async (
     const storeWithCategories = data as unknown as StoreWithCategories;
     const storeDetails: StoreDetails = {
       ...storeWithCategories,
-      categories: storeWithCategories.store_categories?.map(sc => ({
-        category_id: sc.product_categories.id,
-        name: sc.product_categories.name
-      })) || [],
-      cashback_rule: storeWithCategories.cashback_rules?.[0] || null
+      categories:
+        storeWithCategories.store_categories?.map(sc => ({
+          category_id: sc.product_categories.id,
+          name: sc.product_categories.name,
+        })) || [],
+      cashback_rule: storeWithCategories.cashback_rules?.[0] || null,
     };
 
     return storeDetails;

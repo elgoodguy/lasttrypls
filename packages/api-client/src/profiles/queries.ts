@@ -10,10 +10,10 @@ export type ProfileUpdate = Tables['profiles']['Update'];
  * Fetches the profile for the currently authenticated user.
  * Returns null if no user is logged in or no profile exists.
  */
-export const getProfile = async (
-  supabase: SupabaseClient<Database>
-): Promise<Profile | null> => {
-  const { data: { user } } = await supabase.auth.getUser();
+export const getProfile = async (supabase: SupabaseClient<Database>): Promise<Profile | null> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     console.log('No user logged in');
     return null;
@@ -21,11 +21,7 @@ export const getProfile = async (
 
   console.log('Fetching profile for user:', user.id);
 
-  const result = await supabase
-    .from('profiles')
-    .select()
-    .eq('user_id', user.id)
-    .maybeSingle();
+  const result = await supabase.from('profiles').select().eq('user_id', user.id).maybeSingle();
 
   const { data, error, status } = result as unknown as {
     data: Profile | null;
@@ -56,7 +52,9 @@ export const updateProfile = async (
   updates: ProfileUpdate,
   updateAuthMeta: boolean = true
 ): Promise<Profile> => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) throw new Error('User not logged in');
 
   // 1. Update the profiles table
@@ -102,4 +100,4 @@ export const updateProfile = async (
   }
 
   return profileData;
-}; 
+};

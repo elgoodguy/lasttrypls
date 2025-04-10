@@ -43,7 +43,7 @@ export function AutocompleteInput({
       const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ['address'],
         fields: ['address_components', 'formatted_address', 'geometry', 'place_id'],
-        componentRestrictions: { country: 'mx' }
+        componentRestrictions: { country: 'mx' },
       });
 
       autocomplete.addListener('place_changed', () => {
@@ -76,14 +76,12 @@ export function AutocompleteInput({
 
   return (
     <div className="grid gap-2">
-      {label && (
-        <label className="text-sm font-medium text-gray-700">{label}</label>
-      )}
+      {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
       <Input
         ref={inputRef}
         type="text"
         value={internalValue}
-        onChange={(e) => {
+        onChange={e => {
           const newValue = e.target.value;
           setInternalValue(newValue);
           onChange?.(newValue);
@@ -96,4 +94,4 @@ export function AutocompleteInput({
   );
 }
 
-export default AutocompleteInput; 
+export default AutocompleteInput;

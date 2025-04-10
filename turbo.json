@@ -1,13 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**"]
     },
     "lint": {
       "outputs": []
+    },
+    "lint:fix": {
+      "outputs": [],
+      "cache": false
     },
     "dev": {
       "cache": false,
@@ -21,4 +25,4 @@
       "inputs": ["supabase/migrations/**"]
     }
   }
-} 
+}

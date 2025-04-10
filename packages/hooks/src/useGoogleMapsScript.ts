@@ -33,7 +33,9 @@ export function useGoogleMapsScript() {
       console.error('Google Maps API key not found. Please check your environment variables.');
       setState({
         isLoaded: false,
-        loadError: new Error('No se encontró la clave de API de Google Maps. Por favor, contacta al soporte.'),
+        loadError: new Error(
+          'No se encontró la clave de API de Google Maps. Por favor, contacta al soporte.'
+        ),
       });
       return;
     }
@@ -60,7 +62,9 @@ export function useGoogleMapsScript() {
         };
 
         script.onerror = () => {
-          const error = new Error('Error al cargar Google Maps. Por favor, intenta de nuevo más tarde.');
+          const error = new Error(
+            'Error al cargar Google Maps. Por favor, intenta de nuevo más tarde.'
+          );
           setState({ isLoaded: false, loadError: error });
           scriptPromise = null;
           reject(error);
@@ -68,7 +72,8 @@ export function useGoogleMapsScript() {
 
         document.head.appendChild(script);
       } catch (error) {
-        const err = error instanceof Error ? error : new Error('Error desconocido al cargar Google Maps');
+        const err =
+          error instanceof Error ? error : new Error('Error desconocido al cargar Google Maps');
         setState({ isLoaded: false, loadError: err });
         scriptPromise = null;
         reject(err);
@@ -81,4 +86,4 @@ export function useGoogleMapsScript() {
   }, [state.loadError]);
 
   return state;
-} 
+}

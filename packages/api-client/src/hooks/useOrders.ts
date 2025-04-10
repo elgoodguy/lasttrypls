@@ -7,7 +7,15 @@ import { createSupabaseClient } from '../index';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@repo/types';
-import { getOrders, createOrder, updateOrder, type Order, type OrderInsert, type OrderUpdate, type GetOrdersOptions } from '../orders/queries';
+import {
+  getOrders,
+  createOrder,
+  updateOrder,
+  type Order,
+  type OrderInsert,
+  type OrderUpdate,
+  type GetOrdersOptions,
+} from '../orders/queries';
 
 export type UseOrdersOptions = {
   supabaseUrl: string;
@@ -16,32 +24,30 @@ export type UseOrdersOptions = {
   status?: OrderStatus;
 };
 
-export const useOrders = async ({ 
-  supabaseUrl, 
-  supabaseKey, 
-  userId, 
-  status 
+export const useOrders = async ({
+  supabaseUrl,
+  supabaseKey,
+  userId,
+  status,
 }: UseOrdersOptions): Promise<any[]> => {
   const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
-  
-  let query = supabase
-    .from('orders')
-    .select('*, profiles(*)');
-  
+
+  let query = supabase.from('orders').select('*, profiles(*)');
+
   if (userId) {
     query = query.eq('userId', userId);
   }
-  
+
   if (status) {
     query = query.eq('status', status);
   }
-  
+
   const { data, error } = await query;
-  
+
   if (error) {
     throw new Error(`Error fetching orders: ${error.message}`);
   }
-  
+
   return data || [];
 };
 
@@ -92,4 +98,4 @@ export const useUpdateOrder = (supabase: SupabaseClient<Database>) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });
-}; 
+};

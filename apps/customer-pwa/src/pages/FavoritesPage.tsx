@@ -10,4 +10,4 @@ export const FavoritesPage: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

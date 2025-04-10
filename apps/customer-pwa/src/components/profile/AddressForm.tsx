@@ -17,7 +17,7 @@ const getAddressComponent = (
   components: google.maps.GeocoderAddressComponent[] = [],
   type: string
 ): string => {
-  const component = components?.find((c) => c.types.includes(type));
+  const component = components?.find(c => c.types.includes(type));
   return component?.long_name || '';
 };
 
@@ -32,11 +32,16 @@ export function AddressForm({
   onSubmit,
   isLoading = false,
   defaultValues,
-  isForceModal = false
+  isForceModal = false,
 }: AddressFormProps) {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
-  const { searchPlaces, predictions, getPlaceDetails, isLoading: isLoadingSearch } = useGooglePlacesAutocomplete();
+  const {
+    searchPlaces,
+    predictions,
+    getPlaceDetails,
+    isLoading: isLoadingSearch,
+  } = useGooglePlacesAutocomplete();
   const { isLoaded: isGoogleMapsLoaded, loadError: googleMapsError } = useGoogleMapsScript();
 
   const form = useForm<AddressFormData>({
@@ -52,8 +57,8 @@ export function AddressForm({
       google_place_id: null,
       internal_number: null,
       delivery_instructions: null,
-      ...defaultValues
-    }
+      ...defaultValues,
+    },
   });
 
   const handleUseCurrentLocation = async () => {
@@ -67,7 +72,7 @@ export function AddressForm({
       if (location) {
         const geocoder = new google.maps.Geocoder();
         const response = await geocoder.geocode({
-          location: { lat: location.latitude, lng: location.longitude }
+          location: { lat: location.latitude, lng: location.longitude },
         });
 
         if (response.results[0]) {
@@ -76,9 +81,9 @@ export function AddressForm({
             geometry: {
               location: {
                 lat: () => location.latitude,
-                lng: () => location.longitude
-              }
-            }
+                lng: () => location.longitude,
+              },
+            },
           };
 
           const result = {
@@ -88,12 +93,12 @@ export function AddressForm({
             postal_code: getAddressComponent(place.address_components, 'postal_code'),
             latitude: location.latitude,
             longitude: location.longitude,
-            google_place_id: response.results[0].place_id || ''
+            google_place_id: response.results[0].place_id || '',
           };
 
           form.reset({
             ...form.getValues(),
-            ...result
+            ...result,
           });
         }
       }
@@ -114,7 +119,7 @@ export function AddressForm({
         postal_code: place.postal_code,
         latitude: place.latitude,
         longitude: place.longitude,
-        google_place_id: place.google_place_id
+        google_place_id: place.google_place_id,
       });
       setIsSearchModalOpen(false);
     }
@@ -136,9 +141,9 @@ export function AddressForm({
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder={googleMapsError ? "Google Maps no disponible" : "Buscar dirección..."}
+                placeholder={googleMapsError ? 'Google Maps no disponible' : 'Buscar dirección...'}
                 className="w-full pl-8 p-2 border rounded-md bg-white text-foreground"
-                onChange={(e) => searchPlaces(e.target.value)}
+                onChange={e => searchPlaces(e.target.value)}
                 disabled={!isGoogleMapsLoaded || !!googleMapsError}
               />
             </div>
@@ -187,7 +192,8 @@ export function AddressForm({
 
         {googleMapsError && (
           <div className="text-sm text-yellow-600 bg-yellow-50 p-3 rounded-md">
-            Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manualmente.
+            Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu
+            dirección manualmente.
           </div>
         )}
 
@@ -203,7 +209,9 @@ export function AddressForm({
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.street_address && (
-            <p className="text-sm text-red-500">{form.formState.errors.street_address.message as string}</p>
+            <p className="text-sm text-red-500">
+              {form.formState.errors.street_address.message as string}
+            </p>
           )}
         </div>
 
@@ -219,7 +227,9 @@ export function AddressForm({
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.internal_number && (
-            <p className="text-sm text-red-500">{form.formState.errors.internal_number.message as string}</p>
+            <p className="text-sm text-red-500">
+              {form.formState.errors.internal_number.message as string}
+            </p>
           )}
         </div>
 
@@ -235,7 +245,9 @@ export function AddressForm({
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.neighborhood && (
-            <p className="text-sm text-red-500">{form.formState.errors.neighborhood.message as string}</p>
+            <p className="text-sm text-red-500">
+              {form.formState.errors.neighborhood.message as string}
+            </p>
           )}
         </div>
 
@@ -267,7 +279,9 @@ export function AddressForm({
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.postal_code && (
-            <p className="text-sm text-red-500">{form.formState.errors.postal_code.message as string}</p>
+            <p className="text-sm text-red-500">
+              {form.formState.errors.postal_code.message as string}
+            </p>
           )}
         </div>
 
@@ -283,7 +297,9 @@ export function AddressForm({
             rows={2}
           />
           {form.formState.errors.delivery_instructions && (
-            <p className="text-sm text-red-500">{form.formState.errors.delivery_instructions.message as string}</p>
+            <p className="text-sm text-red-500">
+              {form.formState.errors.delivery_instructions.message as string}
+            </p>
           )}
         </div>
 
@@ -293,4 +309,4 @@ export function AddressForm({
       </form>
     </>
   );
-} 
+}

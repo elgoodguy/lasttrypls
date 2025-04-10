@@ -26,9 +26,9 @@ export function BottomNavBar({
   className = '',
 }: BottomNavBarProps) {
   return (
-    <nav className={cn("fixed bottom-0 left-0 z-10 w-full border-t bg-background", className)}>
+    <nav className={cn('fixed bottom-0 left-0 z-10 w-full border-t bg-background', className)}>
       <div className="container flex h-16 items-center justify-around">
-        {items.map((item) => {
+        {items.map(item => {
           // Skip auth-required items if not authenticated
           if (item.requiresAuth && !isAuthenticated) {
             return <div key={item.path} className="w-1/4"></div>; // Keep spacing consistent
@@ -43,9 +43,9 @@ export function BottomNavBar({
               variant="ghost"
               onClick={() => onNavigate(item.path)}
               className={cn(
-                "flex h-auto w-1/4 flex-col items-center justify-center space-y-1 p-2",
-                isActive ? "text-primary" : "text-muted-foreground",
-                "hover:bg-transparent hover:text-primary/80"
+                'flex h-auto w-1/4 flex-col items-center justify-center space-y-1 p-2',
+                isActive ? 'text-primary' : 'text-muted-foreground',
+                'hover:bg-transparent hover:text-primary/80'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -57,4 +57,4 @@ export function BottomNavBar({
       </div>
     </nav>
   );
-} 
+}

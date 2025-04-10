@@ -12,7 +12,9 @@ import { useAddressStore } from '@/store/addressStore';
 import { StoreStatusIndicator } from '@/components/store/StoreStatusIndicator';
 
 // Skeleton Loader Components
-const Skeleton: React.FC<{ className?: string }> = ({ className }) => <div className={cn("animate-pulse rounded-md bg-muted", className)} />;
+const Skeleton: React.FC<{ className?: string }> = ({ className }) => (
+  <div className={cn('animate-pulse rounded-md bg-muted', className)} />
+);
 const CategoryChipSkeleton: React.FC = () => <Skeleton className="h-8 w-24 rounded-full" />;
 const StoreCardSkeleton: React.FC = () => <Skeleton className="h-[260px] w-[280px]" />;
 
@@ -34,10 +36,11 @@ export const HomePage: React.FC = () => {
 
   const { data: stores = [], isLoading: isLoadingStores } = useQuery<Store[]>({
     queryKey: ['storesHome', selectedCategoryId, activePostalCode],
-    queryFn: () => getStoresForHome(supabase, { 
-      postalCode: activePostalCode,
-      categoryId: selectedCategoryId 
-    }),
+    queryFn: () =>
+      getStoresForHome(supabase, {
+        postalCode: activePostalCode,
+        categoryId: selectedCategoryId,
+      }),
     enabled: !!activePostalCode && !isLoadingAddressStore,
   });
 
@@ -55,22 +58,24 @@ export const HomePage: React.FC = () => {
   }
 
   if (!activeAddress && !isLoadingAddressStore) {
-    return <div className="text-center text-muted-foreground">Please select or add a delivery address to see stores.</div>;
+    return (
+      <div className="text-center text-muted-foreground">
+        Please select or add a delivery address to see stores.
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       {/* Saludo */}
-      {user && <h2 className="text-2xl font-bold">Hi, {user.user_metadata?.full_name || 'there'}! 👋</h2>}
+      {user && (
+        <h2 className="text-2xl font-bold">Hi, {user.user_metadata?.full_name || 'there'}! 👋</h2>
+      )}
 
       {/* Barra de Búsqueda */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search stores or products..."
-          className="pl-10"
-        />
+        <Input type="search" placeholder="Search stores or products..." className="pl-10" />
       </div>
 
       {/* Scroll Horizontal Categorías */}
@@ -110,7 +115,7 @@ export const HomePage: React.FC = () => {
       {/* Secciones Verticales */}
       <section className="space-y-4">
         <h3 className="text-xl font-semibold tracking-tight">
-          {selectedCategoryId 
+          {selectedCategoryId
             ? `${categories.find(c => c.id === selectedCategoryId)?.name} near ${activePostalCode}`
             : `Stores near ${activePostalCode}`}
         </h3>
@@ -122,7 +127,9 @@ export const HomePage: React.FC = () => {
           ) : stores.length === 0 ? (
             <p className="text-muted-foreground">
               No stores found delivering to {activePostalCode}
-              {selectedCategoryId && ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}.
+              {selectedCategoryId &&
+                ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}
+              .
             </p>
           ) : (
             stores.map(store => (
@@ -137,4 +144,4 @@ export const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

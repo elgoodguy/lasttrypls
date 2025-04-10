@@ -17,17 +17,15 @@ export function AddressModal({
   onSubmit,
   isLoading = false,
   addressToEdit = null,
-  isForceModal = false
+  isForceModal = false,
 }: AddressModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
-            {addressToEdit ? 'Editar dirección' : 'Agregar dirección'}
-          </DialogTitle>
+          <DialogTitle>{addressToEdit ? 'Editar dirección' : 'Agregar dirección'}</DialogTitle>
           <DialogDescription>
-            {isForceModal 
+            {isForceModal
               ? 'Para continuar, necesitamos que agregues una dirección de entrega.'
               : 'Ingresa los detalles de tu dirección de entrega.'}
           </DialogDescription>
@@ -41,4 +39,4 @@ export function AddressModal({
       </DialogContent>
     </Dialog>
   );
-} 
+}

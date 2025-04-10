@@ -19,7 +19,11 @@ export const ProfileForm: React.FC = () => {
   const queryClient = useQueryClient();
 
   // 1. Query to fetch the user's profile data
-  const { data: profile, isLoading: isLoadingProfile, error: profileError } = useQuery<Profile | null>({
+  const {
+    data: profile,
+    isLoading: isLoadingProfile,
+    error: profileError,
+  } = useQuery<Profile | null>({
     queryKey: ['profile', user?.id],
     queryFn: () => getProfile(supabase),
     enabled: !!user,
@@ -29,23 +33,28 @@ export const ProfileForm: React.FC = () => {
   // 2. Mutation to update the profile
   const { mutate: updateProfileMutation, isPending: isUpdatingProfile } = useMutation({
     mutationFn: (updates: ProfileUpdate) => updateProfile(supabase, updates),
-    onSuccess: (updatedProfile) => {
+    onSuccess: updatedProfile => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
-      toast.success("Profile updated successfully!");
+      toast.success('Profile updated successfully!');
       reset({ fullName: updatedProfile.full_name || '', email: user?.email || '' });
     },
-    onError: (error) => {
-      console.error("Profile update failed:", error);
-      toast.error("Failed to update profile: " + error.message);
+    onError: error => {
+      console.error('Profile update failed:', error);
+      toast.error('Failed to update profile: ' + error.message);
     },
   });
 
   // 3. React Hook Form setup
-  const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<ProfileFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty },
+  } = useForm<ProfileFormData>({
     defaultValues: {
       fullName: '',
       email: '',
-    }
+    },
   });
 
   // 4. Effect to reset form when profile data loads or changes
@@ -61,9 +70,9 @@ export const ProfileForm: React.FC = () => {
   }, [profile, user, reset]);
 
   // 5. Handle form submission
-  const onSubmit: SubmitHandler<ProfileFormData> = (data) => {
+  const onSubmit: SubmitHandler<ProfileFormData> = data => {
     if (!profile) {
-      toast.error("Cannot update profile: profile data not loaded.");
+      toast.error('Cannot update profile: profile data not loaded.');
       return;
     }
     const updates: ProfileUpdate = {
@@ -99,12 +108,7 @@ export const ProfileForm: React.FC = () => {
 
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          {...register('email')}
-          disabled
-        />
+        <Input id="email" type="email" {...register('email')} disabled />
         <p className="text-sm text-muted-foreground">Email cannot be changed here.</p>
       </div>
 
@@ -113,4 +117,4 @@ export const ProfileForm: React.FC = () => {
       </Button>
     </form>
   );
-}; 
+};

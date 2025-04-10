@@ -20,7 +20,9 @@ export const MainLayout: React.FC = () => {
 
       {/* Main content area - Outlet renders the matched child route component */}
       {/* Add padding-bottom to avoid overlap with BottomNavBar */}
-      <main className="flex-grow container py-6 pb-24"> {/* pb-24 approx height of bottom nav + fab padding */}
+      <main className="flex-grow container py-6 pb-24">
+        {' '}
+        {/* pb-24 approx height of bottom nav + fab padding */}
         <Outlet />
       </main>
 
@@ -39,4 +41,4 @@ export const MainLayout: React.FC = () => {
       <BottomNavBar />
     </div>
   );
-}; 
+};

@@ -6,9 +6,7 @@ export type Group = Database['public']['Tables']['groups']['Row'];
 /**
  * Fetches all active groups, ordered by sort_order.
  */
-export const getGroups = async (
-  supabase: SupabaseClient<Database>
-): Promise<Group[]> => {
+export const getGroups = async (supabase: SupabaseClient<Database>): Promise<Group[]> => {
   const { data: groups, error } = await supabase
     .from('groups')
     .select('*')
@@ -21,4 +19,4 @@ export const getGroups = async (
   }
 
   return (groups as unknown as Group[]) || [];
-}; 
+};

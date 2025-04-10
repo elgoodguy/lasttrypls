@@ -19,12 +19,12 @@ import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
-  const { 
-    isLoading: isLoadingAddresses, 
-    addresses, 
-    activeAddress, 
+  const {
+    isLoading: isLoadingAddresses,
+    addresses,
+    activeAddress,
     error: addressError,
-    isInitialized: isAddressStoreInitialized 
+    isInitialized: isAddressStoreInitialized,
   } = useAddressStore();
 
   // Initialize address store
@@ -42,7 +42,7 @@ function App() {
 
   // Debugging logs
   useEffect(() => {
-    console.log("App State:", {
+    console.log('App State:', {
       isLoadingSession,
       hasUser: !!user,
       isLoadingAddresses,
@@ -51,32 +51,44 @@ function App() {
       hasActiveAddress: !!activeAddress,
       hasAddressError: !!addressError,
       showLoader,
-      requiresAddress
+      requiresAddress,
     });
-  }, [isLoadingSession, user, isLoadingAddresses, isAddressStoreInitialized, addresses, activeAddress, addressError, showLoader, requiresAddress]);
+  }, [
+    isLoadingSession,
+    user,
+    isLoadingAddresses,
+    isAddressStoreInitialized,
+    addresses,
+    activeAddress,
+    addressError,
+    showLoader,
+    requiresAddress,
+  ]);
 
   return (
     <>
-       <Toaster richColors position="top-center" />
-       {showLoader && <GlobalLoader />}
-       {requiresAddress && <ForceAddressModal isOpen={true} />}
+      <Toaster richColors position="top-center" />
+      {showLoader && <GlobalLoader />}
+      {requiresAddress && <ForceAddressModal isOpen={true} />}
 
-       <div className={showLoader || requiresAddress ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
-            <Router>
-              <Routes>
-                <Route path="/" element={<MainLayout />}>
-                  <Route index element={<HomePage />} />
-                  <Route path="store/:storeId" element={<StoreDetailPage />} />
-                  <Route path="favorites" element={<FavoritesPage />} />
-                  <Route path="orders" element={<OrdersPage />} />
-                  <Route path="wallet" element={<WalletPage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-                  <Route path="cart" element={<CartPage />} />
-                </Route>
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Router>
-       </div>
+      <div
+        className={showLoader || requiresAddress ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+      >
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="store/:storeId" element={<StoreDetailPage />} />
+              <Route path="favorites" element={<FavoritesPage />} />
+              <Route path="orders" element={<OrdersPage />} />
+              <Route path="wallet" element={<WalletPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="cart" element={<CartPage />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Router>
+      </div>
     </>
   );
 }

@@ -31,9 +31,7 @@ export function StoreHeader({ store }: StoreHeaderProps) {
 
       {/* Categories */}
       {store.categories && store.categories.length > 0 && (
-        <p className="text-muted-foreground">
-          {store.categories.map(cat => cat.name).join(', ')}
-        </p>
+        <p className="text-muted-foreground">{store.categories.map(cat => cat.name).join(', ')}</p>
       )}
 
       {/* Primary Info Row */}
@@ -73,7 +71,10 @@ export function StoreHeader({ store }: StoreHeaderProps) {
 
         {/* Cashback Badge */}
         {store.cashback_rule && store.cashback_rule.percentage > 0 && (
-          <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
+          <Badge
+            variant="secondary"
+            className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
+          >
             <Percent className="mr-1 h-3 w-3" />
             {store.cashback_rule.percentage}% Cashback
           </Badge>
@@ -81,4 +82,4 @@ export function StoreHeader({ store }: StoreHeaderProps) {
       </div>
     </div>
   );
-} 
+}

@@ -25,4 +25,4 @@ export * from './orders/queries';
 export type { Database };
 
 // Note: React hooks are exported separately through the hooks entry point
-// They are not included in the main bundle to avoid React dependencies 
+// They are not included in the main bundle to avoid React dependencies

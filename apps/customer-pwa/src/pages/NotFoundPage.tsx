@@ -12,4 +12,4 @@ export const NotFoundPage: React.FC = () => {
       </Link>
     </div>
   );
-}; 
+};

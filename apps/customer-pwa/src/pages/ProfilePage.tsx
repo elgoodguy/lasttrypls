@@ -28,8 +28,12 @@ export const ProfilePage = () => {
         <h3 className="text-lg font-medium">Preferences</h3>
         <p className="text-sm text-muted-foreground">Set your language and theme.</p>
         <div className="flex gap-4 mt-2">
-          <Button variant="outline" disabled>Set Language</Button>
-          <Button variant="outline" disabled>Set Theme</Button>
+          <Button variant="outline" disabled>
+            Set Language
+          </Button>
+          <Button variant="outline" disabled>
+            Set Theme
+          </Button>
         </div>
       </div>
 
@@ -38,7 +42,9 @@ export const ProfilePage = () => {
       <div>
         <h3 className="text-lg font-medium">Security</h3>
         <p className="text-sm text-muted-foreground">Manage your password.</p>
-        <Button variant="outline" className="mt-2" disabled>Change Password</Button>
+        <Button variant="outline" className="mt-2" disabled>
+          Change Password
+        </Button>
       </div>
 
       <Separator />
@@ -48,4 +54,4 @@ export const ProfilePage = () => {
       </Button>
     </div>
   );
-}; 
+};

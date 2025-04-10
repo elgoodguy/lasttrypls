@@ -7,7 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from '../ui/dropdown-menu';
 import { MapPin, PlusCircle, Home } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -30,7 +30,7 @@ export interface AddressSelectorProps {
 
 // Helper to format address concisely
 function formatShortAddress(address: Address | null | undefined): string {
-  if (!address) return "Set Location";
+  if (!address) return 'Set Location';
   let display = address.street_address;
   return display.length > 30 ? display.substring(0, 27) + '...' : display;
 }
@@ -48,7 +48,7 @@ export function AddressSelector({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={cn("px-2 sm:px-4", className)} disabled={isLoading}>
+        <Button variant="ghost" className={cn('px-2 sm:px-4', className)} disabled={isLoading}>
           <MapPin className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
           <span className="truncate text-sm">
             {isLoading ? 'Loading...' : formatShortAddress(activeAddress)}
@@ -67,7 +67,7 @@ export function AddressSelector({
             <DropdownMenuItem
               key={addr.id}
               onClick={() => onAddressSelect(addr.id)}
-              className={cn("cursor-pointer", { "bg-accent": addr.id === activeAddress?.id })}
+              className={cn('cursor-pointer', { 'bg-accent': addr.id === activeAddress?.id })}
             >
               {addr.is_primary && <Home className="mr-2 h-4 w-4" />}
               <span className="truncate">{formatShortAddress(addr)}</span>
@@ -84,7 +84,7 @@ export function AddressSelector({
           Manage Addresses
         </DropdownMenuItem>
         {onSetPrimaryClick && activeAddress && !activeAddress.is_primary && (
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => onSetPrimaryClick(activeAddress.id)}
             className="cursor-pointer"
           >
@@ -95,4 +95,4 @@ export function AddressSelector({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

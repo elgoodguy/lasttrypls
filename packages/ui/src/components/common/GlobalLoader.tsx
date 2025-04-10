@@ -6,4 +6,4 @@ export function GlobalLoader() {
   );
 }
 
-export default GlobalLoader; 
+export default GlobalLoader;

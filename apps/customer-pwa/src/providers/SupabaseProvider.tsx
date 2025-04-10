@@ -19,21 +19,18 @@ interface SupabaseProviderProps {
  * child component that calls useSupabase().
  */
 export const SupabaseProvider: React.FC<SupabaseProviderProps> = ({ children, supabase }) => {
-  return (
-    <SupabaseContext.Provider value={supabase}>
-      {children}
-    </SupabaseContext.Provider>
-  );
+  return <SupabaseContext.Provider value={supabase}>{children}</SupabaseContext.Provider>;
 };
 
 /**
  * Hook that lets you access the Supabase client
  * from any component that is a descendant of SupabaseProvider.
  */
-export const useSupabase = (): SupabaseClient => { // Or SupabaseClient<Database>
+export const useSupabase = (): SupabaseClient => {
+  // Or SupabaseClient<Database>
   const context = useContext(SupabaseContext);
   if (context === null) {
     throw new Error('useSupabase must be used within a SupabaseProvider');
   }
   return context;
-}; 
+};

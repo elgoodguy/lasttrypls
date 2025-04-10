@@ -50,4 +50,4 @@ export interface PlaceResult {
   latitude: number;
   longitude: number;
   google_place_id: string;
-} 
+}

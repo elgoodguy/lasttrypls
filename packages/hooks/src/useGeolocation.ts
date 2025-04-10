@@ -6,7 +6,7 @@ export function useGeolocation() {
   const [isLoading, setIsLoading] = useState(false);
 
   const getCurrentLocation = (): Promise<Location | null> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setIsLoading(true);
 
       if (!navigator.geolocation) {
@@ -17,14 +17,14 @@ export function useGeolocation() {
       }
 
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        position => {
           setIsLoading(false);
           resolve({
             latitude: position.coords.latitude,
-            longitude: position.coords.longitude
+            longitude: position.coords.longitude,
           });
         },
-        (error) => {
+        error => {
           setIsLoading(false);
           switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -47,6 +47,6 @@ export function useGeolocation() {
 
   return {
     getCurrentLocation,
-    isLoading
+    isLoading,
   };
-} 
+}

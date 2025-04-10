@@ -47,9 +47,7 @@ export const getOrders = async (
 ): Promise<Order[]> => {
   const { userId, status, limit, offset } = options;
 
-  let query = supabase
-    .from('orders')
-    .select('*, profiles(*)');
+  let query = supabase.from('orders').select('*, profiles(*)');
 
   if (userId) {
     query = query.eq('user_id', userId);
@@ -86,11 +84,7 @@ export const createOrder = async (
   supabase: SupabaseClient<Database>,
   orderData: OrderInsert
 ): Promise<Order> => {
-  const { data, error } = await supabase
-    .from('orders')
-    .insert(orderData)
-    .select()
-    .single();
+  const { data, error } = await supabase.from('orders').insert(orderData).select().single();
 
   if (error) {
     throw new Error(`Failed to create order: ${error.message}`);
@@ -131,4 +125,4 @@ export const updateOrder = async (
   }
 
   return data as unknown as Order;
-}; 
+};

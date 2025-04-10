@@ -10,4 +10,4 @@ export const WalletPage: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

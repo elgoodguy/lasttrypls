@@ -1,4 +1,4 @@
-// Type definitions will be exported from here 
+// Type definitions will be exported from here
 
 // Exporta tipos compartidos aquí
 export interface UserProfile {
@@ -15,4 +15,4 @@ export enum OrderStatus {
 }
 
 // Re-exporta los tipos generados de Supabase
-export * from './database.types'; 
+export * from './database.types';

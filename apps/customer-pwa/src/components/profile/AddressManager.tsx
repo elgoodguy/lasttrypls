@@ -13,7 +13,8 @@ export const AddressManager: React.FC = () => {
   const supabase = useSupabase();
   const [selectedAddress, setSelectedAddress] = useState<AddressFormData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { addresses, addAddress, updateAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
+  const { addresses, addAddress, updateAddress, deleteAddress, setPrimaryAddress } =
+    useAddressStore();
 
   useQuery({
     queryKey: ['addresses'],
@@ -76,7 +77,7 @@ export const AddressManager: React.FC = () => {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {addresses.map((address) => (
+          {addresses.map(address => (
             <AddressCard
               key={address.id}
               address={address}
@@ -91,4 +92,4 @@ export const AddressManager: React.FC = () => {
       )}
     </div>
   );
-}; 
+};

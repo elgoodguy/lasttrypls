@@ -40,16 +40,17 @@ const initialState = {
 export const useAddressStore = create<AddressState>((set, get) => ({
   ...initialState,
 
-  setLoading: (loading) => set({ isLoading: loading, error: null, isInitialized: false }),
+  setLoading: loading => set({ isLoading: loading, error: null, isInitialized: false }),
 
-  setError: (error) => set({ error: error, isLoading: false, isInitialized: true }),
+  setError: error => set({ error: error, isLoading: false, isInitialized: true }),
 
-  setAddresses: (addresses) => {
+  setAddresses: addresses => {
     const primary = addresses.find(addr => addr.is_primary) || null;
     let currentActive = get().activeAddress;
-    let newActive = currentActive && addresses.some(a => a.id === currentActive?.id)
-      ? currentActive
-      : (primary || addresses[0] || null);
+    let newActive =
+      currentActive && addresses.some(a => a.id === currentActive?.id)
+        ? currentActive
+        : primary || addresses[0] || null;
 
     set({
       addresses: addresses,
@@ -61,7 +62,7 @@ export const useAddressStore = create<AddressState>((set, get) => ({
     });
   },
 
-  setActiveAddress: (address) => {
+  setActiveAddress: address => {
     if (address && !get().addresses.some(a => a.id === address.id)) {
       console.warn("Attempted to set an active address that is not in the store's list.");
       return;
@@ -69,52 +70,54 @@ export const useAddressStore = create<AddressState>((set, get) => ({
     set({ activeAddress: address });
   },
 
-  addOrUpdateAddress: (address) => set((state) => {
-    const index = state.addresses.findIndex(a => a.id === address.id);
-    let newAddresses = [...state.addresses];
-    if (index > -1) {
-      newAddresses[index] = address;
-    } else {
-      newAddresses.push(address);
-    }
+  addOrUpdateAddress: address =>
+    set(state => {
+      const index = state.addresses.findIndex(a => a.id === address.id);
+      let newAddresses = [...state.addresses];
+      if (index > -1) {
+        newAddresses[index] = address;
+      } else {
+        newAddresses.push(address);
+      }
 
-    const newPrimary = newAddresses.find(addr => addr.is_primary) || null;
-    let newActive = state.activeAddress;
+      const newPrimary = newAddresses.find(addr => addr.is_primary) || null;
+      let newActive = state.activeAddress;
 
-    if (address.is_primary) {
-      newActive = address;
-    } else if (!state.activeAddress && newAddresses.length > 0) {
-      newActive = newPrimary || newAddresses[0];
-    }
+      if (address.is_primary) {
+        newActive = address;
+      } else if (!state.activeAddress && newAddresses.length > 0) {
+        newActive = newPrimary || newAddresses[0];
+      }
 
-    return {
-      addresses: newAddresses,
-      primaryAddress: newPrimary,
-      activeAddress: newActive,
-    };
-  }),
+      return {
+        addresses: newAddresses,
+        primaryAddress: newPrimary,
+        activeAddress: newActive,
+      };
+    }),
 
-  removeAddress: (addressId) => set((state) => {
-    const newAddresses = state.addresses.filter(a => a.id !== addressId);
-    const removedAddressWasActive = state.activeAddress?.id === addressId;
-    const removedAddressWasPrimary = state.primaryAddress?.id === addressId;
+  removeAddress: addressId =>
+    set(state => {
+      const newAddresses = state.addresses.filter(a => a.id !== addressId);
+      const removedAddressWasActive = state.activeAddress?.id === addressId;
+      const removedAddressWasPrimary = state.primaryAddress?.id === addressId;
 
-    let newPrimary = removedAddressWasPrimary ? null : state.primaryAddress;
-    if (!newPrimary && !removedAddressWasPrimary) {
-      newPrimary = newAddresses.find(addr => addr.is_primary) || null;
-    }
+      let newPrimary = removedAddressWasPrimary ? null : state.primaryAddress;
+      if (!newPrimary && !removedAddressWasPrimary) {
+        newPrimary = newAddresses.find(addr => addr.is_primary) || null;
+      }
 
-    let newActive = state.activeAddress;
-    if (removedAddressWasActive) {
-      newActive = newPrimary || newAddresses[0] || null;
-    }
+      let newActive = state.activeAddress;
+      if (removedAddressWasActive) {
+        newActive = newPrimary || newAddresses[0] || null;
+      }
 
-    return {
-      addresses: newAddresses,
-      primaryAddress: newPrimary,
-      activeAddress: newActive,
-    };
-  }),
+      return {
+        addresses: newAddresses,
+        primaryAddress: newPrimary,
+        activeAddress: newActive,
+      };
+    }),
 
   resetStore: () => set(initialState),
 
@@ -125,42 +128,42 @@ export const useAddressStore = create<AddressState>((set, get) => ({
       user_id: '', // This will be set by the backend
       is_primary: get().addresses.length === 0,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
-    set((state) => ({
-      addresses: [...state.addresses, newAddress]
+    set(state => ({
+      addresses: [...state.addresses, newAddress],
     }));
   },
 
   updateAddress: async (id: string, address: AddressFormData) => {
-    set((state) => ({
-      addresses: state.addresses.map((a) =>
+    set(state => ({
+      addresses: state.addresses.map(a =>
         a.id === id
           ? {
               ...a,
               ...address,
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             }
           : a
-      )
+      ),
     }));
   },
 
   deleteAddress: async (id: string) => {
-    set((state) => ({
-      addresses: state.addresses.filter((a) => a.id !== id)
+    set(state => ({
+      addresses: state.addresses.filter(a => a.id !== id),
     }));
   },
 
   setPrimaryAddress: async (id: string) => {
-    set((state) => ({
-      addresses: state.addresses.map((a) => ({
+    set(state => ({
+      addresses: state.addresses.map(a => ({
         ...a,
         is_primary: a.id === id,
-        updated_at: new Date().toISOString()
-      }))
+        updated_at: new Date().toISOString(),
+      })),
     }));
-  }
+  },
 }));
 
 export const useInitializeAddressStore = () => {
@@ -172,21 +175,21 @@ export const useInitializeAddressStore = () => {
   useEffect(() => {
     if (user && !isInitialized) {
       setLoading(true);
-      console.log("Initializing address store for user:", user.id);
+      console.log('Initializing address store for user:', user.id);
 
       getAddresses(supabase)
         .then(data => {
-          console.log("Fetched addresses for store initialization:", data);
+          console.log('Fetched addresses for store initialization:', data);
           setAddresses(data || []); // Asegurarnos de que siempre sea un array
           queryClient.setQueryData(['addresses', user.id], data);
         })
         .catch(err => {
-          console.error("Failed to initialize address store:", err);
+          console.error('Failed to initialize address store:', err);
           setError(err);
         });
     } else if (!user && isInitialized) {
-      console.log("Resetting address store due to user logout");
+      console.log('Resetting address store due to user logout');
       resetStore();
     }
   }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);
-}; 
+};
