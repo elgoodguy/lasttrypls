@@ -2,10 +2,12 @@
   "extends": "@repo/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true
+    "baseUrl": ".",
+    "paths": {
+      "@tanstack/react-query": ["./node_modules/@tanstack/react-query"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 } 

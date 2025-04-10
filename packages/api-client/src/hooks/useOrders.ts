@@ -3,6 +3,11 @@
 
 import { OrderStatus } from '@repo/types';
 import { createSupabaseClient } from '../index';
+// @ts-ignore - React Query is an optional dependency
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '@repo/types';
+import { getOrders, createOrder, updateOrder, type Order, type OrderInsert, type OrderUpdate, type GetOrdersOptions } from '../orders/queries';
 
 export type UseOrdersOptions = {
   supabaseUrl: string;
@@ -40,16 +45,51 @@ export const useOrders = async ({
   return data || [];
 };
 
-// Versión para React Query
-/*
+/**
+ * Hook para obtener órdenes con React Query
+ * @param supabase - Instancia del cliente Supabase
+ * @param options - Opciones de filtrado
+ * @returns Query result con las órdenes
+ */
 export const useOrdersQuery = (
-  { supabaseUrl, supabaseKey, userId, status }: UseOrdersOptions,
-  queryOptions = {}
+  supabase: SupabaseClient<Database>,
+  options: GetOrdersOptions = {}
 ) => {
   return useQuery({
-    queryKey: ['orders', { userId, status }],
-    queryFn: () => useOrders({ supabaseUrl, supabaseKey, userId, status }),
-    ...queryOptions,
+    queryKey: ['orders', options],
+    queryFn: () => getOrders(supabase, options),
   });
 };
-*/ 
+
+/**
+ * Hook para crear una nueva orden
+ * @param supabase - Instancia del cliente Supabase
+ * @returns Mutation result para crear órdenes
+ */
+export const useCreateOrder = (supabase: SupabaseClient<Database>) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (orderData: OrderInsert) => createOrder(supabase, orderData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
+  });
+};
+
+/**
+ * Hook para actualizar una orden existente
+ * @param supabase - Instancia del cliente Supabase
+ * @returns Mutation result para actualizar órdenes
+ */
+export const useUpdateOrder = (supabase: SupabaseClient<Database>) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, updates }: { orderId: string; updates: OrderUpdate }) =>
+      updateOrder(supabase, orderId, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
+  });
+}; 
