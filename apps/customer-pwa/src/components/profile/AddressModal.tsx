@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@repo/ui';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@repo/ui/components/ui/dialog';
 import { AddressForm } from './AddressForm';
 import { AddressFormData } from '@/lib/validations/address';
 

@@ -1,5 +1,6 @@
 import { ProfileForm } from '../components/profile/ProfileForm';
-import { Button, Separator } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
+import { Separator } from '@repo/ui/components/ui/separator';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
 import { AddressManager } from '../components/profile/AddressManager';

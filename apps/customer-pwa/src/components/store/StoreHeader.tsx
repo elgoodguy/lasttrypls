@@ -1,6 +1,7 @@
 import { StoreDetails } from '@repo/api-client';
 import { Clock, Heart, Percent, Star, Truck } from 'lucide-react';
-import { Badge, StoreStatusIndicator } from '@repo/ui';
+import { Badge } from '@repo/ui/components/ui/badge';
+import { StoreStatusIndicator } from '@repo/ui/components/store/StoreStatusIndicator';
 
 interface StoreHeaderProps {
   store: StoreDetails & {

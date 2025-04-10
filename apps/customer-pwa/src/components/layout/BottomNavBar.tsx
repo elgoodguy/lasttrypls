@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BottomNavBar as UIBottomNavBar } from '@repo/ui';
+import { BottomNavBar as UIBottomNavBar } from '@repo/ui/components/navigation/BottomNavBar';
 import { useAuth } from '@/providers/AuthProvider';
 import { Home, Search, Package, User } from 'lucide-react';
 

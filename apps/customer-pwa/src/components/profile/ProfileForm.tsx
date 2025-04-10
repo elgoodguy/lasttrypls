@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Button, Input, Label } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
+import { Input } from '@repo/ui/components/ui/input';
+import { Label } from '@repo/ui/components/ui/label';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { getProfile, updateProfile, Profile, ProfileUpdate } from '@repo/api-client';
@@ -99,20 +101,27 @@ export const ProfileForm: React.FC = () => {
         <Label htmlFor="fullName">Full Name</Label>
         <Input
           id="fullName"
-          {...register('fullName')}
-          placeholder="Your full name"
-          disabled={isUpdatingProfile}
+          {...register('fullName', { required: 'Full name is required' })}
+          placeholder="Enter your full name"
+          className={errors.fullName ? 'border-red-500' : ''}
         />
-        {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
+        {errors.fullName && (
+          <p className="text-sm text-red-500">{errors.fullName.message}</p>
+        )}
       </div>
 
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" {...register('email')} disabled />
-        <p className="text-sm text-muted-foreground">Email cannot be changed here.</p>
+        <Input
+          id="email"
+          type="email"
+          value={user?.email || ''}
+          disabled
+          placeholder="Your email address"
+        />
       </div>
 
-      <Button type="submit" disabled={isUpdatingProfile || !isDirty}>
+      <Button type="submit" disabled={!isDirty || isUpdatingProfile}>
         {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
       </Button>
     </form>

@@ -19,6 +19,17 @@ export interface OrderInsert {
   store_id: string;
   status: OrderStatus;
   total_amount: number;
+  contact_name: string;
+  contact_phone: string;
+  delivery_address: string;
+  delivery_fee_amount: number;
+  items: any[]; // TODO: Add proper type for order items
+  payment_method: 'card' | 'cash' | 'terminal';
+  order_number: string;
+  subtotal_amount: number;
+  cancellation_reason?: string | null;
+  cashback_discount_amount?: number | null;
+  cashback_earned_amount?: number | null;
   // Add other fields as needed
 }
 

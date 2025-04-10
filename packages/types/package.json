@@ -10,13 +10,10 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./database": {
-      "types": "./src/database.types.ts"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist --metafile --sourcemap",
+    "build": "tsup src/index.ts --format esm,cjs --out-dir dist --metafile --sourcemap && pnpm tsc --project tsconfig.build.json",
     "dev": "pnpm build --watch",
     "lint": "eslint src/ --ext .ts --report-unused-disable-directives --max-warnings 0",
     "clean": "rimraf dist .turbo"

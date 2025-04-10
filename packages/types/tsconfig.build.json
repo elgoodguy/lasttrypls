@@ -1,0 +1,13 @@
+// packages/types/tsconfig.build.json
+{
+  "extends": "./tsconfig.json", // Hereda de tu tsconfig principal
+  "compilerOptions": {
+    "noEmit": false,          // Permitir emitir archivos
+    "declaration": true,      // Generar .d.ts
+    "emitDeclarationOnly": true, // SOLO generar .d.ts, no .js
+    "outDir": "./dist",         // Ponerlos en la carpeta dist
+    "rootDir": "./src"          // Mirar en la carpeta src
+  },
+  "include": ["src/**/*.ts"],   // Incluir todos los .ts de src
+  "exclude": ["node_modules", "dist"] // Excluir node_modules y dist
+}

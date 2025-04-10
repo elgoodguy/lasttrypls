@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
 
 export const NotFoundPage: React.FC = () => {
   return (

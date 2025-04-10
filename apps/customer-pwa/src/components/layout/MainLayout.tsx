@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { TopNavBar } from './TopNavBar';
 import { BottomNavBar } from './BottomNavBar';
-import { Button } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
 import { useAuth } from '@/providers/AuthProvider';
 import { useInitializeAddressStore } from '@/store/addressStore';
 

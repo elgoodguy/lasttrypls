@@ -7,9 +7,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@repo/ui/components/ui/dialog';
-import { Button } from '@repo/ui';
-import { Input } from '@repo/ui';
-import { Label } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
+import { Input } from '@repo/ui/components/ui/input';
+import { Label } from '@repo/ui/components/ui/label';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { Provider } from '@supabase/supabase-js';

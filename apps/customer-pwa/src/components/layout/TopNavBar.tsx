@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from '@repo/ui';
+import { Button } from '@repo/ui/components/ui/button';
 import { useAuth } from '@/providers/AuthProvider';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui';
+} from '@repo/ui/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { MapPin, LogOut, User as UserIcon, Bell, PlusCircle, Home, Star } from 'lucide-react';
