@@ -21,7 +21,7 @@
     "build": "tsup src/index.ts src/hooks/index.ts --format esm,cjs --dts --external @supabase/supabase-js --external @repo/types --external @tanstack/react-query --out-dir dist --metafile --sourcemap",
     "dev": "pnpm build --watch",
     "lint": "eslint src/ --ext .ts --report-unused-disable-directives --max-warnings 0",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rimraf dist .turbo"
   },
   "dependencies": {
     "@repo/types": "workspace:*",

@@ -9,7 +9,7 @@
     "lint": "eslint \"**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint \"**/*.{ts,tsx}\" --fix",
     "preview": "vite preview",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rimraf dist .turbo"
   },
   "dependencies": {
     "react": "^18.2.0",
