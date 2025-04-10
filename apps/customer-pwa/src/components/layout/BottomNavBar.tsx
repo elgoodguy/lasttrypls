@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BottomNavBar as UIBottomNavBar } from '@repo/ui/components/navigation/BottomNavBar';
 import { useAuth } from '@/providers/AuthProvider';
-import { Home, Search, Package, Wallet, Heart } from 'lucide-react';
+import { Home, Package, Wallet, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 // Define navigation items with Lucide icons

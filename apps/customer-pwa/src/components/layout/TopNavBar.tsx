@@ -44,7 +44,7 @@ export const TopNavBar: React.FC = () => {
     navigate('/');
   };
 
-  const handleSelectAddress = (addressId: string) => {
+  const handleSelectAddress = (_addressId: string) => {
     // Implementar lógica para seleccionar dirección
   };
 

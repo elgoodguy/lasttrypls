@@ -1,39 +1,20 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { initializeI18n } from '@repo/i18n';
 
-// Importar los JSON directamente - Vite maneja esto
-// Asegúrate que las rutas sean correctas RELATIVAS a este archivo (i18n.ts)
-import enTranslation from '../public/locales/en/translation.json';
-import esTranslation from '../public/locales/es/translation.json';
+const i18n = initializeI18n({
+  appName: 'customer-pwa',
+  debug: true,
+  defaultLanguage: 'en',
+  localStorageKey: 'i18nextLng'
+});
 
-const resources = {
-  en: {
-    translation: enTranslation,
-  },
-  es: {
-    translation: esTranslation,
-  },
-};
+// Para debug
+i18n.on('initialized', () => {
+  console.log('i18n initialized with resources:', i18n.options.resources);
+});
 
-i18n
-  .use(LanguageDetector) // Detecta idioma
-  .use(initReactI18next) // Vincula con React
-  .init({
-    resources, // Tus traducciones importadas
-    fallbackLng: 'en', // Idioma por defecto si el detectado no existe
-    debug: import.meta.env.DEV, // Logs en consola durante desarrollo
-    interpolation: {
-      escapeValue: false, // React ya hace el escape
-    },
-    detection: {
-      // Orden de detección: localStorage primero, luego navegador
-      order: ['localStorage', 'navigator'],
-      // Key para guardar en localStorage
-      lookupLocalStorage: 'i18nextLng-customer-pwa', // Nombre específico para evitar colisiones
-      // Cachés a usar
-      caches: ['localStorage'],
-    },
-  });
+i18n.on('languageChanged', (lng) => {
+  console.log('Language changed to:', lng);
+  console.log('Current translations:', i18n.getResourceBundle(lng, 'translation'));
+});
 
 export default i18n; 

@@ -12,6 +12,7 @@ import { MapPin, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useGeolocation, useGooglePlacesAutocomplete, useGoogleMapsScript } from '@repo/hooks';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface Prediction {
   place_id: string;
@@ -45,6 +46,7 @@ export function AddressForm({
   defaultValues,
   isForceModal = false,
 }: AddressFormProps) {
+  const { t } = useTranslation();
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { getCurrentLocation, isLoading: isLoadingLocation } = useGeolocation();
   const {
@@ -137,7 +139,7 @@ export function AddressForm({
   };
 
   if (googleMapsError) {
-    toast.error('Error al cargar Google Maps');
+    toast.error(t('address.googleMapsError'));
   }
 
   return (
@@ -145,21 +147,21 @@ export function AddressForm({
       <Dialog open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Buscar dirección</DialogTitle>
+            <DialogTitle>{t('address.searchTitle')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder={googleMapsError ? 'Google Maps no disponible' : 'Buscar dirección...'}
+                placeholder={googleMapsError ? t('address.googleMapsNotAvailable') : t('address.searchPlaceholder')}
                 className="w-full pl-8 p-2 border rounded-md bg-white text-foreground"
                 onChange={e => searchPlaces(e.target.value)}
                 disabled={!isGoogleMapsLoaded || !!googleMapsError}
               />
             </div>
             {isLoadingSearch ? (
-              <div className="text-center py-4">Buscando...</div>
+              <div className="text-center py-4">{t('common.searching')}</div>
             ) : (
               <div className="space-y-2">
                 {predictions.map((prediction: Prediction) => (
@@ -187,7 +189,7 @@ export function AddressForm({
             disabled={!isGoogleMapsLoaded || !!googleMapsError}
           >
             <Search className="mr-2 h-4 w-4" />
-            Buscar dirección
+            {t('address.searchAddress')}
           </Button>
           <Button
             type="button"
@@ -197,7 +199,7 @@ export function AddressForm({
             disabled={isLoadingLocation || !isGoogleMapsLoaded || !!googleMapsError}
           >
             <MapPin className="mr-2 h-4 w-4" />
-            {isLoadingLocation ? 'Obteniendo...' : 'Usar mi ubicación'}
+            {isLoadingLocation ? t('address.gettingLocation') : t('address.useMyLocation')}
           </Button>
         </div>
 

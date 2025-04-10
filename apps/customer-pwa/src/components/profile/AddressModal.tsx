@@ -7,6 +7,7 @@ import {
 } from '@repo/ui/components/ui/dialog';
 import { AddressForm } from './AddressForm';
 import { AddressFormData } from '@/lib/validations/address';
+import { useTranslation } from 'react-i18next';
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -25,15 +26,19 @@ export function AddressModal({
   addressToEdit = null,
   isForceModal = false,
 }: AddressModalProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{addressToEdit ? 'Editar dirección' : 'Agregar dirección'}</DialogTitle>
+          <DialogTitle>
+            {addressToEdit ? t('address.editTitle') : t('address.addTitle')}
+          </DialogTitle>
           <DialogDescription>
             {isForceModal
-              ? 'Para continuar, necesitamos que agregues una dirección de entrega.'
-              : 'Ingresa los detalles de tu dirección de entrega.'}
+              ? t('address.forceModalDescription')
+              : t('address.modalDescription')}
           </DialogDescription>
         </DialogHeader>
         <AddressForm
