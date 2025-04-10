@@ -60,7 +60,7 @@ export const getStoresForHome = async (
 ): Promise<Store[]> => {
   let query = supabase
     .from('stores')
-    .select(`
+    .select<string, Store>(`
       *,
       store_categories!inner (
         category_id
@@ -73,7 +73,7 @@ export const getStoresForHome = async (
     `)
     .eq('is_active', true)
     .eq('cashback_rules.is_active', true)
-    .order('cashback_rules.percentage', { ascending: false });
+    .order('created_at', { ascending: false });
 
   // Apply postal code filter if provided
   if (filters.postalCode) {
@@ -85,24 +85,35 @@ export const getStoresForHome = async (
     query = query.eq('store_categories.category_id', filters.categoryId);
   }
 
-  // Apply ordering
-  query = query.order('created_at', { ascending: false });
-
-  const { data: stores, error } = await query;
+  const { data, error } = await query;
 
   if (error) {
     console.error('Error fetching stores for home:', error);
     throw error;
   }
 
+  if (!data) {
+    return [];
+  }
+
+  // Sort stores by cashback percentage (descending) and then by created_at (descending)
+  const sortedStores = [...data].sort((a, b) => {
+    const aPercentage = a.cashback_rules?.[0]?.percentage || 0;
+    const bPercentage = b.cashback_rules?.[0]?.percentage || 0;
+    if (aPercentage !== bPercentage) {
+      return bPercentage - aPercentage; // Descending order
+    }
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // Descending order
+  });
+
   // Log the number of stores found for debugging
   console.log(
-    `Found ${stores?.length || 0} stores` +
+    `Found ${sortedStores.length} stores` +
     `${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}` +
     `${filters.categoryId ? ` in category ${filters.categoryId}` : ''}`
   );
 
-  return (stores as unknown as Store[]) || [];
+  return sortedStores;
 };
 
 /**
