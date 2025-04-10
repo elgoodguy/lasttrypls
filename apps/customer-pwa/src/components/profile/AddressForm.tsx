@@ -26,6 +26,12 @@ const getAddressComponent = (
   return component?.long_name || '';
 };
 
+const getStreetAddress = (components: google.maps.GeocoderAddressComponent[] = []): string => {
+  const streetNumber = getAddressComponent(components, 'street_number');
+  const route = getAddressComponent(components, 'route');
+  return streetNumber ? `${route} ${streetNumber}` : route;
+};
+
 interface AddressFormProps {
   onSubmit: (data: AddressFormData) => void;
   isLoading?: boolean;
@@ -92,7 +98,7 @@ export function AddressForm({
           };
 
           const result = {
-            street_address: getAddressComponent(place.address_components, 'route'),
+            street_address: getStreetAddress(place.address_components),
             city: getAddressComponent(place.address_components, 'locality'),
             neighborhood: getAddressComponent(place.address_components, 'sublocality'),
             postal_code: getAddressComponent(place.address_components, 'postal_code'),
