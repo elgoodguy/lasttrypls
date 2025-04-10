@@ -19,6 +19,7 @@ export * from './components/ui/badge';
 export * from './components/ui/category-chip';
 export * from './components/ui/store-card';
 export * from './components/ui/tooltip';
+export * from './components/ui/theme-toggle';
 export * from './components/store/StoreStatusIndicator';
 export * from './components/common/GlobalLoader';
 export * from './components/navigation/BottomNavBar';

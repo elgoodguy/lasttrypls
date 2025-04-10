@@ -25,6 +25,8 @@ import {
   AddressInsert,
   Address,
 } from '@repo/api-client';
+import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
+import { useTheme } from '@/providers/ThemeProvider';
 
 // Helper to format address concisely
 const formatShortAddress = (address: Address | null | undefined): string => {
@@ -38,6 +40,7 @@ export const TopNavBar: React.FC = () => {
   const { user, signOut, isLoading: isLoadingAuth } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   // Get address state from Zustand Store
   const {
@@ -182,6 +185,9 @@ export const TopNavBar: React.FC = () => {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* Theme Toggle */}
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+
             {/* Notifications */}
             {user && (
               <Button variant="ghost" size="icon" asChild>

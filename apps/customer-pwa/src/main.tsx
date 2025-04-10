@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createSupabaseClient } from '@repo/api-client';
 import { SupabaseProvider } from './providers/SupabaseProvider';
 import { AuthProvider } from './providers/AuthProvider';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 // 1. Get Supabase URL and Key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -37,13 +38,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {/* Wrap the app with QueryClientProvider */}
     <QueryClientProvider client={queryClient}>
-      {/* Wrap the app with a Supabase Provider (for context) */}
-      <SupabaseProvider supabase={supabase}>
-        {/* Wrap App with AuthProvider */}
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </SupabaseProvider>
+      {/* Wrap the app with ThemeProvider */}
+      <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
+        {/* Wrap the app with a Supabase Provider (for context) */}
+        <SupabaseProvider supabase={supabase}>
+          {/* Wrap App with AuthProvider */}
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </SupabaseProvider>
+      </ThemeProvider>
       {/* Add React Query DevTools */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
