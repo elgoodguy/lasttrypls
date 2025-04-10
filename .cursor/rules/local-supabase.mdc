@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# We are using Local-Supabase DB with Docker
+
+- Use docker commands to get data from the DB

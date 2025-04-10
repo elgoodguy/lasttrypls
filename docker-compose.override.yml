@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  db:
+    volumes:
+      - persistent_db:/var/lib/postgresql/data
+
+volumes:
+  persistent_db:
+    name: supabase_persistent_db 

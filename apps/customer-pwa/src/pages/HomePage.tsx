@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
-import { getProductCategories, getStoresForHome, ProductCategory, Store } from '@repo/api-client';
+import { getProductCategories, getStoresForHome, ProductCategoryType, Store } from '@repo/api-client';
 import { CategoryChip, StoreCard } from '@repo/ui';
 import { Input } from '@repo/ui';
 import { Search } from 'lucide-react';
@@ -28,7 +28,7 @@ export const HomePage: React.FC = () => {
   const activePostalCode = activeAddress?.postal_code;
 
   // --- Data Fetching ---
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<ProductCategory[]>({
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<ProductCategoryType[]>({
     queryKey: ['productCategories'],
     queryFn: () => getProductCategories(supabase),
     enabled: !!activePostalCode && !isLoadingAddressStore,

@@ -27,7 +27,7 @@ function App() {
     isInitialized: isAddressStoreInitialized,
   } = useAddressStore();
 
-  // Initialize address store
+  // Initialize address store only when there is a user
   useInitializeAddressStore();
 
   // Show loader if session is loading OR if there's a user but the address store hasn't finished its initial load yet
@@ -35,7 +35,7 @@ function App() {
 
   // Show force address modal if:
   // - Not loading (session loaded and address store initialized)
-  // - User exists
+  // - User exists and is authenticated
   // - No error loading addresses
   // - No addresses exist
   const requiresAddress = !showLoader && !!user && !addressError && addresses.length === 0;

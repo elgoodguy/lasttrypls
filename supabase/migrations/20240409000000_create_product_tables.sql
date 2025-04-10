@@ -27,6 +27,7 @@ create table public.store_products (
   product_id uuid not null references public.products(id) on delete cascade,
   store_id uuid not null references public.stores(id) on delete cascade,
   is_available_in_store boolean default true not null,
+  price_override numeric check (price_override >= 0),
   created_at timestamptz default timezone('utc'::text, now()) not null,
   primary key (product_id, store_id)
 );

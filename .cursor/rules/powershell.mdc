@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# We are using Windows Powershell
+
+- Always try Powershell commands first
+- En PowerShell se usa ; en lugar de &&:

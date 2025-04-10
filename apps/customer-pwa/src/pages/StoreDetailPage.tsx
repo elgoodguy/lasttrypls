@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getStoreDetailsById, type StoreDetails } from '@repo/api-client';
+import { getStoreDetailsById, getAvailableProductsForStore, type StoreDetails } from '@repo/api-client';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { StoreHeader } from '@/components/store/StoreHeader';
+import { ProductCard } from '@repo/ui';
+import { Box } from '@mui/material';
 
 export default function StoreDetailPage() {
   const { storeId } = useParams();
@@ -10,14 +12,29 @@ export default function StoreDetailPage() {
 
   const {
     data: storeDetails,
-    isLoading,
-    isError,
-    error,
+    isLoading: isLoadingStore,
+    isError: isStoreError,
+    error: storeError,
   } = useQuery<StoreDetails | null>({
     queryKey: ['storeDetails', storeId],
     queryFn: () => getStoreDetailsById(supabase, storeId!),
     enabled: !!storeId,
   });
+
+  const {
+    data: products,
+    isLoading: isLoadingProducts,
+    isError: isProductsError,
+    error: productsError,
+  } = useQuery({
+    queryKey: ['storeProducts', storeId],
+    queryFn: () => getAvailableProductsForStore(supabase, storeId!),
+    enabled: !!storeId,
+  });
+
+  const isLoading = isLoadingStore || isLoadingProducts;
+  const isError = isStoreError || isProductsError;
+  const error = storeError || productsError;
 
   if (isLoading) {
     return (
@@ -36,7 +53,7 @@ export default function StoreDetailPage() {
     );
   }
 
-  if (isError) {
+  if (isError && error) {
     return (
       <div className="p-4 text-center text-destructive">
         <p>Error al cargar los detalles de la tienda:</p>
@@ -56,6 +73,15 @@ export default function StoreDetailPage() {
   return (
     <div>
       <StoreHeader store={storeDetails} />
+      <Box p={2}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products?.map((product) => (
+            <div key={product.id}>
+              <ProductCard product={product} storeId={storeId!} />
+            </div>
+          ))}
+        </div>
+      </Box>
     </div>
   );
 }

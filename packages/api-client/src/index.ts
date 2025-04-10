@@ -15,14 +15,18 @@ export const createSupabaseClient = (url: string, anonKey: string) => {
 // Export core API functions
 export * from './profiles/queries';
 export * from './addresses/queries';
-export * from './categories/queries';
+export { getProductCategories } from './categories/queries';
 export * from './stores/queries';
 
 // Export orders queries
 export * from './orders/queries';
 
+// Export product queries
+export { getAvailableProductsForStore, getProductCategoryAssignments } from './products/queries';
+
 // Export common types
 export type { Database };
+export type { Product, ProductCategory as ProductCategoryType } from './types/product';
 
 // Note: React hooks are exported separately through the hooks entry point
 // They are not included in the main bundle to avoid React dependencies
