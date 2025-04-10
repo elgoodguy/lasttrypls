@@ -11,9 +11,11 @@ export const enTranslations: TranslationResources = {
     edit: 'Edit',
     saving: 'Saving...',
     confirm: 'Confirm',
+    continue: 'Continue',
     min: 'Min.',
     search: 'Search stores or products...',
-    hi: 'Hi, there!'
+    hi: 'Hi, there!',
+    back: 'Back'
   },
   navigation: {
     home: 'Home',
@@ -42,6 +44,9 @@ export const enTranslations: TranslationResources = {
     forceModalDescription: 'Please add an address to continue',
     deliverTo: 'Deliver to:',
     loading: 'Loading addresses...',
+    googleMapsError: 'Google Maps service is not available',
+    locationError: 'Error getting location',
+    manualEntryRequired: 'Search and geolocation features are not available. Please enter your address manually.',
     details: {
       street: 'Street and number',
       interior: 'Interior number (optional)',
@@ -73,5 +78,50 @@ export const enTranslations: TranslationResources = {
     prefsDescription: 'Set your language and theme',
     setLanguage: 'Language',
     setTheme: 'Theme'
+  },
+  store: {
+    nearLocation: 'Stores near {location}',
+    categories: {
+      all: 'All',
+      restaurants: 'Restaurants',
+      cafes: 'Cafes',
+      food: 'Food'
+    },
+    status: {
+      open: 'Open',
+      closed: 'Closed',
+      schedule: 'Schedule'
+    },
+    minOrder: 'Min. Order',
+    noMinimum: 'No minimum',
+    deliveryTime: 'min',
+    rating: 'Rating',
+    reviews: 'reviews',
+    cashback: 'Cashback',
+    free: 'Free'
+  },
+  wallet: {
+    title: 'My Wallet',
+    empty: 'No payment methods configured'
+  },
+  favorites: {
+    title: 'My Favorites',
+    empty: 'No favorites yet'
+  },
+  orders: {
+    title: 'My Orders',
+    empty: 'No recent orders'
+  },
+  error: {
+    notFound: {
+      title: '404',
+      description: 'Page not found',
+      action: 'Back to home'
+    }
+  },
+  product: {
+    description: {
+      classicBurger: 'Delicious burger with beef, lettuce, tomato and cheese'
+    }
   }
 }; 

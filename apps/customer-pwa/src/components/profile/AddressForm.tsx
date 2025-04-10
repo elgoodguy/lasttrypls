@@ -205,20 +205,19 @@ export function AddressForm({
 
         {googleMapsError && (
           <div className="text-sm text-yellow-600 bg-yellow-50 p-3 rounded-md">
-            Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu
-            dirección manualmente.
+            {t('address.manualEntryRequired')}
           </div>
         )}
 
         <div className="grid gap-2">
           <label htmlFor="street_address" className="text-sm font-medium">
-            Dirección
+            {t('address.details.street')}
           </label>
           <input
             {...form.register('street_address')}
             type="text"
             id="street_address"
-            placeholder="Calle y número"
+            placeholder={t('address.details.street')}
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.street_address && (
@@ -230,13 +229,13 @@ export function AddressForm({
 
         <div className="grid gap-2">
           <label htmlFor="internal_number" className="text-sm font-medium">
-            Número interior (opcional)
+            {t('address.details.interior')}
           </label>
           <input
             {...form.register('internal_number')}
             type="text"
             id="internal_number"
-            placeholder="Ej: 4B"
+            placeholder={t('address.details.example')}
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.internal_number && (
@@ -248,13 +247,13 @@ export function AddressForm({
 
         <div className="grid gap-2">
           <label htmlFor="neighborhood" className="text-sm font-medium">
-            Colonia
+            {t('address.details.neighborhood')}
           </label>
           <input
             {...form.register('neighborhood')}
             type="text"
             id="neighborhood"
-            placeholder="Nombre de la colonia"
+            placeholder={t('address.details.neighborhood')}
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.neighborhood && (
@@ -266,13 +265,13 @@ export function AddressForm({
 
         <div className="grid gap-2">
           <label htmlFor="city" className="text-sm font-medium">
-            Ciudad
+            {t('address.details.city')}
           </label>
           <input
             {...form.register('city')}
             type="text"
             id="city"
-            placeholder="Ciudad"
+            placeholder={t('address.details.city')}
             className="w-full p-2 border rounded-md bg-white text-foreground"
           />
           {form.formState.errors.city && (
@@ -282,7 +281,7 @@ export function AddressForm({
 
         <div className="grid gap-2">
           <label htmlFor="postal_code" className="text-sm font-medium">
-            Código Postal
+            {t('address.details.zipCode')}
           </label>
           <input
             {...form.register('postal_code')}
@@ -300,12 +299,12 @@ export function AddressForm({
 
         <div className="grid gap-2">
           <label htmlFor="delivery_instructions" className="text-sm font-medium">
-            Instrucciones de entrega (opcional)
+            {t('address.details.instructions')}
           </label>
           <textarea
             {...form.register('delivery_instructions')}
             id="delivery_instructions"
-            placeholder="Ej: Tocar el timbre dos veces"
+            placeholder={t('address.details.example')}
             className="w-full p-2 border rounded-md bg-white text-foreground"
             rows={2}
           />
@@ -317,7 +316,7 @@ export function AddressForm({
         </div>
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Guardando...' : isForceModal ? 'Continuar' : 'Guardar dirección'}
+          {isLoading ? t('common.saving') : isForceModal ? t('common.continue') : t('address.save')}
         </Button>
       </form>
     </>

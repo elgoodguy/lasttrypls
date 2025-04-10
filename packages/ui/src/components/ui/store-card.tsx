@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from './card';
 import { Badge } from './badge';
 import { Clock, Truck, ShoppingCart, Percent } from 'lucide-react';
 import { StoreStatusIndicator } from '../store/StoreStatusIndicator';
+import { useTranslation } from 'react-i18next';
 
 // Define the data structure the card expects
 export interface StoreCardData {
@@ -27,10 +28,12 @@ export interface StoreCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
   ({ className, store, ...props }, ref) => {
+    const { t } = useTranslation();
+
     // Format delivery fee nicely
     const formatFee = (fee: number | null) => {
       if (fee === null || fee === undefined) return 'N/A';
-      if (fee === 0) return 'Free';
+      if (fee === 0) return t('common.free');
       return `$${fee.toFixed(2)}`;
     };
 
@@ -70,7 +73,7 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
               <Clock className="mr-1 h-4 w-4" />
               <span>
                 {store.estimated_delivery_time_minutes
-                  ? `${store.estimated_delivery_time_minutes} min`
+                  ? `${store.estimated_delivery_time_minutes} ${t('store.deliveryTime')}`
                   : 'N/A'}
               </span>
             </div>
@@ -84,8 +87,8 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {store.minimum_order_amount
-                ? `Min. $${store.minimum_order_amount.toFixed(2)}`
-                : 'No minimum'}
+                ? `${t('store.minOrder')} $${store.minimum_order_amount.toFixed(2)}`
+                : t('store.noMinimum')}
             </span>
             {/* Display Cashback Badge if applicable */}
             {store.cashback_rules && store.cashback_rules.length > 0 && (
@@ -94,7 +97,7 @@ const StoreCard = React.forwardRef<HTMLDivElement, StoreCardProps>(
                 className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
               >
                 <Percent className="mr-1 h-3 w-3" />
-                {Math.max(...store.cashback_rules.map(rule => rule.percentage))}% Cashback
+                {Math.max(...store.cashback_rules.map(rule => rule.percentage))}% {t('store.cashback')}
               </Badge>
             )}
           </div>

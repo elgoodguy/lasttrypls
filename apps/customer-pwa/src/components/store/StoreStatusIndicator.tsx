@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 type StoreStatus = 'open' | 'scheduled' | 'closed';
 
@@ -13,10 +14,12 @@ export function StoreStatusIndicator({
   showLabel = false,
   className,
 }: StoreStatusIndicatorProps) {
+  const { t } = useTranslation();
+  
   const statusConfig = {
-    open: { color: 'bg-success', label: 'Abierto' },
-    scheduled: { color: 'bg-warning', label: 'Programar' },
-    closed: { color: 'bg-destructive', label: 'Cerrado' },
+    open: { color: 'bg-success', label: t('store.status.open') },
+    scheduled: { color: 'bg-warning', label: t('store.status.schedule') },
+    closed: { color: 'bg-destructive', label: t('store.status.closed') },
   };
 
   return (

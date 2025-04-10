@@ -2,6 +2,7 @@ import { StoreDetails } from '@repo/api-client';
 import { Clock, Heart, Percent, Star, Truck } from 'lucide-react';
 import { Badge } from '@repo/ui/components/ui/badge';
 import { StoreStatusIndicator } from '@repo/ui/components/store/StoreStatusIndicator';
+import { useTranslation } from 'react-i18next';
 
 interface StoreHeaderProps {
   store: StoreDetails & {
@@ -14,6 +15,7 @@ interface StoreHeaderProps {
 }
 
 export function StoreHeader({ store }: StoreHeaderProps) {
+  const { t } = useTranslation();
   // TODO: Implement proper isOpen logic based on operating_hours
   const isOpen = store.is_active;
 
@@ -41,7 +43,7 @@ export function StoreHeader({ store }: StoreHeaderProps) {
         {store.estimated_delivery_time_minutes && (
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            <span>{store.estimated_delivery_time_minutes} min</span>
+            <span>{store.estimated_delivery_time_minutes} {t('store.deliveryTime')}</span>
           </div>
         )}
 
@@ -66,7 +68,7 @@ export function StoreHeader({ store }: StoreHeaderProps) {
         {/* Minimum Order */}
         {store.minimum_order_amount !== null && (
           <div className="text-muted-foreground">
-            Pedido mínimo ${store.minimum_order_amount.toFixed(2)}
+            {t('store.minOrder')} ${store.minimum_order_amount.toFixed(2)}
           </div>
         )}
 
@@ -77,7 +79,7 @@ export function StoreHeader({ store }: StoreHeaderProps) {
             className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
           >
             <Percent className="mr-1 h-3 w-3" />
-            {store.cashback_rule.percentage}% Cashback
+            {store.cashback_rule.percentage}% {t('store.cashback')}
           </Badge>
         )}
       </div>

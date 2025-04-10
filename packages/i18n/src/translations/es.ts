@@ -11,9 +11,11 @@ export const esTranslations: TranslationResources = {
     edit: 'Editar',
     saving: 'Guardando...',
     confirm: 'Confirmar',
+    continue: 'Continuar',
     min: 'Min.',
     search: 'Buscar tiendas o productos...',
-    hi: '¡Hola!'
+    hi: '¡Hola!',
+    back: 'Volver'
   },
   navigation: {
     home: 'Inicio',
@@ -21,7 +23,7 @@ export const esTranslations: TranslationResources = {
     contact: 'Contacto',
     favorites: 'Favoritos',
     orders: 'Pedidos',
-    wallet: 'Wallet',
+    wallet: 'Billetera',
     cart: 'Carrito',
     profile: 'Perfil',
     search: 'Buscar',
@@ -36,12 +38,15 @@ export const esTranslations: TranslationResources = {
     useLocation: 'Usar mi ubicación',
     manage: 'Administrar direcciones',
     setPrimary: 'Establecer como principal',
-    addTitle: 'Agregar Dirección',
-    editTitle: 'Editar Dirección',
-    modalDescription: 'Agrega o edita tu dirección',
-    forceModalDescription: 'Por favor, agrega una dirección para continuar',
-    deliverTo: 'Entregar en:',
+    addTitle: 'Agregar dirección',
+    editTitle: 'Editar dirección',
+    modalDescription: 'Agregar o editar tu dirección',
+    forceModalDescription: 'Por favor agrega una dirección para continuar',
+    deliverTo: 'Entregar a:',
     loading: 'Cargando direcciones...',
+    googleMapsError: 'El servicio de Google Maps no está disponible',
+    locationError: 'Error al obtener la ubicación',
+    manualEntryRequired: 'Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manualmente.',
     details: {
       street: 'Calle y número',
       interior: 'Número interior (opcional)',
@@ -73,5 +78,50 @@ export const esTranslations: TranslationResources = {
     prefsDescription: 'Configura tu idioma y tema',
     setLanguage: 'Idioma',
     setTheme: 'Tema'
+  },
+  store: {
+    nearLocation: 'Tiendas cerca de {location}',
+    categories: {
+      all: 'Todas',
+      restaurants: 'Restaurantes',
+      cafes: 'Cafeterías',
+      food: 'Comida'
+    },
+    status: {
+      open: 'Abierto',
+      closed: 'Cerrado',
+      schedule: 'Horario'
+    },
+    minOrder: 'Pedido Mín.',
+    noMinimum: 'Sin mínimo',
+    deliveryTime: 'min',
+    rating: 'Calificación',
+    reviews: 'reseñas',
+    cashback: 'Cashback',
+    free: 'Gratis'
+  },
+  wallet: {
+    title: 'Mi Billetera',
+    empty: 'No hay métodos de pago configurados'
+  },
+  favorites: {
+    title: 'Mis Favoritos',
+    empty: 'No tienes favoritos aún'
+  },
+  orders: {
+    title: 'Mis Pedidos',
+    empty: 'No tienes pedidos recientes'
+  },
+  error: {
+    notFound: {
+      title: '404',
+      description: 'Página no encontrada',
+      action: 'Volver al inicio'
+    }
+  },
+  product: {
+    description: {
+      classicBurger: 'Deliciosa hamburguesa con carne de res, lechuga, tomate y queso'
+    }
   }
 }; 

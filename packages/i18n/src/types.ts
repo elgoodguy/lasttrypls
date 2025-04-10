@@ -10,9 +10,11 @@ export interface CommonTranslations {
   edit: string;
   saving: string;
   confirm: string;
+  continue: string;
   min: string;
   search: string;
   hi: string;
+  back: string;
 }
 
 export interface NavigationTranslations {
@@ -43,6 +45,9 @@ export interface AddressTranslations {
   forceModalDescription: string;
   deliverTo: string;
   loading: string;
+  googleMapsError: string;
+  locationError: string;
+  manualEntryRequired: string;
   details: {
     street: string;
     interior: string;
@@ -78,10 +83,67 @@ export interface ProfileTranslations {
   setTheme: string;
 }
 
+export interface StoreTranslations {
+  nearLocation: string;
+  categories: {
+    all: string;
+    restaurants: string;
+    cafes: string;
+    food: string;
+  };
+  status: {
+    open: string;
+    closed: string;
+    schedule: string;
+  };
+  minOrder: string;
+  noMinimum: string;
+  deliveryTime: string;
+  rating: string;
+  reviews: string;
+  cashback: string;
+  free: string;
+}
+
+export interface WalletTranslations {
+  title: string;
+  empty: string;
+}
+
+export interface FavoritesTranslations {
+  title: string;
+  empty: string;
+}
+
+export interface OrdersTranslations {
+  title: string;
+  empty: string;
+}
+
+export interface ErrorTranslations {
+  notFound: {
+    title: string;
+    description: string;
+    action: string;
+  };
+}
+
+export interface ProductTranslations {
+  description: {
+    classicBurger: string;
+  };
+}
+
 export interface TranslationResources {
   common: CommonTranslations;
   navigation: NavigationTranslations;
   address: AddressTranslations;
   auth: AuthTranslations;
   profile: ProfileTranslations;
+  store: StoreTranslations;
+  wallet: WalletTranslations;
+  favorites: FavoritesTranslations;
+  orders: OrdersTranslations;
+  error: ErrorTranslations;
+  product: ProductTranslations;
 } 
