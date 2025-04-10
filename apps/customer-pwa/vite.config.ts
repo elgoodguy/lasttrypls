@@ -17,4 +17,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@repo/types', '@repo/api-client', '@repo/hooks', '@repo/ui'],
   },
+  json: {
+    stringify: true,
+  },
 });

@@ -5,6 +5,7 @@ import { ForceAddressModal } from './components/auth/ForceAddressModal';
 import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { useEffect } from 'react';
+import './i18n'; // Import i18n configuration
 
 // --- Import Page Components ---
 import HomePage from './pages/HomePage';

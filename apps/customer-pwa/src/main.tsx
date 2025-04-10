@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './i18n'; // Import i18n configuration
 import App from './App.tsx';
 import './index.css';
 import '@repo/ui/styles.css';
@@ -36,20 +37,18 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* Wrap the app with QueryClientProvider */}
-    <QueryClientProvider client={queryClient}>
-      {/* Wrap the app with ThemeProvider */}
-      <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
-        {/* Wrap the app with a Supabase Provider (for context) */}
-        <SupabaseProvider supabase={supabase}>
-          {/* Wrap App with AuthProvider */}
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </SupabaseProvider>
-      </ThemeProvider>
-      {/* Add React Query DevTools */}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    {/* Suspense para cargas futuras o por si acaso */}
+    <React.Suspense fallback={<div>Loading translations...</div>}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
+          <SupabaseProvider supabase={supabase}>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </SupabaseProvider>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </React.Suspense>
   </React.StrictMode>
 );

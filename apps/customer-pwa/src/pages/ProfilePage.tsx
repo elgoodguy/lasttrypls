@@ -4,12 +4,9 @@ import { Separator } from '@repo/ui/components/ui/separator';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
 import { AddressManager } from '../components/profile/AddressManager';
-import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
-import { useTheme } from '@/providers/ThemeProvider';
 
 export const ProfilePage = () => {
   const { signOut } = useAuth();
-  const { theme, setTheme } = useTheme();
 
   return (
     <div className="space-y-6">
@@ -25,19 +22,6 @@ export const ProfilePage = () => {
       <Separator />
 
       <AddressManager />
-
-      <Separator />
-
-      <div>
-        <h3 className="text-lg font-medium">Preferences</h3>
-        <p className="text-sm text-muted-foreground">Set your language and theme.</p>
-        <div className="flex gap-4 mt-2 items-center">
-          <Button variant="outline" disabled>
-            Set Language
-          </Button>
-          <ThemeToggle theme={theme} setTheme={setTheme} />
-        </div>
-      </div>
 
       <Separator />
 

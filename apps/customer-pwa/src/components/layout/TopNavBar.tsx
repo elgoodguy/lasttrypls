@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button } from '@repo/ui/components/ui/button';
-import { useAuth } from '@/providers/AuthProvider';
-import { AuthModal } from '@/components/auth/AuthModal';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/providers/AuthProvider';
+import { useTranslation } from 'react-i18next';
+import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
+import { LanguageToggle } from '@/components/common/LanguageToggle';
+import { useTheme } from '@/providers/ThemeProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/ui/avatar';
 import {
   DropdownMenu,
@@ -12,105 +14,77 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSupabase } from '@/providers/SupabaseProvider';
-import { MapPin, LogOut, User as UserIcon, Bell, PlusCircle, Home, Star } from 'lucide-react';
+import { Button } from '@repo/ui/components/ui/button';
+import { MapPin, Bell, LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
+import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
-import { toast } from 'sonner';
-import { cn } from '@repo/ui/lib/utils';
 import { useAddressStore } from '@/store/addressStore';
-import {
-  setPrimaryAddress,
-  addAddress as apiAddAddress,
-  AddressInsert,
-  Address,
-} from '@repo/api-client';
-import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
-import { useTheme } from '@/providers/ThemeProvider';
-
-// Helper to format address concisely
-const formatShortAddress = (address: Address | null | undefined): string => {
-  if (!address) return 'Set Location';
-  let display = address.street_address;
-  return display.length > 30 ? display.substring(0, 27) + '...' : display;
-};
+import { useQueryClient } from '@tanstack/react-query';
+import { cn } from '@repo/ui/lib/utils';
 
 export const TopNavBar: React.FC = () => {
-  const supabase = useSupabase();
-  const { user, signOut, isLoading: isLoadingAuth } = useAuth();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-
-  // Get address state from Zustand Store
+  const { user, isLoading: isLoadingAuth, signOut } = useAuth();
   const {
     addresses,
     activeAddress,
     isLoading: isLoadingAddresses,
-    setActiveAddress,
-    addOrUpdateAddress,
+    setPrimaryAddress,
+    addAddress,
   } = useAddressStore();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-
-  // Mutations
-  const { mutate: setPrimaryMut, isPending: isSettingPrimary } = useMutation({
-    mutationFn: (addressId: string) => setPrimaryAddress(supabase, addressId),
-    onSuccess: updatedAddress => {
-      toast.success('Primary address updated!');
-      addOrUpdateAddress(updatedAddress);
-      queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
-    },
-    onError: error => toast.error('Failed to set primary address: ' + error.message),
-  });
-
-  const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
-    mutationFn: (newData: Omit<AddressInsert, 'user_id' | 'id' | 'created_at' | 'updated_at'>) =>
-      apiAddAddress(supabase, newData),
-    onSuccess: newAddress => {
-      toast.success('Address added successfully!');
-      addOrUpdateAddress(newAddress);
-      setActiveAddress(newAddress);
-      queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
-      setIsAddressModalOpen(false);
-    },
-    onError: error => toast.error('Failed to add address: ' + error.message),
-  });
-
-  // Event Handlers
   const handleSignOut = async () => {
     await signOut();
     queryClient.clear();
     navigate('/');
   };
 
-  const handleOpenAddAddress = () => setIsAddressModalOpen(true);
-
-  const handleModalSubmit = (data: any) => {
-    const insertData: AddressInsert = { ...data, is_primary: !addresses || addresses.length === 0 };
-    addAddressMut(insertData);
-  };
-
   const handleSelectAddress = (addressId: string) => {
-    const selected = addresses.find(a => a.id === addressId);
-    if (selected) {
-      setActiveAddress(selected);
-      console.log('Active address set to:', selected);
-      // Trigger data refresh based on active address
-      queryClient.invalidateQueries({ queryKey: ['storesHome'] });
-    }
+    // Implementar lógica para seleccionar dirección
   };
 
-  const getInitials = (name: string | undefined | null) => {
-    if (!name) return '?';
+  const handleOpenAddAddress = () => {
+    setIsAddressModalOpen(true);
+  };
+
+  const handleModalSubmit = async (addressData: any) => {
+    await addAddress(addressData);
+    setIsAddressModalOpen(false);
+  };
+
+  const setPrimaryMut = async (addressId: string) => {
+    await setPrimaryAddress(addressId);
+  };
+
+  const formatShortAddress = (address: any) => {
+    if (!address) return t('navigation.setlocation');
+    
+    // Extraer solo la calle y número
+    const streetParts = address.street_address.split(',')[0].trim();
+    
+    // Limitar la longitud y mantener el formato original (no todo mayúsculas)
+    const maxLength = 25;
+    if (streetParts.length > maxLength) {
+      return `${streetParts.substring(0, maxLength)}...`;
+    }
+    
+    return streetParts;
+  };
+
+  const getInitials = (name: string) => {
     return name
       .split(' ')
-      .map(n => n[0])
-      .slice(0, 2)
+      .map(part => part[0])
       .join('')
       .toUpperCase();
   };
+
+  const isLoggedIn = !isLoadingAuth && !!user;
 
   return (
     <>
@@ -121,20 +95,24 @@ export const TopNavBar: React.FC = () => {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="px-2 sm:px-4" disabled={isLoadingAddresses}>
+                  <Button 
+                    variant="ghost" 
+                    className="px-2 sm:px-4 max-w-[200px] sm:max-w-none" 
+                    disabled={isLoadingAddresses}
+                  >
                     <MapPin className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
                     <span className="truncate text-sm">
-                      {isLoadingAddresses ? 'Loading...' : formatShortAddress(activeAddress)}
+                      {isLoadingAddresses ? t('common.loading') : formatShortAddress(activeAddress)}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-64 bg-background border shadow-md">
-                  <DropdownMenuLabel>Deliver to:</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('address.deliverTo')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {isLoadingAddresses ? (
-                    <DropdownMenuItem disabled>Loading addresses...</DropdownMenuItem>
+                    <DropdownMenuItem disabled>{t('address.loading')}</DropdownMenuItem>
                   ) : addresses.length === 0 ? (
-                    <DropdownMenuItem disabled>No addresses saved yet.</DropdownMenuItem>
+                    <DropdownMenuItem disabled>{t('address.noneSaved')}</DropdownMenuItem>
                   ) : (
                     addresses.map(addr => (
                       <DropdownMenuItem
@@ -152,21 +130,21 @@ export const TopNavBar: React.FC = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleOpenAddAddress} className="cursor-pointer">
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Add New Address
+                    {t('address.addNew')}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/profile">
                       <UserIcon className="mr-2 h-4 w-4" />
-                      Manage Addresses
+                      {t('address.manage')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => activeAddress && setPrimaryMut(activeAddress.id)}
-                    disabled={!activeAddress || activeAddress.is_primary || isSettingPrimary}
+                    disabled={!activeAddress || activeAddress.is_primary}
                     className="cursor-pointer"
                   >
                     <Star className="mr-2 h-4 w-4" />
-                    Set Current as Primary
+                    {t('address.setPrimary')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -178,16 +156,13 @@ export const TopNavBar: React.FC = () => {
                 onClick={() => setIsAuthModalOpen(true)}
               >
                 <MapPin className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-                <span className="truncate text-sm">Set Location</span>
+                <span className="truncate text-sm">{t('navigation.setlocation')}</span>
               </Button>
             )}
           </div>
 
           {/* Right side icons */}
           <div className="flex items-center space-x-1 sm:space-x-2">
-            {/* Theme Toggle */}
-            <ThemeToggle theme={theme} setTheme={setTheme} />
-
             {/* Notifications */}
             {user && (
               <Button variant="ghost" size="icon" asChild>
@@ -232,25 +207,33 @@ export const TopNavBar: React.FC = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/profile">
                       <UserIcon className="mr-2 h-4 w-4" />
-                      Profile
+                      {t('navigation.profile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/orders">My Orders</Link>
+                    <Link to="/orders">{t('navigation.orders')}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/wallet">Wallet</Link>
+                    <Link to="/wallet">{t('navigation.wallet')}</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="font-normal text-xs text-muted-foreground">
+                    {t('profile.preferences')}
+                  </DropdownMenuLabel>
+                  <div className="flex items-center gap-1 px-2 py-1">
+                    <ThemeToggle theme={theme} setTheme={setTheme} />
+                    <LanguageToggle />
+                  </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Log out
+                    {t('auth.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button variant="outline" onClick={() => setIsAuthModalOpen(true)}>
-                Login / Sign Up
+                {t('landing.login')} / {t('auth.signup')}
               </Button>
             )}
           </div>
@@ -265,7 +248,7 @@ export const TopNavBar: React.FC = () => {
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
         onSubmit={handleModalSubmit}
-        isLoading={isAddingAddress}
+        isLoading={false}
         addressToEdit={null}
       />
     </>
