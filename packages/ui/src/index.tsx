@@ -20,4 +20,8 @@ export * from './components/ui/category-chip';
 export * from './components/ui/store-card';
 export * from './components/ui/tooltip';
 export * from './components/store/StoreStatusIndicator';
+export * from './components/common/GlobalLoader';
+export * from './components/navigation/BottomNavBar';
+export * from './components/navigation/UserMenu';
+export * from './components/address/AddressSelector';
 // export * from './MyComponent'; // Ejemplo componente propio 
