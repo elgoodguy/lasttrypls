@@ -97,7 +97,7 @@ export const LandingPage: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 container flex flex-col items-center justify-center px-4 py-20">
         {/* Logo */}
-        <div className="flex flex-col items-center justify-center space-y-8 w-full max-w-2xl">
+        <div className="flex flex-col items-center justify-center space-y-8 w-full max-w-2xl mb-12">
           <img 
             src="/src/components/common/Nico Logo.svg" 
             alt="Logo" 
