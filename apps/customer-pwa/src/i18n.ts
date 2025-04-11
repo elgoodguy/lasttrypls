@@ -1,60 +1,39 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
 
-const FALLBACK_LANG = 'es';
-const SUPPORTED_LANGS = ['es', 'en'];
+// Importar los JSON directamente - Vite maneja esto
+// Asegúrate que las rutas sean correctas RELATIVAS a este archivo (i18n.ts)
+import enTranslation from '../public/locales/en/translation.json';
+import esTranslation from '../public/locales/es/translation.json';
+
+const resources = {
+  en: {
+    translation: enTranslation,
+  },
+  es: {
+    translation: esTranslation,
+  },
+};
 
 i18n
-  .use(Backend)
-  .use(LanguageDetector)
-  .use(initReactI18next)
+  .use(LanguageDetector) // Detecta idioma
+  .use(initReactI18next) // Vincula con React
   .init({
-    backend: {
-      loadPath: import.meta.env.DEV 
-        ? '/locales/{{lng}}/{{ns}}.json'
-        : '/apps/customer-pwa/public/locales/{{lng}}/{{ns}}.json',
-    },
-    fallbackLng: FALLBACK_LANG,
-    supportedLngs: SUPPORTED_LANGS,
-    load: 'languageOnly', // Cargar solo el idioma sin región (es en lugar de es-ES)
-    ns: ['translation'],
-    defaultNS: 'translation',
-    debug: import.meta.env.DEV,
+    resources, // Tus traducciones importadas
+    fallbackLng: 'en', // Idioma por defecto si el detectado no existe
+    debug: import.meta.env.DEV, // Logs en consola durante desarrollo
     interpolation: {
-      escapeValue: false,
+      escapeValue: false, // React ya hace el escape
     },
     detection: {
+      // Orden de detección: localStorage primero, luego navegador
       order: ['localStorage', 'navigator'],
+      // Key para guardar en localStorage
+      lookupLocalStorage: 'i18nextLng-customer-pwa', // Nombre específico para evitar colisiones
+      // Cachés a usar
       caches: ['localStorage'],
     },
-  })
-  .catch((error) => {
-    console.error('Error loading translations:', error);
   });
-
-// Eventos de debug solo en desarrollo
-if (import.meta.env.DEV) {
-  i18n.on('initialized', () => {
-    console.log('i18n initialized:', {
-      language: i18n.language,
-      languages: i18n.languages,
-      isInitialized: i18n.isInitialized,
-    });
-  });
-
-  i18n.on('languageChanged', (lng) => {
-    console.log('Language changed to:', lng);
-  });
-
-  i18n.on('loaded', (loaded) => {
-    console.log('i18n loaded:', loaded);
-  });
-
-  i18n.on('failedLoading', (lng, ns, msg) => {
-    console.error('i18n failed loading:', { lng, ns, msg });
-  });
-}
 
 export default i18n; 

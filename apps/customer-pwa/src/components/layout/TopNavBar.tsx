@@ -15,7 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
-import { MapPin, Bell, LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
+import { MapPin, LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
+import { NotificationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
@@ -165,21 +166,21 @@ export const TopNavBar: React.FC = () => {
           <div className="flex items-center space-x-1 sm:space-x-2">
             {/* Notifications */}
             {user && (
-              <Button variant="ghost" size="icon" asChild>
+              <Button variant="ghost" size="icon" className="h-12 w-12" asChild>
                 <Link to="/notifications">
-                  <Bell className="h-5 w-5" />
+                  <NotificationIcon className="h-9 w-9" />
                 </Link>
               </Button>
             )}
 
             {/* Auth Button/Dropdown */}
             {isLoadingAuth ? (
-              <div className="h-8 w-8 animate-pulse rounded-full bg-muted"></div>
+              <div className="h-12 w-12 animate-pulse rounded-full bg-muted"></div>
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
+                  <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+                    <Avatar className="h-12 w-12">
                       <AvatarImage
                         src={user.user_metadata?.avatar_url}
                         alt={user.user_metadata?.full_name || user.email}

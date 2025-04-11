@@ -2,10 +2,10 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BottomNavBar as UIBottomNavBar } from '@repo/ui/components/navigation/BottomNavBar';
 import { useAuth } from '@/providers/AuthProvider';
-import { Home, Package, Wallet, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { HomeIcon, FavoritesIcon, OrdersIcon, WalletIcon } from '@/components/icons';
 
-// Define navigation items with Lucide icons
+// Define navigation items with custom icons
 export const BottomNavBar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,10 +16,10 @@ export const BottomNavBar: React.FC = () => {
   const isLoggedIn = !isLoading && !!user;
 
   const navItems = [
-    { path: '/', label: t('navigation.home'), icon: Home, requiresAuth: false },
-    { path: '/favorites', label: t('navigation.favorites'), icon: Heart, requiresAuth: true },
-    { path: '/orders', label: t('navigation.orders'), icon: Package, requiresAuth: true },
-    { path: '/wallet', label: t('navigation.wallet'), icon: Wallet, requiresAuth: true },
+    { path: '/', label: t('navigation.home'), icon: HomeIcon, requiresAuth: false },
+    { path: '/favorites', label: t('navigation.favorites'), icon: FavoritesIcon, requiresAuth: true },
+    { path: '/orders', label: t('navigation.orders'), icon: OrdersIcon, requiresAuth: true },
+    { path: '/wallet', label: t('navigation.wallet'), icon: WalletIcon, requiresAuth: true },
   ];
 
   return (

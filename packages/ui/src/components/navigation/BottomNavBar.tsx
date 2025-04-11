@@ -6,7 +6,7 @@ import { LucideIcon } from 'lucide-react';
 export interface NavItem {
   path: string;
   label: string;
-  icon: LucideIcon;
+  icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
   requiresAuth?: boolean;
 }
 
@@ -27,7 +27,7 @@ export function BottomNavBar({
 }: BottomNavBarProps) {
   return (
     <nav className={cn('fixed bottom-0 left-0 z-10 w-full border-t bg-background', className)}>
-      <div className="container flex h-16 items-center justify-around">
+      <div className="container flex h-20 items-center justify-around">
         {items.map(item => {
           // Skip auth-required items if not authenticated
           if (item.requiresAuth && !isAuthenticated) {
@@ -43,13 +43,15 @@ export function BottomNavBar({
               variant="ghost"
               onClick={() => onNavigate(item.path)}
               className={cn(
-                'flex h-auto w-1/4 flex-col items-center justify-center space-y-1 p-2',
+                'flex h-auto w-1/4 flex-col items-center justify-center gap-1 p-2',
                 isActive ? 'text-primary' : 'text-muted-foreground',
                 'hover:bg-transparent hover:text-primary/80'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
-              <Icon className="h-5 w-5" />
+              <div className="flex h-10 items-center justify-center">
+                <Icon />
+              </div>
               <span className="text-xs">{item.label}</span>
             </Button>
           );
