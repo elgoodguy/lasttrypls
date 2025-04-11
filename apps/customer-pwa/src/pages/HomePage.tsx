@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAddressStore } from '@/store/addressStore';
 import { StoreStatusIndicator } from '@/components/store/StoreStatusIndicator';
+import { useTranslation } from 'react-i18next';
 
 // Skeleton Loader Components
 const Skeleton: React.FC<{ className?: string }> = ({ className }) => (
@@ -24,6 +25,7 @@ export const HomePage: React.FC = () => {
   const { user } = useAuth();
   const { activeAddress, isLoading: isLoadingAddressStore } = useAddressStore();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   // Get the active postal code
   const activePostalCode = activeAddress?.postal_code;
@@ -70,13 +72,13 @@ export const HomePage: React.FC = () => {
     <div className="space-y-6">
       {/* Saludo */}
       {user && (
-        <h2 className="text-2xl font-bold">Hi, {user.user_metadata?.full_name || 'there'}! 👋</h2>
+        <h2 className="text-2xl font-bold">{t('common.hi')} {user.user_metadata?.full_name || ''} 👋</h2>
       )}
 
       {/* Barra de Búsqueda */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input type="search" placeholder="Search stores or products..." className="pl-10" />
+        <Input type="search" placeholder={t('common.search')} className="pl-10" />
       </div>
 
       {/* Scroll Horizontal Categorías */}
@@ -90,7 +92,7 @@ export const HomePage: React.FC = () => {
                 selected={selectedCategoryId === null}
                 onClick={() => handleCategoryClick(null)}
               >
-                All
+                {t('store.list.all')}
               </CategoryChip>
               {categories.map(category => (
                 <CategoryChip
@@ -117,8 +119,8 @@ export const HomePage: React.FC = () => {
       <section className="space-y-4">
         <h3 className="text-xl font-semibold tracking-tight">
           {selectedCategoryId
-            ? `${categories.find(c => c.id === selectedCategoryId)?.name} near ${activePostalCode}`
-            : `Stores near ${activePostalCode}`}
+            ? `${categories.find(c => c.id === selectedCategoryId)?.name} ${t('store.list.near')} ${activePostalCode}`
+            : `${t('store.list.near')} ${activePostalCode}`}
         </h3>
 
         {/* Grid de Tiendas */}
@@ -127,9 +129,9 @@ export const HomePage: React.FC = () => {
             Array.from({ length: 3 }).map((_, i) => <StoreCardSkeleton key={i} />)
           ) : stores.length === 0 ? (
             <p className="text-muted-foreground">
-              No stores found delivering to {activePostalCode}
+              {t('store.list.noStores')} {activePostalCode}
               {selectedCategoryId &&
-                ` in ${categories.find(c => c.id === selectedCategoryId)?.name}`}
+                ` ${t('store.list.inCategory')} ${categories.find(c => c.id === selectedCategoryId)?.name}`}
               .
             </p>
           ) : (

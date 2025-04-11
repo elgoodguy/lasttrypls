@@ -8,6 +8,21 @@
     }
   },
   "profile": {
+    "title": "Ajustes de Perfil",
+    "description": "Administra los detalles de tu cuenta",
+    "personalInfo": {
+      "title": "Información Personal",
+      "fullName": "Nombre Completo",
+      "fullNamePlaceholder": "Ingresa tu nombre completo",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "saveChanges": "Guardar Cambios"
+    },
+    "security": {
+      "title": "Seguridad",
+      "description": "Administra tu contraseña",
+      "changePassword": "Cambiar Contraseña"
+    },
     "preferences": "Preferencias",
     "prefsDescription": "Configura tu idioma y tema",
     "setLanguage": "Idioma",
@@ -55,6 +70,12 @@
       "open": "Abierto",
       "schedule": "Programado",
       "closed": "Cerrado"
+    },
+    "list": {
+      "all": "Todo",
+      "near": "Tiendas cerca de",
+      "noStores": "No hay tiendas que entreguen en",
+      "inCategory": "en"
     }
   },
   "navigation": {
@@ -66,13 +87,45 @@
     "setlocation": "Establecer Ubicación"
   },
   "auth": {
-    "login": "Iniciar Sesión",
-    "signup": "Registrarse",
+    "login": {
+      "title": "Iniciar Sesión",
+      "description": "Inicia sesión para acceder a tu cuenta",
+      "button": "Iniciar Sesión",
+      "haveAccount": "¿Ya tienes una cuenta?"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "description": "Crea una cuenta para comenzar",
+      "button": "Registrarse",
+      "noAccount": "¿No tienes una cuenta?"
+    },
+    "form": {
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "password": "Contraseña",
+      "processing": "Procesando..."
+    },
+    "oauth": {
+      "continueWith": "O continuar con",
+      "google": "Google",
+      "phone": "Teléfono (OTP)"
+    },
+    "messages": {
+      "verificationNeeded": "Registro exitoso, pero necesita verificación. Por favor revisa tu correo.",
+      "signupSuccess": "¡Registro exitoso! Has iniciado sesión.",
+      "checkEmail": "¡Registro exitoso! Por favor revisa tu correo para verificar tu cuenta.",
+      "loginSuccess": "¡Inicio de sesión exitoso!",
+      "unexpectedError": "Ha ocurrido un error inesperado.",
+      "oauthError": "Error al iniciar sesión con"
+    },
     "logout": "Cerrar Sesión"
   },
   "common": {
     "loading": "Cargando...",
     "edit": "Editar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "greeting": "¡Hola!",
+    "hi": "¡Hola",
+    "search": "Buscar tiendas o productos..."
   }
 } 

@@ -8,6 +8,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { getProfile, updateProfile, Profile, ProfileUpdate } from '@repo/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 // Define the form data structure
 type ProfileFormData = {
@@ -19,6 +20,7 @@ export const ProfileForm: React.FC = () => {
   const supabase = useSupabase();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // 1. Query to fetch the user's profile data
   const {
@@ -37,12 +39,12 @@ export const ProfileForm: React.FC = () => {
     mutationFn: (updates: ProfileUpdate) => updateProfile(supabase, updates),
     onSuccess: updatedProfile => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
-      toast.success('Profile updated successfully!');
+      toast.success(t('profile.personalInfo.updateSuccess'));
       reset({ fullName: updatedProfile.full_name || '', email: user?.email || '' });
     },
     onError: error => {
       console.error('Profile update failed:', error);
-      toast.error('Failed to update profile: ' + error.message);
+      toast.error(t('profile.personalInfo.updateError') + error.message);
     },
   });
 
@@ -74,7 +76,7 @@ export const ProfileForm: React.FC = () => {
   // 5. Handle form submission
   const onSubmit: SubmitHandler<ProfileFormData> = data => {
     if (!profile) {
-      toast.error('Cannot update profile: profile data not loaded.');
+      toast.error(t('profile.personalInfo.loadError'));
       return;
     }
     const updates: ProfileUpdate = {
@@ -86,23 +88,23 @@ export const ProfileForm: React.FC = () => {
 
   // Handle loading and error states
   if (isLoadingProfile) {
-    return <div>Loading profile...</div>;
+    return <div>{t('common.loading')}</div>;
   }
 
   if (profileError) {
-    return <div className="text-red-500">Error loading profile: {profileError.message}</div>;
+    return <div className="text-red-500">{t('profile.personalInfo.loadError')}: {profileError.message}</div>;
   }
 
   // Render the form
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <h3 className="text-lg font-medium">Personal Information</h3>
+      <h3 className="text-lg font-medium">{t('profile.personalInfo.title')}</h3>
       <div className="grid gap-2">
-        <Label htmlFor="fullName">Full Name</Label>
+        <Label htmlFor="fullName">{t('profile.personalInfo.fullName')}</Label>
         <Input
           id="fullName"
-          {...register('fullName', { required: 'Full name is required' })}
-          placeholder="Enter your full name"
+          {...register('fullName', { required: t('profile.personalInfo.fullNameRequired') })}
+          placeholder={t('profile.personalInfo.fullNamePlaceholder')}
           className={errors.fullName ? 'border-red-500' : ''}
         />
         {errors.fullName && (
@@ -111,18 +113,18 @@ export const ProfileForm: React.FC = () => {
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t('profile.personalInfo.email')}</Label>
         <Input
           id="email"
           type="email"
           value={user?.email || ''}
           disabled
-          placeholder="Your email address"
+          placeholder={t('profile.personalInfo.emailPlaceholder')}
         />
       </div>
 
       <Button type="submit" disabled={!isDirty || isUpdatingProfile}>
-        {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
+        {isUpdatingProfile ? t('common.saving') : t('profile.personalInfo.saveChanges')}
       </Button>
     </form>
   );

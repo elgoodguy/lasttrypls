@@ -13,6 +13,7 @@ import { Label } from '@repo/ui/components/ui/label';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { Provider } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
 
 interface AuthModalProps {
   open: boolean;
@@ -27,6 +28,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleEmailPasswordAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,23 +43,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
         if (response.error) throw response.error;
         // Check if user needs confirmation email (default Supabase setting)
         if (response.data.user && response.data.user.identities?.length === 0) {
-          setMessage('Signup successful, but user needs verification. Please check your email.');
+          setMessage(t('auth.messages.verificationNeeded'));
         } else if (response.data.session) {
-          setMessage('Signup successful! You are now logged in.');
+          setMessage(t('auth.messages.signupSuccess'));
           onOpenChange(false); // Close modal on successful login
         } else {
-          setMessage('Signup successful! Please check your email to verify your account.');
+          setMessage(t('auth.messages.checkEmail'));
         }
       } else {
         // Sign In
         response = await supabase.auth.signInWithPassword({ email, password });
         if (response.error) throw response.error;
-        setMessage('Login successful!');
+        setMessage(t('auth.messages.loginSuccess'));
         onOpenChange(false); // Close modal on success
       }
     } catch (err: any) {
       console.error('Auth Error:', err);
-      setError(err.message || 'An unexpected error occurred.');
+      setError(err.message || t('auth.messages.unexpectedError'));
     }
   };
 
@@ -67,15 +69,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
-        // options: {
-        //    redirectTo: window.location.origin // Redirect back after OAuth flow
-        // }
       });
       if (error) throw error;
-      // Redirect happens automatically via Supabase
     } catch (err: any) {
       console.error('OAuth Error:', err);
-      setError(err.message || `Failed to sign in with ${provider}.`);
+      setError(err.message || `${t('auth.messages.oauthError')} ${provider}.`);
     }
   };
 
@@ -83,9 +81,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isSigningUp ? 'Sign Up' : 'Log In'}</DialogTitle>
+          <DialogTitle>{isSigningUp ? t('auth.signup.title') : t('auth.login.title')}</DialogTitle>
           <DialogDescription>
-            {isSigningUp ? 'Create an account to get started.' : 'Log in to access your account.'}
+            {isSigningUp ? t('auth.signup.description') : t('auth.login.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -95,11 +93,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
         {/* Email/Password Form */}
         <form onSubmit={handleEmailPasswordAuth} className="grid gap-4 px-6 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.form.email')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder={t('auth.form.emailPlaceholder')}
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
@@ -107,7 +105,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.form.password')}</Label>
             <Input
               id="password"
               type="password"
@@ -119,7 +117,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
             />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Processing...' : isSigningUp ? 'Sign Up' : 'Log In'}
+            {isLoading ? t('auth.form.processing') : isSigningUp ? t('auth.signup.button') : t('auth.login.button')}
           </Button>
         </form>
 
@@ -129,7 +127,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            <span className="bg-background px-2 text-muted-foreground">
+              {t('auth.oauth.continueWith')}
+            </span>
           </div>
         </div>
 
@@ -151,17 +151,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
                 d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.7 60.5c-19.7-17.8-47.4-28.8-78.2-28.8-66.8 0-120.9 54.2-120.9 120.9s54.1 120.9 120.9 120.9c76.3 0 104.2-52.4 109.3-78.5H248v-68.6h239.8c4.7 25.5 7.2 52.9 7.2 81.8z"
               ></path>
             </svg>
-            Google
+            {t('auth.oauth.google')}
           </Button>
           <Button variant="outline" disabled={true}>
-            📱 Phone (OTP)
+            📱 {t('auth.oauth.phone')}
           </Button>
         </div>
 
         {/* Toggle Login/Signup */}
         <DialogFooter className="px-6 pb-4">
           <p className="text-sm text-muted-foreground">
-            {isSigningUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+            {isSigningUp ? t('auth.login.haveAccount') : t('auth.signup.noAccount')}{' '}
             <Button
               variant="link"
               className="p-0 h-auto"
@@ -171,7 +171,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
                 setMessage(null);
               }}
             >
-              {isSigningUp ? 'Log In' : 'Sign Up'}
+              {isSigningUp ? t('auth.login.button') : t('auth.signup.button')}
             </Button>
           </p>
         </DialogFooter>

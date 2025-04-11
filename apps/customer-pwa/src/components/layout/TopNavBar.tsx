@@ -233,7 +233,7 @@ export const TopNavBar: React.FC = () => {
               </DropdownMenu>
             ) : (
               <Button variant="outline" onClick={() => setIsAuthModalOpen(true)}>
-                {t('auth.login')} / {t('auth.signup')}
+                {t('auth.login.button')} / {t('auth.signup.button')}
               </Button>
             )}
           </div>
