@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@repo/ui/components/ui/button';
 import { useEffect, useState } from 'react';
+import { cn } from '@repo/ui/lib/utils';
 
 export const LanguageToggle = () => {
   const { i18n } = useTranslation();
@@ -38,11 +39,12 @@ export const LanguageToggle = () => {
 
   return (
     <Button
-      variant="ghost"
-      className="w-8 px-0"
+      variant="outline"
+      size="icon"
+      className="h-8 w-8 border-muted"
       onClick={toggleLanguage}
     >
-      {currentLanguage.toUpperCase()}
+      <span className="text-sm font-medium">{currentLanguage.toUpperCase()}</span>
     </Button>
   );
 }; 

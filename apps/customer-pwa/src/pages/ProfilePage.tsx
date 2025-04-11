@@ -11,7 +11,7 @@ export const ProfilePage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Toaster richColors position="top-center" />
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{t('profile.title')}</h2>
