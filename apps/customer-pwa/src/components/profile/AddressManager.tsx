@@ -8,6 +8,7 @@ import { useSupabase } from '@/providers/SupabaseProvider';
 import { AddressModal } from './AddressModal';
 import { AddressFormData } from '@/lib/validations/address';
 import { useAddressStore } from '@/store/addressStore';
+import { useTranslation } from 'react-i18next';
 
 export const AddressManager: React.FC = () => {
   const supabase = useSupabase();
@@ -15,6 +16,7 @@ export const AddressManager: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { addresses, addAddress, updateAddress, deleteAddress, setPrimaryAddress } =
     useAddressStore();
+  const { t } = useTranslation();
 
   useQuery({
     queryKey: ['addresses'],
@@ -52,10 +54,10 @@ export const AddressManager: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">Direcciones de entrega</h2>
+        <h2 className="text-2xl font-semibold">{t('profile.addresses.title')}</h2>
         <Button onClick={handleAddNew} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
-          Agregar dirección
+          {t('profile.addresses.add')}
         </Button>
       </div>
 
@@ -73,7 +75,7 @@ export const AddressManager: React.FC = () => {
 
       {addresses.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No has agregado ninguna dirección. Agrega tu primera dirección de entrega.
+          {t('profile.addresses.noAddresses')}
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">

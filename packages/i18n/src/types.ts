@@ -36,7 +36,11 @@ export interface AddressTranslations {
   add: string;
   addNew: string;
   search: string;
+  searchTitle: string;
+  searchPlaceholder: string;
+  searchAddress: string;
   useLocation: string;
+  useMyLocation: string;
   manage: string;
   setPrimary: string;
   addTitle: string;
@@ -59,6 +63,7 @@ export interface AddressTranslations {
   };
   save: string;
   empty: string;
+  noneSaved: string;
 }
 
 export interface AuthTranslations {
@@ -77,6 +82,25 @@ export interface AuthTranslations {
 export interface ProfileTranslations {
   title: string;
   description: string;
+  personalInfo: string;
+  fullName: string;
+  fullNamePlaceholder: string;
+  email: string;
+  saveChanges: string;
+  addresses: {
+    title: string;
+    add: string;
+    primary: string;
+    address: string;
+    instructions: string;
+    confirmDelete: string;
+    noAddresses: string;
+  };
+  security: {
+    title: string;
+    description: string;
+    changePassword: string;
+  };
   preferences: string;
   prefsDescription: string;
   setLanguage: string;
@@ -132,6 +156,19 @@ export interface ProductTranslations {
   description: {
     classicBurger: string;
   };
+  outOfStock: string;
+  addToCart: string;
+  quantity: string;
+}
+
+export interface LandingTranslations {
+  login: string;
+  signup: string;
+  hero: {
+    title: string;
+    subtitle: string;
+    cta: string;
+  };
 }
 
 export interface TranslationResources {
@@ -146,4 +183,5 @@ export interface TranslationResources {
   orders: OrdersTranslations;
   error: ErrorTranslations;
   product: ProductTranslations;
+  landing: LandingTranslations;
 } 

@@ -12,10 +12,17 @@ export default defineConfig({
       '@repo/api-client': path.resolve(__dirname, '../../packages/api-client/src'),
       '@repo/hooks': path.resolve(__dirname, '../../packages/hooks/src'),
       '@repo/ui': path.resolve(__dirname, '../../packages/ui/src'),
+      '@repo/i18n': path.resolve(__dirname, '../../packages/i18n/src'),
     },
   },
   optimizeDeps: {
-    include: ['@repo/types', '@repo/api-client', '@repo/hooks', '@repo/ui'],
+    include: ['@repo/types', '@repo/api-client', '@repo/hooks', '@repo/ui', '@repo/i18n'],
+    exclude: ['i18next']
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/, /packages\/i18n/]
+    }
   },
   json: {
     stringify: true,

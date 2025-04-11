@@ -1,26 +1,48 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@repo/ui/components/ui/button';
+import { useEffect, useState } from 'react';
 
-export function LanguageToggle() {
+export const LanguageToggle = () => {
   const { i18n } = useTranslation();
-  const currentLanguage = i18n.language.split('-')[0];
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentLanguage, setCurrentLanguage] = useState<string>('es');
+
+  useEffect(() => {
+    const initLanguage = () => {
+      if (i18n.isInitialized) {
+        const lang = i18n.language?.split('-')[0] || 'es';
+        setCurrentLanguage(lang);
+        setIsLoading(false);
+      }
+    };
+
+    initLanguage();
+    i18n.on('initialized', initLanguage);
+    i18n.on('languageChanged', (lang) => {
+      setCurrentLanguage(lang.split('-')[0]);
+    });
+
+    return () => {
+      i18n.off('initialized', initLanguage);
+    };
+  }, [i18n]);
 
   const toggleLanguage = () => {
-    const newLang = currentLanguage === 'en' ? 'es' : 'en';
-    i18n.changeLanguage(newLang);
+    const newLanguage = currentLanguage === 'es' ? 'en' : 'es';
+    i18n.changeLanguage(newLanguage);
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Button
-      variant="outline"
-      size="icon"
+      variant="ghost"
+      className="w-8 px-0"
       onClick={toggleLanguage}
-      className="h-8 w-8 border-muted"
     >
-      <span className="text-sm font-medium">
-        {currentLanguage === 'en' ? 'ES' : 'EN'}
-      </span>
+      {currentLanguage.toUpperCase()}
     </Button>
   );
-} 
+}; 

@@ -35,7 +35,11 @@ export const esTranslations: TranslationResources = {
     add: 'Agregar dirección',
     addNew: 'Nueva dirección',
     search: 'Buscar dirección',
+    searchTitle: 'Buscar Dirección',
+    searchPlaceholder: 'Ingresa una ubicación para buscar',
+    searchAddress: 'Buscar dirección',
     useLocation: 'Usar mi ubicación',
+    useMyLocation: 'Usar mi ubicación',
     manage: 'Administrar direcciones',
     setPrimary: 'Establecer como principal',
     addTitle: 'Agregar dirección',
@@ -57,7 +61,8 @@ export const esTranslations: TranslationResources = {
       example: 'Ej: Tocar el timbre dos veces'
     },
     save: 'Guardar dirección',
-    empty: 'No tienes direcciones guardadas'
+    empty: 'No tienes direcciones guardadas',
+    noneSaved: 'No hay direcciones guardadas'
   },
   auth: {
     email: 'Correo electrónico',
@@ -74,6 +79,25 @@ export const esTranslations: TranslationResources = {
   profile: {
     title: 'Configuración de Perfil',
     description: 'Administra los detalles de tu cuenta',
+    personalInfo: 'Información Personal',
+    fullName: 'Nombre Completo',
+    fullNamePlaceholder: 'Ingresa tu nombre completo',
+    email: 'Correo electrónico',
+    saveChanges: 'Guardar Cambios',
+    addresses: {
+      title: 'Direcciones de Entrega',
+      add: 'Agregar Dirección',
+      primary: 'Dirección Principal',
+      address: 'Dirección',
+      instructions: 'Instrucciones',
+      confirmDelete: '¿Estás seguro que deseas eliminar esta dirección?',
+      noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.'
+    },
+    security: {
+      title: 'Seguridad',
+      description: 'Administra tu contraseña',
+      changePassword: 'Cambiar Contraseña'
+    },
     preferences: 'Preferencias',
     prefsDescription: 'Configura tu idioma y tema',
     setLanguage: 'Idioma',
@@ -119,9 +143,21 @@ export const esTranslations: TranslationResources = {
       action: 'Volver al inicio'
     }
   },
+  landing: {
+    login: 'Iniciar sesión',
+    signup: 'Registrarse',
+    hero: {
+      title: 'Tus tiendas favoritas, entregadas a tu puerta',
+      subtitle: 'Recibe todo lo que necesitas de tiendas locales en minutos',
+      cta: 'Empieza a comprar',
+    },
+  },
   product: {
     description: {
-      classicBurger: 'Deliciosa hamburguesa con carne de res, lechuga, tomate y queso'
-    }
+      classicBurger: 'Hamburguesa clásica con lechuga, tomate y queso',
+    },
+    outOfStock: 'Agotado',
+    addToCart: 'Agregar al carrito',
+    quantity: 'Cantidad',
   }
 }; 

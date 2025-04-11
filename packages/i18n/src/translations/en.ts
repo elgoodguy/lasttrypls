@@ -35,7 +35,11 @@ export const enTranslations: TranslationResources = {
     add: 'Add address',
     addNew: 'New address',
     search: 'Search address',
+    searchTitle: 'Search Address',
+    searchPlaceholder: 'Enter a location to search',
+    searchAddress: 'Search address',
     useLocation: 'Use my location',
+    useMyLocation: 'Use my location',
     manage: 'Manage addresses',
     setPrimary: 'Set as primary',
     addTitle: 'Add Address',
@@ -57,7 +61,8 @@ export const enTranslations: TranslationResources = {
       example: 'Ex: Ring the bell twice'
     },
     save: 'Save address',
-    empty: 'No saved addresses'
+    empty: 'No saved addresses',
+    noneSaved: 'No saved addresses'
   },
   auth: {
     email: 'Email',
@@ -74,6 +79,25 @@ export const enTranslations: TranslationResources = {
   profile: {
     title: 'Profile Settings',
     description: 'Manage your account details',
+    personalInfo: 'Personal Information',
+    fullName: 'Full Name',
+    fullNamePlaceholder: 'Enter your full name',
+    email: 'Email',
+    saveChanges: 'Save Changes',
+    addresses: {
+      title: 'Delivery Addresses',
+      add: 'Add Address',
+      primary: 'Primary Address',
+      address: 'Address',
+      instructions: 'Instructions',
+      confirmDelete: 'Are you sure you want to delete this address?',
+      noAddresses: 'You haven\'t added any addresses. Add your first delivery address.'
+    },
+    security: {
+      title: 'Security',
+      description: 'Manage your password',
+      changePassword: 'Change Password'
+    },
     preferences: 'Preferences',
     prefsDescription: 'Set your language and theme',
     setLanguage: 'Language',
@@ -121,7 +145,19 @@ export const enTranslations: TranslationResources = {
   },
   product: {
     description: {
-      classicBurger: 'Delicious burger with beef, lettuce, tomato and cheese'
-    }
-  }
-}; 
+      classicBurger: 'Classic burger with lettuce, tomato, and cheese',
+    },
+    outOfStock: 'Out of stock',
+    addToCart: 'Add to cart',
+    quantity: 'Quantity',
+  },
+  landing: {
+    login: 'Login',
+    signup: 'Sign up',
+    hero: {
+      title: 'Your favorite stores, delivered to your door',
+      subtitle: 'Get everything you need from local stores delivered in minutes',
+      cta: 'Start shopping',
+    },
+  },
+} as const; 

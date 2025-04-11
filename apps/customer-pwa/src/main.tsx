@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './i18n'; // Import i18n configuration
 import App from './App.tsx';
@@ -10,6 +10,16 @@ import { createSupabaseClient } from '@repo/api-client';
 import { SupabaseProvider } from './providers/SupabaseProvider';
 import { AuthProvider } from './providers/AuthProvider';
 import { ThemeProvider } from './providers/ThemeProvider';
+
+// Loading component with a clean design
+const LoadingScreen = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background">
+    <div className="text-center">
+      <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      <p className="text-sm text-muted-foreground">Loading translations...</p>
+    </div>
+  </div>
+);
 
 // 1. Get Supabase URL and Key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -37,8 +47,7 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* Suspense para cargas futuras o por si acaso */}
-    <React.Suspense fallback={<div>Loading translations...</div>}>
+    <Suspense fallback={<LoadingScreen />}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
           <SupabaseProvider supabase={supabase}>
@@ -49,6 +58,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </React.Suspense>
+    </Suspense>
   </React.StrictMode>
 );

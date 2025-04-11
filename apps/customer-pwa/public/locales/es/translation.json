@@ -1,0 +1,78 @@
+{
+  "landing": {
+    "signup": "Regístrate",
+    "hero": {
+      "title": "Tu tienda favorita a un clic de distancia",
+      "subtitle": "Descubre una nueva forma de comprar en línea con entregas rápidas y seguras",
+      "cta": "Comenzar"
+    }
+  },
+  "profile": {
+    "preferences": "Preferencias",
+    "prefsDescription": "Configura tu idioma y tema",
+    "setLanguage": "Idioma",
+    "setTheme": "Tema",
+    "addresses": {
+      "title": "Mis Direcciones",
+      "add": "Agregar Dirección",
+      "primary": "Dirección Principal"
+    }
+  },
+  "address": {
+    "title": "Direcciones",
+    "add": "Agregar dirección",
+    "addNew": "Nueva dirección",
+    "addTitle": "Agregar Dirección",
+    "modalDescription": "Ingresa los detalles de tu dirección",
+    "searchTitle": "Buscar dirección",
+    "searchPlaceholder": "Ingresa una dirección",
+    "searchAddress": "Buscar Dirección",
+    "useMyLocation": "Usar mi ubicación",
+    "googleMapsError": "Error al cargar Google Maps",
+    "locationError": "Error al obtener la ubicación",
+    "deliverTo": "Entregar a",
+    "loading": "Cargando...",
+    "manage": "Administrar Direcciones",
+    "setPrimary": "Establecer como Principal",
+    "save": "Guardar Dirección",
+    "details": {
+      "street": "Calle y Número",
+      "interior": "Número Interior",
+      "example": "Ejemplo",
+      "neighborhood": "Colonia",
+      "city": "Ciudad",
+      "zipCode": "Código Postal",
+      "instructions": "Instrucciones de Entrega"
+    }
+  },
+  "store": {
+    "minOrder": "Pedido mínimo",
+    "noMinimum": "Sin mínimo",
+    "cashback": "Cashback",
+    "free": "Gratis",
+    "deliveryTime": "Tiempo de Entrega",
+    "status": {
+      "open": "Abierto",
+      "schedule": "Programado",
+      "closed": "Cerrado"
+    }
+  },
+  "navigation": {
+    "home": "Inicio",
+    "favorites": "Favoritos",
+    "orders": "Pedidos",
+    "wallet": "Monedero",
+    "profile": "Perfil",
+    "setlocation": "Establecer Ubicación"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "logout": "Cerrar Sesión"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "edit": "Editar",
+    "delete": "Eliminar"
+  }
+} 

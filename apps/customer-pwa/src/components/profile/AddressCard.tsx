@@ -4,6 +4,7 @@ import { Button } from '@repo/ui/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/components/ui/card';
 import { Badge } from '@repo/ui/components/ui/badge';
 import { Edit3, Trash2, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface AddressCardProps {
   address: Address;
@@ -22,6 +23,8 @@ export const AddressCard: React.FC<AddressCardProps> = ({
   isDeleting,
   isSettingPrimary,
 }) => {
+  const { t } = useTranslation();
+  
   const fullAddress = `${address.street_address}${
     address.internal_number ? ` #${address.internal_number}` : ''
   }, ${address.neighborhood ? `${address.neighborhood}, ` : ''}${address.city}, ${
@@ -29,7 +32,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
   }, ${address.country}`;
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this address?')) {
+    if (window.confirm(t('profile.addresses.confirmDelete'))) {
       onDelete(address.id);
     }
   };
@@ -42,11 +45,11 @@ export const AddressCard: React.FC<AddressCardProps> = ({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-medium">
-          {address.is_primary ? 'Primary Address' : 'Address'}
+          {address.is_primary ? t('profile.addresses.primary') : t('profile.addresses.address')}
         </CardTitle>
         {address.is_primary && (
           <Badge variant="outline">
-            <Star className="mr-1 h-3 w-3 fill-current" /> Primary
+            <Star className="mr-1 h-3 w-3 fill-current" /> {t('profile.addresses.primary')}
           </Badge>
         )}
       </CardHeader>
@@ -54,7 +57,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
         <p className="text-sm text-muted-foreground">{fullAddress}</p>
         {address.delivery_instructions && (
           <p className="text-xs italic text-muted-foreground mt-1">
-            Instructions: {address.delivery_instructions}
+            {t('profile.addresses.instructions')}: {address.delivery_instructions}
           </p>
         )}
       </CardContent>
@@ -65,7 +68,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
           onClick={() => onEdit(address)}
           disabled={isDeleting || isSettingPrimary}
         >
-          <Edit3 className="mr-2 h-4 w-4" /> Edit
+          <Edit3 className="mr-2 h-4 w-4" /> {t('common.edit')}
         </Button>
         {/* Only show 'Set Primary' if it's not already primary */}
         {!address.is_primary && (
@@ -75,7 +78,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
             onClick={handleSetPrimary}
             disabled={isSettingPrimary || isDeleting}
           >
-            <Star className="mr-2 h-4 w-4" /> Set as Primary
+            <Star className="mr-2 h-4 w-4" /> {t('address.setPrimary')}
           </Button>
         )}
         <Button
@@ -85,7 +88,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
           onClick={handleDelete}
           disabled={isDeleting || isSettingPrimary}
         >
-          <Trash2 className="mr-2 h-4 w-4" /> Delete
+          <Trash2 className="mr-2 h-4 w-4" /> {t('common.delete')}
         </Button>
       </CardFooter>
     </Card>

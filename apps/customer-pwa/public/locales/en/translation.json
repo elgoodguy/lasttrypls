@@ -1,0 +1,78 @@
+{
+  "landing": {
+    "signup": "Sign up",
+    "hero": {
+      "title": "Your favorite store just a click away",
+      "subtitle": "Discover a new way to shop online with fast and secure deliveries",
+      "cta": "Get started"
+    }
+  },
+  "profile": {
+    "preferences": "Preferences",
+    "prefsDescription": "Configure your language and theme",
+    "setLanguage": "Language",
+    "setTheme": "Theme",
+    "addresses": {
+      "title": "My Addresses",
+      "add": "Add Address",
+      "primary": "Primary Address"
+    }
+  },
+  "address": {
+    "title": "Addresses",
+    "add": "Add address",
+    "addNew": "New address",
+    "addTitle": "Add Address",
+    "modalDescription": "Enter your address details",
+    "searchTitle": "Search address",
+    "searchPlaceholder": "Enter an address",
+    "searchAddress": "Search Address",
+    "useMyLocation": "Use my location",
+    "googleMapsError": "Error loading Google Maps",
+    "locationError": "Error getting location",
+    "deliverTo": "Deliver to",
+    "loading": "Loading...",
+    "manage": "Manage Addresses",
+    "setPrimary": "Set as Primary",
+    "save": "Save Address",
+    "details": {
+      "street": "Street Address",
+      "interior": "Interior Number",
+      "example": "Example",
+      "neighborhood": "Neighborhood",
+      "city": "City",
+      "zipCode": "ZIP Code",
+      "instructions": "Delivery Instructions"
+    }
+  },
+  "store": {
+    "minOrder": "Minimum order",
+    "noMinimum": "No minimum",
+    "cashback": "Cashback",
+    "free": "Free",
+    "deliveryTime": "Delivery Time",
+    "status": {
+      "open": "Open",
+      "schedule": "Scheduled",
+      "closed": "Closed"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "favorites": "Favorites",
+    "orders": "Orders",
+    "wallet": "Wallet",
+    "profile": "Profile",
+    "setlocation": "Set Location"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "edit": "Edit",
+    "delete": "Delete"
+  }
+} 

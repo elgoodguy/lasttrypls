@@ -15,29 +15,27 @@ export const MainLayout: React.FC = () => {
   useInitializeAddressStore();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col min-h-screen bg-background">
+      {/* Top Navigation - Fixed */}
       <TopNavBar />
 
-      {/* Main content area - Outlet renders the matched child route component */}
-      {/* Add padding-bottom to avoid overlap with BottomNavBar */}
-      <main className="flex-grow container py-6 pb-24">
-        {' '}
-        {/* pb-24 approx height of bottom nav + fab padding */}
+      {/* Main Content - Scrollable with padding for fixed navbars */}
+      <main className="flex-1 container overflow-y-auto mt-14 pb-20">
         <Outlet />
       </main>
 
-      {/* Show FAB only if logged in and items > 0 */}
+      {/* Cart FAB - Fixed */}
       {isLoggedIn && cartItemCount > 0 && (
         <div className="fixed bottom-20 right-4 z-20">
           <Link to="/cart">
             <Button size="lg" className="rounded-full shadow-lg">
-              {/* TODO: Use Lucide Cart Icon */}
               🛒 <span className="ml-2">{cartItemCount}</span>
             </Button>
           </Link>
         </div>
       )}
 
+      {/* Bottom Navigation - Fixed */}
       <BottomNavBar />
     </div>
   );
