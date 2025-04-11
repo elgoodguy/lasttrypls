@@ -1,7 +1,7 @@
 import { SVGProps } from 'react';
 
 export const WalletIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
     {/* Cuerpo principal rectangular de la cartera */}
     <rect x="12" y="20" width="40" height="28" fill="#8B4513" stroke="#070707" strokeWidth="2"/>
 

@@ -15,8 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
-import { MapPin, LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
-import { NotificationIcon } from '@/components/icons';
+import { LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
+import { NotificationIcon, LocationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
@@ -98,10 +98,10 @@ export const TopNavBar: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className="px-2 sm:px-4 max-w-[200px] sm:max-w-none" 
+                    className="px-2 sm:px-3 max-w-[200px] sm:max-w-none h-10" 
                     disabled={isLoadingAddresses}
                   >
-                    <MapPin className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                    <LocationIcon className="h-6 w-6 mr-1 sm:mr-2 flex-shrink-0" />
                     <span className="truncate text-sm">
                       {isLoadingAddresses ? t('common.loading') : formatShortAddress(activeAddress)}
                     </span>
@@ -153,10 +153,10 @@ export const TopNavBar: React.FC = () => {
             {!user && !isLoadingAuth && (
               <Button
                 variant="ghost"
-                className="px-2 sm:px-4"
+                className="px-2 sm:px-3 h-10"
                 onClick={() => setIsAuthModalOpen(true)}
               >
-                <MapPin className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                <LocationIcon className="h-6 w-6 mr-1 sm:mr-2 flex-shrink-0" />
                 <span className="truncate text-sm">{t('navigation.setlocation')}</span>
               </Button>
             )}
@@ -168,7 +168,7 @@ export const TopNavBar: React.FC = () => {
             {user && (
               <Button variant="ghost" size="icon" className="h-12 w-12" asChild>
                 <Link to="/notifications">
-                  <NotificationIcon className="h-9 w-9" />
+                  <NotificationIcon className="h-8 w-8" />
                 </Link>
               </Button>
             )}
