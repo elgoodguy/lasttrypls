@@ -16,7 +16,7 @@ export const BottomNavBar: React.FC = () => {
   const isLoggedIn = !isLoading && !!user;
 
   const navItems = [
-    { path: '/', label: t('navigation.home'), icon: HomeIcon, requiresAuth: false },
+    { path: '/home', label: t('navigation.home'), icon: HomeIcon, requiresAuth: false },
     { path: '/favorites', label: t('navigation.favorites'), icon: FavoritesIcon, requiresAuth: true },
     { path: '/orders', label: t('navigation.orders'), icon: OrdersIcon, requiresAuth: true },
     { path: '/wallet', label: t('navigation.wallet'), icon: WalletIcon, requiresAuth: true },

@@ -1,7 +1,7 @@
 import { SVGProps } from 'react';
 
 export const LocationIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="24" height="24" viewBox="20 20 24 36" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg width="100%" height="auto" viewBox="20 20 24 36" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path 
       d="M32 22 
         C27 22, 22 27, 22 34

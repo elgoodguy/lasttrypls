@@ -16,6 +16,7 @@ import { WalletPage } from './pages/WalletPage';
 import { CartPage } from './pages/CartPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { GlobalLoader } from '@/components/common/GlobalLoader';
+import { LandingPage } from './pages/LandingPage';
 
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
@@ -76,7 +77,8 @@ function App() {
       >
         <Router>
           <Routes>
-            <Route path="/" element={<MainLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<MainLayout />}>
               <Route index element={<HomePage />} />
               <Route path="store/:storeId" element={<StoreDetailPage />} />
               <Route path="favorites" element={<FavoritesPage />} />
