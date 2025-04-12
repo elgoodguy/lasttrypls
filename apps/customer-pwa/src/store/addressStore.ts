@@ -7,6 +7,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
 
+export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
+
 interface AddressState {
   addresses: Address[];
   activeAddress: Address | null;
@@ -26,6 +28,7 @@ interface AddressState {
   updateAddress: (id: string, address: AddressFormData) => Promise<void>;
   deleteAddress: (id: string) => Promise<void>;
   setPrimaryAddress: (id: string) => Promise<void>;
+  clearGuestAddressStorage: () => void;
 }
 
 const initialState = {
@@ -68,6 +71,11 @@ export const useAddressStore = create<AddressState>((set, get) => ({
       return;
     }
     set({ activeAddress: address });
+    
+    // If this is a guest address, persist it to localStorage
+    if (address?.id === 'guest-address') {
+      localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(address));
+    }
   },
 
   addOrUpdateAddress: address =>
@@ -119,7 +127,14 @@ export const useAddressStore = create<AddressState>((set, get) => ({
       };
     }),
 
-  resetStore: () => set(initialState),
+  resetStore: () => {
+    localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
+    set(initialState);
+  },
+
+  clearGuestAddressStorage: () => {
+    localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
+  },
 
   addAddress: async (address: AddressFormData) => {
     const newAddress: Address = {
@@ -170,30 +185,48 @@ export const useInitializeAddressStore = () => {
   const { user } = useAuth();
   const supabase = useSupabase();
   const queryClient = useQueryClient();
-  const { setLoading, setError, setAddresses, resetStore, isInitialized } = useAddressStore();
+  const { setLoading, setError, setAddresses, resetStore, isInitialized, clearGuestAddressStorage } = useAddressStore();
 
   useEffect(() => {
-    // Obtenemos el estado actual directamente aquí para la condición de reset
-    const currentActiveAddress = useAddressStore.getState().activeAddress;
-    const shouldReset = !user && isInitialized && currentActiveAddress?.id !== 'guest-address';
+    if (!user) {
+      // Handle guest user case
+      if (!isInitialized) {
+        const storedGuestAddress = localStorage.getItem(GUEST_ADDRESS_STORAGE_KEY);
+        
+        if (storedGuestAddress) {
+          try {
+            const guestAddress = JSON.parse(storedGuestAddress);
+            console.log('Loading guest address from localStorage:', guestAddress);
+            setAddresses([guestAddress]);
+          } catch (error) {
+            console.error('Failed to parse stored guest address:', error);
+            localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
+            setAddresses([]);
+          }
+        } else {
+          console.log('Initializing empty store for guest user');
+          setAddresses([]);
+        }
+      }
+    } else {
+      // Handle authenticated user case
+      clearGuestAddressStorage();
+      
+      if (!isInitialized) {
+        setLoading(true);
+        console.log('Initializing address store for user:', user.id);
 
-    if (user && !isInitialized) {
-      setLoading(true);
-      console.log('Initializing address store for user:', user.id);
-
-      getAddresses(supabase)
-        .then(data => {
-          console.log('Fetched addresses for store initialization:', data);
-          setAddresses(data || []);
-          queryClient.setQueryData(['addresses', user.id], data);
-        })
-        .catch(err => {
-          console.error('Failed to initialize address store:', err);
-          setError(err);
-        });
-    } else if (shouldReset) {
-      console.log('Resetting address store (user logged out or state mismatch)');
-      resetStore();
+        getAddresses(supabase)
+          .then(data => {
+            console.log('Fetched addresses for store initialization:', data);
+            setAddresses(data || []);
+            queryClient.setQueryData(['addresses', user.id], data);
+          })
+          .catch(err => {
+            console.error('Failed to initialize address store:', err);
+            setError(err);
+          });
+      }
     }
-  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);
+  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient, clearGuestAddressStorage]);
 };

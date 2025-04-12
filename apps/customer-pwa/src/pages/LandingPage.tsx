@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
-import { useAddressStore } from '@/store/addressStore';
+import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
 import { LanguageToggle } from '@/components/common/LanguageToggle';
 import { BenefitsList } from '@/components/landing/BenefitsList';
@@ -54,14 +54,21 @@ export const LandingPage: React.FC = () => {
   const handleAddressSubmit = async (data: any) => {
     if (isGuest) {
       // Para usuarios guest, guardamos la dirección en el store sin enviarla al backend
-      addOrUpdateAddress({
+      const guestAddress = {
         ...data,
         id: 'guest-address',
         is_primary: true,
         user_id: 'guest',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      });
+      };
+      
+      addOrUpdateAddress(guestAddress);
+      
+      // Guardar la dirección en localStorage
+      localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(guestAddress));
+      console.log('Guest address saved to localStorage:', guestAddress);
+      
       navigate('/home');
     } else {
       // Para usuarios registrados, guardamos la dirección en el backend

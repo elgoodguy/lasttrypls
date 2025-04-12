@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { useSupabase } from './SupabaseProvider'; // Hook to get Supabase client
+import { useAddressStore } from '@/store/addressStore';
 
 interface AuthContextType {
   session: Session | null;
@@ -43,9 +44,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log('AuthProvider: Auth state changed', { event: _event, hasSession: !!session });
       if (_event === 'SIGNED_IN' && session) {
+        // Clear guest address storage before updating session
+        useAddressStore.getState().clearGuestAddressStorage();
+        console.log('AuthProvider: Cleared guest address storage on sign in');
         setSession(session);
         setUser(session.user);
       } else if (_event === 'SIGNED_OUT') {
+        // Clear guest address storage before clearing session
+        useAddressStore.getState().clearGuestAddressStorage();
+        console.log('AuthProvider: Cleared guest address storage on sign out');
         setSession(null);
         setUser(null);
       }
@@ -60,6 +67,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Sign out function
   const signOut = async () => {
     console.log('AuthProvider: Signing out');
+    // Clear guest address storage before signing out
+    useAddressStore.getState().clearGuestAddressStorage();
+    console.log('AuthProvider: Cleared guest address storage before sign out');
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('AuthProvider: Error signing out:', error);
