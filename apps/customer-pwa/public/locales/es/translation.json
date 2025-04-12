@@ -1,10 +1,11 @@
 {
   "landing": {
-    "signup": "Regístrate",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
     "hero": {
-      "title": "Tu tienda favorita a un clic de distancia",
-      "subtitle": "Descubre una nueva forma de comprar en línea con entregas rápidas y seguras",
-      "cta": "Comenzar"
+      "title": "Tus tiendas favoritas, entregadas a tu puerta",
+      "subtitle": "Recibe todo lo que necesitas de tiendas locales en minutos",
+      "cta": "Empieza a comprar"
     }
   },
   "profile": {

@@ -1,10 +1,11 @@
 {
   "landing": {
+    "login": "Login",
     "signup": "Sign up",
     "hero": {
-      "title": "Your favorite store just a click away",
-      "subtitle": "Discover a new way to shop online with fast and secure deliveries",
-      "cta": "Get started"
+      "title": "Your favorite stores, delivered to your door",
+      "subtitle": "Get everything you need from local stores delivered in minutes",
+      "cta": "Start shopping"
     }
   },
   "profile": {
