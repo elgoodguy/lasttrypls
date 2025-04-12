@@ -2,9 +2,13 @@
   "landing": {
     "login": "Login",
     "signup": "Sign up",
-    "continueAsGuest": "TODO: Translate Continue as Guest",
+    "continueAsGuest": "Continue as Guest",
     "benefits": {
-      "title": "TODO: Translate Benefits Title"
+      "title": "Why create an account?",
+      "saveAddresses": "Save and manage your delivery addresses",
+      "trackOrders": "Track your orders in real-time",
+      "manageWallet": "Manage your wallet and payments",
+      "saveFavorites": "Save your favorite stores and items"
     },
     "hero": {
       "title": "Your favorite stores, delivered to your door",
@@ -139,5 +143,17 @@
     "hi": "Hi",
     "search": "Search stores or products...",
     "continue": "TODO: Translate Continue"
+  },
+  "favorites": {
+    "title": "My Favorites",
+    "empty": "No favorites yet"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No recent orders"
+  },
+  "wallet": {
+    "title": "My Wallet",
+    "empty": "No payment methods configured"
   }
 } 

@@ -2,26 +2,42 @@
   "landing": {
     "login": "Iniciar sesión",
     "signup": "Registrarse",
-    "continueAsGuest": "TODO: Traducir Continuar como Invitado",
+    "continueAsGuest": "Continuar como invitado",
     "benefits": {
-      "title": "TODO: Traducir Título de Beneficios"
+      "title": "¿Por qué crear una cuenta?",
+      "saveAddresses": "Guarda y gestiona tus direcciones de entrega",
+      "trackOrders": "Sigue tus pedidos en tiempo real",
+      "manageWallet": "Gestiona tu billetera y pagos",
+      "saveFavorites": "Guarda tus tiendas y productos favoritos",
+      "title1": "Encuentra los mejores restaurantes",
+      "description1": "Descubre una amplia variedad de opciones gastronómicas cerca de ti",
+      "title2": "Pedidos rápidos y seguros",
+      "description2": "Realiza pedidos de manera fácil y segura con nuestro sistema de pago integrado",
+      "title3": "Seguimiento en tiempo real",
+      "description3": "Mantente informado sobre el estado de tu pedido en todo momento"
     },
     "hero": {
-      "title": "Tus tiendas favoritas, entregadas a tu puerta",
-      "subtitle": "Recibe todo lo que necesitas de tiendas locales en minutos",
-      "cta": "Empieza a comprar"
+      "title": "Tus tiendas favoritas, entregadas en tu puerta",
+      "subtitle": "Consigue todo lo que necesitas de tiendas locales entregado en minutos",
+      "cta": "Comenzar a comprar"
     }
   },
   "profile": {
-    "title": "Ajustes de Perfil",
+    "title": "Configuración de Perfil",
     "description": "Administra los detalles de tu cuenta",
-    "personalInfo": {
-      "title": "Información Personal",
-      "fullName": "Nombre Completo",
-      "fullNamePlaceholder": "Ingresa tu nombre completo",
-      "email": "Correo Electrónico",
-      "emailPlaceholder": "tu@correo.com",
-      "saveChanges": "Guardar Cambios"
+    "personalInfo": "Información Personal",
+    "fullName": "Nombre Completo",
+    "fullNamePlaceholder": "Ingresa tu nombre completo",
+    "email": "Correo electrónico",
+    "saveChanges": "Guardar Cambios",
+    "addresses": {
+      "title": "Direcciones de Entrega",
+      "add": "Agregar Dirección",
+      "primary": "Dirección Principal",
+      "address": "Dirección",
+      "instructions": "Instrucciones",
+      "confirmDelete": "¿Estás seguro que deseas eliminar esta dirección?",
+      "noAddresses": "No has agregado ninguna dirección. Agrega tu primera dirección de entrega."
     },
     "security": {
       "title": "Seguridad",
@@ -31,53 +47,62 @@
     "preferences": "Preferencias",
     "prefsDescription": "Configura tu idioma y tema",
     "setLanguage": "Idioma",
-    "setTheme": "Tema",
-    "addresses": {
-      "title": "Mis Direcciones",
-      "add": "Agregar Dirección",
-      "primary": "Dirección Principal"
-    }
+    "setTheme": "Tema"
   },
   "address": {
-    "title": "Direcciones",
+    "title": "Direcciones de entrega",
     "add": "Agregar dirección",
     "addNew": "Nueva dirección",
-    "addTitle": "Agregar Dirección",
-    "modalDescription": "Ingresa los detalles de tu dirección",
-    "forceModalDescription": "TODO: Traducir Por favor agrega una dirección para continuar",
-    "gettingLocation": "TODO: Traducir Obteniendo ubicación...",
-    "searchTitle": "Buscar dirección",
-    "searchPlaceholder": "Ingresa una dirección",
-    "searchAddress": "Buscar Dirección",
+    "search": "Buscar dirección",
+    "searchTitle": "Buscar Dirección",
+    "searchPlaceholder": "Ingresa una ubicación para buscar",
+    "searchAddress": "Buscar dirección",
+    "useLocation": "Usar mi ubicación",
     "useMyLocation": "Usar mi ubicación",
-    "googleMapsError": "Error al cargar Google Maps",
+    "manage": "Administrar direcciones",
+    "setPrimary": "Establecer como principal",
+    "addTitle": "Agregar dirección",
+    "editTitle": "Editar dirección",
+    "modalDescription": "Agregar o editar tu dirección",
+    "forceModalDescription": "Por favor agrega una dirección para continuar",
+    "deliverTo": "Entregar a:",
+    "loading": "Cargando direcciones...",
+    "googleMapsError": "El servicio de Google Maps no está disponible",
     "locationError": "Error al obtener la ubicación",
-    "deliverTo": "Entregar a",
-    "loading": "Cargando...",
-    "manage": "Administrar Direcciones",
-    "setPrimary": "Establecer como Principal",
-    "save": "Guardar Dirección",
+    "manualEntryRequired": "Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manualmente.",
     "details": {
-      "street": "Calle y Número",
-      "interior": "Número Interior",
-      "example": "Ejemplo",
+      "street": "Calle y número",
+      "interior": "Número interior (opcional)",
       "neighborhood": "Colonia",
       "city": "Ciudad",
       "zipCode": "Código Postal",
-      "instructions": "Instrucciones de Entrega"
-    }
+      "instructions": "Instrucciones de entrega (opcional)",
+      "example": "Ej: Tocar el timbre dos veces"
+    },
+    "save": "Guardar dirección",
+    "empty": "No tienes direcciones guardadas",
+    "noneSaved": "No hay direcciones guardadas"
   },
   "store": {
-    "minOrder": "Pedido mínimo",
-    "noMinimum": "Sin mínimo",
-    "cashback": "Cashback",
-    "free": "Gratis",
-    "deliveryTime": "Tiempo de Entrega",
+    "nearLocation": "Tiendas cerca de {location}",
+    "categories": {
+      "all": "Todas",
+      "restaurants": "Restaurantes",
+      "cafes": "Cafeterías",
+      "food": "Comida"
+    },
     "status": {
       "open": "Abierto",
-      "schedule": "Programado",
-      "closed": "Cerrado"
+      "closed": "Cerrado",
+      "schedule": "Horario"
     },
+    "minOrder": "Pedido Mín.",
+    "noMinimum": "Sin mínimo",
+    "deliveryTime": "min",
+    "rating": "Calificación",
+    "reviews": "reseñas",
+    "cashback": "Cashback",
+    "free": "Gratis",
     "list": {
       "all": "Todo",
       "near": "Tiendas cerca de",
@@ -87,28 +112,41 @@
   },
   "navigation": {
     "home": "Inicio",
+    "about": "Acerca de",
+    "contact": "Contacto",
     "favorites": "Favoritos",
     "orders": "Pedidos",
-    "wallet": "Monedero",
+    "wallet": "Billetera",
+    "cart": "Carrito",
     "profile": "Perfil",
-    "setlocation": "Establecer Ubicación"
+    "search": "Buscar",
+    "setlocation": "Establecer Ubicación",
+    "notifications": "Notificaciones"
   },
   "auth": {
-    "login": {
-      "title": "Iniciar Sesión",
-      "description": "Inicia sesión para acceder a tu cuenta",
-      "button": "Iniciar Sesión",
-      "haveAccount": "¿Ya tienes una cuenta?"
-    },
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "rememberMe": "Recordarme",
+    "noAccount": "¿No tienes una cuenta?",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "logout": "Cerrar Sesión",
     "signup": {
       "title": "Registrarse",
       "description": "Crea una cuenta para comenzar",
       "button": "Registrarse",
       "noAccount": "¿No tienes una cuenta?"
     },
+    "login": {
+      "title": "Iniciar Sesión",
+      "description": "Inicia sesión para acceder a tu cuenta",
+      "button": "Iniciar Sesión",
+      "haveAccount": "¿Ya tienes una cuenta?"
+    },
     "form": {
       "email": "Correo Electrónico",
-      "emailPlaceholder": "tu@correo.com",
+      "emailPlaceholder": "tú@ejemplo.com",
       "password": "Contraseña",
       "processing": "Procesando..."
     },
@@ -118,22 +156,62 @@
       "phone": "Teléfono (OTP)"
     },
     "messages": {
-      "verificationNeeded": "Registro exitoso, pero necesita verificación. Por favor revisa tu correo.",
-      "signupSuccess": "¡Registro exitoso! Has iniciado sesión.",
-      "checkEmail": "¡Registro exitoso! Por favor revisa tu correo para verificar tu cuenta.",
+      "verificationNeeded": "Registro exitoso, pero el usuario necesita verificación. Por favor, revisa tu correo electrónico.",
+      "signupSuccess": "¡Registro exitoso! Ahora estás conectado.",
+      "checkEmail": "¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.",
       "loginSuccess": "¡Inicio de sesión exitoso!",
-      "unexpectedError": "Ha ocurrido un error inesperado.",
+      "unexpectedError": "Ocurrió un error inesperado.",
       "oauthError": "Error al iniciar sesión con"
-    },
-    "logout": "Cerrar Sesión"
+    }
   },
   "common": {
+    "welcome": "Bienvenido",
     "loading": "Cargando...",
-    "edit": "Editar",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
     "delete": "Eliminar",
-    "greeting": "¡Hola!",
-    "hi": "¡Hola",
+    "edit": "Editar",
+    "saving": "Guardando...",
+    "confirm": "Confirmar",
+    "continue": "Continuar",
+    "min": "Min.",
     "search": "Buscar tiendas o productos...",
-    "continue": "TODO: Traducir Continuar"
+    "hi": "¡Hola!",
+    "back": "Volver",
+    "greeting": "¡Hola!"
+  },
+  "wallet": {
+    "title": "Mi Billetera",
+    "empty": "No hay métodos de pago configurados",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginMessage": "Inicia sesión para ver tu billetera"
+  },
+  "favorites": {
+    "title": "Mis Favoritos",
+    "empty": "Aún no hay favoritos",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginMessage": "Inicia sesión para ver tus favoritos"
+  },
+  "orders": {
+    "title": "Mis Pedidos",
+    "empty": "No hay pedidos recientes",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginMessage": "Inicia sesión para ver tus pedidos"
+  },
+  "error": {
+    "notFound": {
+      "title": "404",
+      "description": "Página no encontrada",
+      "action": "Volver al inicio"
+    }
+  },
+  "product": {
+    "description": {
+      "classicBurger": "Hamburguesa clásica con lechuga, tomate y queso"
+    },
+    "outOfStock": "Agotado",
+    "addToCart": "Agregar al carrito",
+    "quantity": "Cantidad"
   }
 } 

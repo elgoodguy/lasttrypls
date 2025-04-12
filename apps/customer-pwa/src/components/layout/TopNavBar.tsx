@@ -171,15 +171,15 @@ export const TopNavBar: React.FC = () => {
                   <>
                     <DropdownMenuItem onClick={() => navigate('/profile')}>
                       <UserIcon className="mr-2 h-4 w-4" />
-                      {t('nav.profile')}
+                      {t('navigation.profile')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/orders')}>
                       <Star className="mr-2 h-4 w-4" />
-                      {t('nav.orders')}
+                      {t('navigation.orders')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/wallet')}>
                       <PlusCircle className="mr-2 h-4 w-4" />
-                      {t('nav.wallet')}
+                      {t('navigation.wallet')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
@@ -193,7 +193,7 @@ export const TopNavBar: React.FC = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
-                      {t('auth.signout')}
+                      {t('auth.logout')}
                     </DropdownMenuItem>
                   </>
                 )}
