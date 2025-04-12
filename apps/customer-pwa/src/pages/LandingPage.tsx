@@ -53,21 +53,27 @@ export const LandingPage: React.FC = () => {
 
   const handleAddressSubmit = async (data: any) => {
     if (isGuest) {
-      // Para usuarios guest, guardamos la dirección en el store sin enviarla al backend
+      // Para usuarios guest, creamos una dirección con ID único
+      const guestAddressId = 'guest-address-' + Date.now();
       const guestAddress = {
         ...data,
-        id: 'guest-address',
+        id: guestAddressId,
         is_primary: true,
         user_id: 'guest',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
       
+      // Actualizar el store de Zustand
       addOrUpdateAddress(guestAddress);
       
-      // Guardar la dirección en localStorage
-      localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(guestAddress));
-      console.log('Guest address saved to localStorage:', guestAddress);
+      // Guardar en localStorage
+      try {
+        localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(guestAddress));
+        console.log('[LandingPage] Saved guest address to localStorage:', guestAddress);
+      } catch (error) {
+        console.error('[LandingPage] Error saving guest address to localStorage:', error);
+      }
       
       navigate('/home');
     } else {
