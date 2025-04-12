@@ -39,5 +39,5 @@ create trigger refresh_store_products_view_on_store_products
 after insert or update or delete on public.store_products
 for each statement execute function refresh_store_products_view();
 
--- Grant access to authenticated users
-grant select on public.store_products_view to authenticated; 
+-- Grant access to authenticated and anonymous users
+grant select on public.store_products_view to authenticated, anon; 

@@ -6,6 +6,7 @@ interface AuthContextType {
   session: Session | null;
   user: User | null;
   isLoading: boolean;
+  isGuest: boolean;
   signOut: () => Promise<void>;
 }
 
@@ -71,6 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       session,
       user,
       isLoading: isLoadingSession,
+      isGuest: !isLoadingSession && !user,
       signOut,
     }),
     [session, user, isLoadingSession]

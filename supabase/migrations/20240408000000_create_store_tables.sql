@@ -13,9 +13,10 @@ create table public.groups (
 alter table public.groups enable row level security;
 
 -- Policy: Allow all authenticated users to view groups
-create policy "Allow authenticated users to view groups"
+DROP POLICY IF EXISTS "Allow authenticated users to view groups" ON public.groups;
+CREATE POLICY "Allow public read access to groups"
   on public.groups for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- 2. Stores Table
 create table public.stores (
@@ -56,9 +57,10 @@ create table public.stores (
 alter table public.stores enable row level security;
 
 -- Policy: Allow all authenticated users to view active stores
-create policy "Allow authenticated users to view active stores"
+DROP POLICY IF EXISTS "Allow authenticated users to view active stores" ON public.stores;
+CREATE POLICY "Allow public read access to active stores"
   on public.stores for select
-  using (auth.role() = 'authenticated' and is_active = true);
+  using ((auth.role() = 'authenticated' OR auth.role() = 'anon') AND is_active = true);
 
 -- 3. Product Categories Table
 create table public.product_categories (
@@ -73,9 +75,10 @@ create table public.product_categories (
 alter table public.product_categories enable row level security;
 
 -- Policy: Allow all authenticated users to view categories
-create policy "Allow authenticated users to view categories"
+DROP POLICY IF EXISTS "Allow authenticated users to view categories" ON public.product_categories;
+CREATE POLICY "Allow public read access to categories"
   on public.product_categories for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- 4. Cashback Rules Table
 create table public.cashback_rules (
@@ -102,9 +105,10 @@ create table public.cashback_rules (
 alter table public.cashback_rules enable row level security;
 
 -- Policy: Allow all authenticated users to view active cashback rules
-create policy "Allow authenticated users to view active cashback rules"
+DROP POLICY IF EXISTS "Allow authenticated users to view active cashback rules" ON public.cashback_rules;
+CREATE POLICY "Allow public read access to active cashback rules"
   on public.cashback_rules for select
-  using (auth.role() = 'authenticated' and is_active = true);
+  using ((auth.role() = 'authenticated' OR auth.role() = 'anon') AND is_active = true);
 
 -- Add triggers for updated_at
 create trigger on_groups_updated

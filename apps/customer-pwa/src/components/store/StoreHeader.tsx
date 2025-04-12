@@ -3,6 +3,9 @@ import { Clock, Heart, Percent, Star, Truck } from 'lucide-react';
 import { Badge } from '@repo/ui/components/ui/badge';
 import { StoreStatusIndicator } from '@repo/ui/components/store/StoreStatusIndicator';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/providers/AuthProvider';
+import { useState } from 'react';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 interface StoreHeaderProps {
   store: StoreDetails & {
@@ -16,8 +19,18 @@ interface StoreHeaderProps {
 
 export function StoreHeader({ store }: StoreHeaderProps) {
   const { t } = useTranslation();
+  const { isGuest } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   // TODO: Implement proper isOpen logic based on operating_hours
   const isOpen = store.is_active;
+
+  const handleFavoriteClick = () => {
+    if (isGuest) {
+      setIsAuthModalOpen(true);
+    } else {
+      // TODO: Implement favorite toggle logic
+    }
+  };
 
   return (
     <div className="relative px-4 py-4 space-y-3">
@@ -27,7 +40,10 @@ export function StoreHeader({ store }: StoreHeaderProps) {
           <h1 className="text-2xl font-bold">{store.name}</h1>
           <StoreStatusIndicator isActive={isOpen} />
         </div>
-        <button className="rounded-full p-2 hover:bg-muted">
+        <button 
+          className="rounded-full p-2 hover:bg-muted"
+          onClick={handleFavoriteClick}
+        >
           <Heart className="h-6 w-6" />
         </button>
       </div>
@@ -83,6 +99,8 @@ export function StoreHeader({ store }: StoreHeaderProps) {
           </Badge>
         )}
       </div>
+
+      <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
     </div>
   );
 }

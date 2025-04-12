@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
-import { LogOut, UserIcon, PlusCircle, Star, Home } from 'lucide-react';
+import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin } from 'lucide-react';
 import { NotificationIcon, LocationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
@@ -24,20 +24,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@repo/ui/lib/utils';
 
 export const TopNavBar: React.FC = () => {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isLoading: isLoadingAuth, isGuest, signOut } = useAuth();
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const { user, isLoading: isLoadingAuth, signOut } = useAuth();
-  const {
-    addresses,
-    activeAddress,
-    isLoading: isLoadingAddresses,
-    setPrimaryAddress,
-    addAddress,
-  } = useAddressStore();
+  const { addresses, activeAddress, isLoading: isLoadingAddresses } = useAddressStore();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -45,7 +40,7 @@ export const TopNavBar: React.FC = () => {
     navigate('/');
   };
 
-  const handleSelectAddress = (_addressId: string) => {
+  const handleAddressSelect = (_addressId: string) => {
     // Implementar lógica para seleccionar dirección
   };
 
@@ -54,12 +49,11 @@ export const TopNavBar: React.FC = () => {
   };
 
   const handleModalSubmit = async (addressData: any) => {
-    await addAddress(addressData);
-    setIsAddressModalOpen(false);
+    // Implementar la lógica para manejar la submisión del formulario de dirección
   };
 
-  const setPrimaryMut = async (addressId: string) => {
-    await setPrimaryAddress(addressId);
+  const handleSetPrimary = async (addressId: string) => {
+    // Implementar la lógica para establecer la dirección principal
   };
 
   const formatShortAddress = (address: any) => {
@@ -85,166 +79,140 @@ export const TopNavBar: React.FC = () => {
       .toUpperCase();
   };
 
-  const isLoggedIn = !isLoadingAuth && !!user;
-
   return (
-    <>
-      <header className="fixed top-0 left-0 right-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          {/* Location Dropdown/Button */}
-          <div className="flex-1 flex justify-start">
-            {user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    className="px-2 sm:px-3 max-w-[200px] sm:max-w-none h-10" 
-                    disabled={isLoadingAddresses}
-                  >
-                    <LocationIcon className="h-6 w-6 mr-1 sm:mr-2 flex-shrink-0" />
-                    <span className="truncate text-sm">
-                      {isLoadingAddresses ? t('common.loading') : formatShortAddress(activeAddress)}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 bg-background border shadow-md">
-                  <DropdownMenuLabel>{t('address.deliverTo')}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {isLoadingAddresses ? (
-                    <DropdownMenuItem disabled>{t('address.loading')}</DropdownMenuItem>
-                  ) : addresses.length === 0 ? (
-                    <DropdownMenuItem disabled>{t('address.noneSaved')}</DropdownMenuItem>
-                  ) : (
-                    addresses.map(addr => (
-                      <DropdownMenuItem
-                        key={addr.id}
-                        onClick={() => handleSelectAddress(addr.id)}
-                        className={cn('cursor-pointer', {
-                          'bg-accent': addr.id === activeAddress?.id,
-                        })}
-                      >
-                        {addr.is_primary && <Home className="mr-2 h-4 w-4" />}
-                        <span className="truncate">{formatShortAddress(addr)}</span>
-                      </DropdownMenuItem>
-                    ))
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleOpenAddAddress} className="cursor-pointer">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    {t('address.addNew')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile">
-                      <UserIcon className="mr-2 h-4 w-4" />
-                      {t('address.manage')}
-                    </Link>
-                  </DropdownMenuItem>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        {/* Location Dropdown/Button */}
+        <div className="flex-1 flex justify-start">
+          {!isLoadingAuth && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="px-2 sm:px-3 max-w-[200px] sm:max-w-none h-10" 
+                  disabled={isLoadingAddresses}
+                >
+                  <LocationIcon className="h-6 w-6 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="truncate text-sm">
+                    {isLoadingAddresses ? t('common.loading') : formatShortAddress(activeAddress)}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                <DropdownMenuLabel>{t('address.deliverTo')}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {isLoadingAddresses ? (
+                  <DropdownMenuItem disabled>{t('common.loading')}</DropdownMenuItem>
+                ) : addresses.length === 0 ? (
+                  <DropdownMenuItem disabled>{t('address.noAddresses')}</DropdownMenuItem>
+                ) : (
+                  addresses.map(addr => (
+                    <DropdownMenuItem
+                      key={addr.id}
+                      onClick={() => handleAddressSelect(addr.id)}
+                      className={cn('cursor-pointer', { 'bg-accent': addr.id === activeAddress?.id })}
+                    >
+                      {addr.is_primary && <Home className="mr-2 h-4 w-4" />}
+                      <span className="truncate">{formatShortAddress(addr)}</span>
+                    </DropdownMenuItem>
+                  ))
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleOpenAddAddress} className="cursor-pointer">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  {t('address.addNew')}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => isGuest ? setIsAuthModalOpen(true) : navigate('/profile')} 
+                  className="cursor-pointer"
+                >
+                  <MapPin className="mr-2 h-4 w-4" />
+                  {t('address.manage')}
+                </DropdownMenuItem>
+                {activeAddress && !activeAddress.is_primary && (
                   <DropdownMenuItem
-                    onClick={() => activeAddress && setPrimaryMut(activeAddress.id)}
-                    disabled={!activeAddress || activeAddress.is_primary}
+                    onClick={() => isGuest ? setIsAuthModalOpen(true) : handleSetPrimary(activeAddress.id)}
                     className="cursor-pointer"
                   >
-                    <Star className="mr-2 h-4 w-4" />
+                    <Home className="mr-2 h-4 w-4" />
                     {t('address.setPrimary')}
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-            {!user && !isLoadingAuth && (
-              <Button
-                variant="ghost"
-                className="px-2 sm:px-3 h-10"
-                onClick={() => setIsAuthModalOpen(true)}
-              >
-                <LocationIcon className="h-6 w-6 mr-1 sm:mr-2 flex-shrink-0" />
-                <span className="truncate text-sm">{t('navigation.setlocation')}</span>
-              </Button>
-            )}
-          </div>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            {/* Notifications */}
-            {user && (
-              <Button variant="ghost" size="icon" className="h-12 w-12" asChild>
-                <Link to="/notifications">
-                  <NotificationIcon className="h-8 w-8" />
-                </Link>
-              </Button>
-            )}
-
-            {/* Auth Button/Dropdown */}
-            {isLoadingAuth ? (
-              <div className="h-12 w-12 animate-pulse rounded-full bg-muted"></div>
-            ) : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-12 w-12 rounded-full">
-                    <Avatar className="h-12 w-12">
+        {/* User Avatar Dropdown */}
+        <div className="flex items-center gap-4">
+          {!isLoadingAuth && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+                  <Avatar className="h-12 w-12">
+                    {!isGuest && user && (
                       <AvatarImage
                         src={user.user_metadata?.avatar_url}
                         alt={user.user_metadata?.full_name || user.email}
                       />
-                      <AvatarFallback>
-                        {getInitials(user.user_metadata?.full_name || user.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-56 bg-background border shadow-md"
-                  align="end"
-                  forceMount
-                >
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user.user_metadata?.full_name || 'User'}
-                      </p>
-                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile">
+                    )}
+                    <AvatarFallback>
+                      {isGuest ? 'U' : getInitials(user?.user_metadata?.full_name || user?.email || '')}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>
+                  {isGuest ? t('nav.guest') : user?.user_metadata?.full_name || user?.email}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {!isGuest && (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
                       <UserIcon className="mr-2 h-4 w-4" />
-                      {t('navigation.profile')}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/orders">{t('navigation.orders')}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/wallet">{t('navigation.wallet')}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="font-normal text-xs text-muted-foreground">
-                    {t('profile.preferences')}
-                  </DropdownMenuLabel>
-                  <div className="flex items-center gap-1 px-2 py-1">
-                    <ThemeToggle theme={theme} setTheme={setTheme} />
-                    <LanguageToggle />
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    {t('auth.logout')}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button variant="outline" onClick={() => setIsAuthModalOpen(true)}>
-                {t('auth.login.button')} / {t('auth.signup.button')}
-              </Button>
-            )}
-          </div>
+                      {t('nav.profile')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                      <Star className="mr-2 h-4 w-4" />
+                      {t('nav.orders')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/wallet')}>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      {t('nav.wallet')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <div className="flex items-center justify-between px-2 py-1.5">
+                  <ThemeToggle theme={theme} setTheme={setTheme} />
+                  <LanguageToggle />
+                </div>
+                {!isGuest && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      {t('auth.signout')}
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {isGuest && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setIsAuthModalOpen(true)}>
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      {t('auth.login')} / {t('auth.signup')}
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
-      </header>
+      </div>
 
-      {/* Render AuthModal */}
       <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
-
-      {/* Render Address Modal */}
       <AddressModal
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
@@ -252,6 +220,6 @@ export const TopNavBar: React.FC = () => {
         isLoading={false}
         addressToEdit={null}
       />
-    </>
+    </header>
   );
 };

@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BottomNavBar as UIBottomNavBar } from '@repo/ui/components/navigation/BottomNavBar';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { HomeIcon, FavoritesIcon, OrdersIcon, WalletIcon } from '@/components/icons';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 // Define navigation items with custom icons
 export const BottomNavBar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isGuest } = useAuth();
   const { t } = useTranslation();
-
-  // Determine isLoggedIn based on auth state (consider loading state)
-  const isLoggedIn = !isLoading && !!user;
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const navItems = [
     { path: '/home', label: t('navigation.home'), icon: HomeIcon, requiresAuth: false },
@@ -22,12 +21,26 @@ export const BottomNavBar: React.FC = () => {
     { path: '/wallet', label: t('navigation.wallet'), icon: WalletIcon, requiresAuth: true },
   ];
 
+  const handleNavigate = (path: string, requiresAuth: boolean) => {
+    if (requiresAuth && isGuest) {
+      setIsAuthModalOpen(true);
+    } else {
+      navigate(path);
+    }
+  };
+
   return (
-    <UIBottomNavBar
-      items={navItems}
-      currentPath={location.pathname}
-      isAuthenticated={isLoggedIn}
-      onNavigate={navigate}
-    />
+    <>
+      <UIBottomNavBar
+        items={navItems}
+        currentPath={location.pathname}
+        isAuthenticated={!isGuest}
+        onNavigate={(path) => {
+          const item = navItems.find(item => item.path === path);
+          handleNavigate(path, item?.requiresAuth || false);
+        }}
+      />
+      <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+    </>
   );
 };

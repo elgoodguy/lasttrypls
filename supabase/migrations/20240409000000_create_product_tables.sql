@@ -18,9 +18,10 @@ create table public.products (
 alter table public.products enable row level security;
 
 -- Policy: Allow all authenticated users to view active products
-create policy "Allow authenticated users to view active products"
+DROP POLICY IF EXISTS "Allow authenticated users to view active products" ON public.products;
+CREATE POLICY "Allow public read access to active products"
   on public.products for select
-  using (auth.role() = 'authenticated' and is_active = true);
+  using ((auth.role() = 'authenticated' OR auth.role() = 'anon') AND is_active = true);
 
 -- 2. Store Products Table (Many-to-Many relationship)
 create table public.store_products (
@@ -35,10 +36,11 @@ create table public.store_products (
 -- Enable RLS
 alter table public.store_products enable row level security;
 
--- Policy: Allow authenticated users to view available products in stores
-create policy "Allow authenticated users to view store products"
+-- Policy: Allow authenticated users to view store products
+DROP POLICY IF EXISTS "Allow authenticated users to view store products" ON public.store_products;
+CREATE POLICY "Allow public read access to store products"
   on public.store_products for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- 3. Product Categories Map (Many-to-Many relationship)
 create table public.product_categories_map (
@@ -52,9 +54,10 @@ create table public.product_categories_map (
 alter table public.product_categories_map enable row level security;
 
 -- Policy: Allow authenticated users to view product categories
-create policy "Allow authenticated users to view product categories map"
+DROP POLICY IF EXISTS "Allow authenticated users to view product categories map" ON public.product_categories_map;
+CREATE POLICY "Allow public read access to product categories map"
   on public.product_categories_map for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- 4. Product Modifier Groups
 create table public.product_modifier_groups (
@@ -72,9 +75,10 @@ create table public.product_modifier_groups (
 alter table public.product_modifier_groups enable row level security;
 
 -- Policy: Allow authenticated users to view modifier groups
-create policy "Allow authenticated users to view modifier groups"
+DROP POLICY IF EXISTS "Allow authenticated users to view modifier groups" ON public.product_modifier_groups;
+CREATE POLICY "Allow public read access to modifier groups"
   on public.product_modifier_groups for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- 5. Product Modifiers
 create table public.product_modifiers (
@@ -91,9 +95,10 @@ create table public.product_modifiers (
 alter table public.product_modifiers enable row level security;
 
 -- Policy: Allow authenticated users to view modifiers
-create policy "Allow authenticated users to view modifiers"
+DROP POLICY IF EXISTS "Allow authenticated users to view modifiers" ON public.product_modifiers;
+CREATE POLICY "Allow public read access to modifiers"
   on public.product_modifiers for select
-  using (auth.role() = 'authenticated');
+  using (auth.role() = 'authenticated' OR auth.role() = 'anon');
 
 -- Add triggers for updated_at timestamps
 create trigger on_products_updated

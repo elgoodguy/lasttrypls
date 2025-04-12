@@ -169,10 +169,14 @@ export const useAddressStore = create<AddressState>((set, get) => ({
 export const useInitializeAddressStore = () => {
   const { user } = useAuth();
   const supabase = useSupabase();
-  const { isInitialized, setLoading, setError, setAddresses, resetStore } = useAddressStore();
   const queryClient = useQueryClient();
+  const { setLoading, setError, setAddresses, resetStore, isInitialized } = useAddressStore();
 
   useEffect(() => {
+    // Obtenemos el estado actual directamente aquí para la condición de reset
+    const currentActiveAddress = useAddressStore.getState().activeAddress;
+    const shouldReset = !user && isInitialized && currentActiveAddress?.id !== 'guest-address';
+
     if (user && !isInitialized) {
       setLoading(true);
       console.log('Initializing address store for user:', user.id);
@@ -180,15 +184,15 @@ export const useInitializeAddressStore = () => {
       getAddresses(supabase)
         .then(data => {
           console.log('Fetched addresses for store initialization:', data);
-          setAddresses(data || []); // Asegurarnos de que siempre sea un array
+          setAddresses(data || []);
           queryClient.setQueryData(['addresses', user.id], data);
         })
         .catch(err => {
           console.error('Failed to initialize address store:', err);
           setError(err);
         });
-    } else if (!user && isInitialized) {
-      console.log('Resetting address store due to user logout');
+    } else if (shouldReset) {
+      console.log('Resetting address store (user logged out or state mismatch)');
       resetStore();
     }
   }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient]);

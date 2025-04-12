@@ -1,46 +1,61 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { MainLayout } from './components/layout/MainLayout';
-import { useAuth } from './providers/AuthProvider';
-import { ForceAddressModal } from './components/auth/ForceAddressModal';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+import { SupabaseProvider } from '@/providers/SupabaseProvider';
+import { AuthProvider, useAuth } from '@/providers/AuthProvider';
+import { MainLayout } from '@/components/layout/MainLayout';
+import { GlobalLoader } from '@/components/common/GlobalLoader';
 import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
-// --- Import Page Components ---
-import HomePage from './pages/HomePage';
-import { ProfilePage } from './pages/ProfilePage';
-import StoreDetailPage from './pages/StoreDetailPage';
-import { FavoritesPage } from './pages/FavoritesPage';
-import { OrdersPage } from './pages/OrdersPage';
-import { WalletPage } from './pages/WalletPage';
-import { CartPage } from './pages/CartPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { GlobalLoader } from '@/components/common/GlobalLoader';
-import { LandingPage } from './pages/LandingPage';
+// Lazy load pages
+const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
+const HomePage = lazy(() => import('@/pages/HomePage').then(module => ({ default: module.HomePage })));
+const FavoritesPage = lazy(() => import('@/pages/FavoritesPage').then(module => ({ default: module.FavoritesPage })));
+const OrdersPage = lazy(() => import('@/pages/OrdersPage').then(module => ({ default: module.OrdersPage })));
+const WalletPage = lazy(() => import('@/pages/WalletPage').then(module => ({ default: module.WalletPage })));
+const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(module => ({ default: module.ProfilePage })));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
 
-// Protected route wrapper
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation();
-  const { user } = useAuth();
-  const { addresses, error: addressError, isLoading: isLoadingAddresses } = useAddressStore();
+// Componente wrapper para rutas protegidas
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isGuest, isLoading } = useAuth();
 
-  // Show force address modal if:
-  // - User exists and is authenticated
-  // - No error loading addresses
-  // - No addresses exist
-  // - Not on landing page
-  // - Not still loading addresses
-  const requiresAddress = !!user && !addressError && addresses.length === 0 && location.pathname !== '/' && !isLoadingAddresses;
+  if (isLoading) {
+    return <GlobalLoader />;
+  }
 
-  return (
-    <>
-      {requiresAddress && <ForceAddressModal isOpen={true} />}
-      <div className={requiresAddress ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
-        {children}
-      </div>
-    </>
-  );
+  if (isGuest) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
 };
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1, // Retry failed requests once
+    },
+  },
+});
+
+// Get Supabase URL and Key from environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase URL and Anon Key must be provided in .env');
+}
+
+// Create the Supabase client instance
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
@@ -82,28 +97,59 @@ function App() {
   ]);
 
   return (
-    <>
+    <Router>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
+          <SupabaseProvider supabase={supabase}>
+            <AuthProvider>
+              <Suspense fallback={<GlobalLoader />}>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route element={<MainLayout />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route
+                      path="/favorites"
+                      element={
+                        <ProtectedRoute>
+                          <FavoritesPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/orders"
+                      element={
+                        <ProtectedRoute>
+                          <OrdersPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/wallet"
+                      element={
+                        <ProtectedRoute>
+                          <WalletPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <ProfilePage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Route>
+                </Routes>
+              </Suspense>
+            </AuthProvider>
+          </SupabaseProvider>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
       <Toaster richColors position="top-center" />
-      {showLoader && <GlobalLoader />}
-
-      <div className={showLoader ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<MainLayout />}>
-              <Route index element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-              <Route path="store/:storeId" element={<ProtectedRoute><StoreDetailPage /></ProtectedRoute>} />
-              <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
-              <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-              <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-              <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-              <Route path="cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Router>
-      </div>
-    </>
+    </Router>
   );
 }
 
