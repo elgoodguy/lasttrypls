@@ -11,8 +11,14 @@ const resources = {
   en: {
     translation: enTranslation,
   },
+  'en-US': {
+    translation: enTranslation, // Mapea en-US a en
+  },
   es: {
     translation: esTranslation,
+  },
+  'es-MX': {
+    translation: esTranslation, // Mapea es-MX a es
   },
 };
 

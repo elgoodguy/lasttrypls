@@ -2,6 +2,10 @@
   "landing": {
     "login": "Iniciar sesión",
     "signup": "Registrarse",
+    "continueAsGuest": "TODO: Traducir Continuar como Invitado",
+    "benefits": {
+      "title": "TODO: Traducir Título de Beneficios"
+    },
     "hero": {
       "title": "Tus tiendas favoritas, entregadas a tu puerta",
       "subtitle": "Recibe todo lo que necesitas de tiendas locales en minutos",
@@ -40,6 +44,8 @@
     "addNew": "Nueva dirección",
     "addTitle": "Agregar Dirección",
     "modalDescription": "Ingresa los detalles de tu dirección",
+    "forceModalDescription": "TODO: Traducir Por favor agrega una dirección para continuar",
+    "gettingLocation": "TODO: Traducir Obteniendo ubicación...",
     "searchTitle": "Buscar dirección",
     "searchPlaceholder": "Ingresa una dirección",
     "searchAddress": "Buscar Dirección",
@@ -127,6 +133,7 @@
     "delete": "Eliminar",
     "greeting": "¡Hola!",
     "hi": "¡Hola",
-    "search": "Buscar tiendas o productos..."
+    "search": "Buscar tiendas o productos...",
+    "continue": "TODO: Traducir Continuar"
   }
 } 

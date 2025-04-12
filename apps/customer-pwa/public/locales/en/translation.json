@@ -2,6 +2,10 @@
   "landing": {
     "login": "Login",
     "signup": "Sign up",
+    "continueAsGuest": "TODO: Translate Continue as Guest",
+    "benefits": {
+      "title": "TODO: Translate Benefits Title"
+    },
     "hero": {
       "title": "Your favorite stores, delivered to your door",
       "subtitle": "Get everything you need from local stores delivered in minutes",
@@ -44,6 +48,8 @@
     "addNew": "New address",
     "addTitle": "Add Address",
     "modalDescription": "Enter your address details",
+    "forceModalDescription": "TODO: Translate Please add an address to continue",
+    "gettingLocation": "TODO: Translate Getting location...",
     "searchTitle": "Search address",
     "searchPlaceholder": "Enter an address",
     "searchAddress": "Search Address",
@@ -131,6 +137,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "hi": "Hi",
-    "search": "Search stores or products..."
+    "search": "Search stores or products...",
+    "continue": "TODO: Translate Continue"
   }
 } 
