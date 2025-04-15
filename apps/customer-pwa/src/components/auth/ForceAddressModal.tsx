@@ -31,6 +31,7 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
   });
 
   const handleForceSubmit = (data: any) => {
+    console.log('ForceAddressModal - handleForceSubmit - Data:', data);
     addAddressMut(data);
   };
 

@@ -136,7 +136,7 @@ export const HomePage: React.FC = () => {
             </p>
           ) : (
             stores.map(store => (
-              <Link key={store.id} to={`/store/${store.id}`}>
+              <Link key={store.id} to={`store/${store.id}`}>
                 <StoreCard store={store} className="w-full" />
               </Link>
             ))

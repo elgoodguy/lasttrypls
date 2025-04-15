@@ -39,6 +39,8 @@ export const addAddress = async (
   } = await supabase.auth.getUser();
   if (!user) throw new Error('User not logged in');
 
+  console.log('addAddress - Data being sent to Supabase:', { ...addressData, user_id: user.id });
+
   const { data, error } = (await supabase
     .from('addresses')
     .insert({ ...addressData, user_id: user.id })

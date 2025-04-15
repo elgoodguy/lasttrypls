@@ -70,8 +70,9 @@ function App() {
   // Initialize address store only when there is a user
   useInitializeAddressStore();
 
-  // Show loader if session is loading OR if there's a user but the address store hasn't finished its initial load yet
-  const showLoader = isLoadingSession || (!!user && !isAddressStoreInitialized);
+  // Calculate loading states
+  const isAddressStoreLoading = !!user && !isAddressStoreInitialized;
+  const showLoader = isLoadingSession || isAddressStoreLoading;
 
   // Debugging logs
   useEffect(() => {
@@ -84,6 +85,7 @@ function App() {
       hasActiveAddress: !!activeAddress,
       hasAddressError: !!addressError,
       showLoader,
+      isAddressStoreLoading,
     });
   }, [
     isLoadingSession,
@@ -94,62 +96,72 @@ function App() {
     activeAddress,
     addressError,
     showLoader,
+    isAddressStoreLoading,
   ]);
 
+  // Force re-render when auth state changes
+  useEffect(() => {
+    if (user) {
+      console.log('App: User state changed, forcing address store re-initialization');
+      // Reset address store initialization state when user changes
+      useAddressStore.getState().setLoading(true);
+    }
+  }, [user]);
+
   return (
-    <Router>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
-          <SupabaseProvider supabase={supabase}>
-            <AuthProvider>
-              <Suspense fallback={<GlobalLoader />}>
-                <Routes>
-                  <Route path="/" element={<LandingPage />} />
-                  <Route element={<MainLayout />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route
-                      path="/favorites"
-                      element={
-                        <ProtectedRoute>
-                          <FavoritesPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/orders"
-                      element={
-                        <ProtectedRoute>
-                          <OrdersPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/wallet"
-                      element={
-                        <ProtectedRoute>
-                          <WalletPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <ProfilePage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Route>
-                </Routes>
-              </Suspense>
-            </AuthProvider>
-          </SupabaseProvider>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-      <Toaster richColors position="top-center" />
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <Router>
+          <Suspense fallback={<GlobalLoader />}>
+            {showLoader ? (
+              <GlobalLoader />
+            ) : (
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route element={<MainLayout />}>
+                  <Route path="/home" element={<HomePage />} />
+                  <Route
+                    path="/favorites"
+                    element={
+                      <ProtectedRoute>
+                        <FavoritesPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/orders"
+                    element={
+                      <ProtectedRoute>
+                        <OrdersPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/wallet"
+                    element={
+                      <ProtectedRoute>
+                        <WalletPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <ProfilePage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            )}
+          </Suspense>
+        </Router>
+      </ThemeProvider>
+      <Toaster />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
