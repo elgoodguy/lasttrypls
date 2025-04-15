@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
+import { useNavigate } from 'react-router-dom';
 
 interface ForceAddressModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface ForceAddressModalProps {
 export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) => {
   const supabase = useSupabase();
   const { addOrUpdateAddress } = useAddressStore();
+  const navigate = useNavigate();
 
   const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
     mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
@@ -20,6 +22,7 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
       toast.success('¡Dirección agregada exitosamente!');
       addOrUpdateAddress(newAddress);
       console.log('[ForceAddressModal onSuccess] Zustand updated. App should re-render and navigate.');
+      navigate('/home', { replace: true });
     },
     onError: error => {
       console.error('Error al agregar dirección:', error);
