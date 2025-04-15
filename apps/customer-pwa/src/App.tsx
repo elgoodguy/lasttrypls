@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '@/providers/ThemeProvider';
@@ -9,7 +9,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { GlobalLoader } from '@/components/common/GlobalLoader';
 import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
-import { useEffect } from 'react';
+import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
 import { createClient } from '@supabase/supabase-js';
 
 // Lazy load pages
@@ -62,7 +62,6 @@ function App() {
   const {
     isLoading: isLoadingAddresses,
     addresses,
-    activeAddress,
     error: addressError,
     isInitialized: isAddressStoreInitialized,
   } = useAddressStore();
@@ -71,96 +70,47 @@ function App() {
   useInitializeAddressStore();
 
   // Calculate loading states
-  const isAddressStoreLoading = !!user && !isAddressStoreInitialized;
-  const showLoader = isLoadingSession || isAddressStoreLoading;
+  const showLoader = isLoadingSession || (!!user && isLoadingAddresses);
+  const requiresAddress = !showLoader && !!user && !addressError && addresses.length === 0 && isAddressStoreInitialized;
 
-  // Debugging logs
-  useEffect(() => {
-    console.log('App State:', {
-      isLoadingSession,
-      hasUser: !!user,
-      isLoadingAddresses,
-      isAddressStoreInitialized,
-      addressCount: addresses?.length || 0,
-      hasActiveAddress: !!activeAddress,
-      hasAddressError: !!addressError,
-      showLoader,
-      isAddressStoreLoading,
-    });
-  }, [
+  console.log('App: State update', {
     isLoadingSession,
-    user,
+    userId: user?.id,
     isLoadingAddresses,
     isAddressStoreInitialized,
-    addresses,
-    activeAddress,
-    addressError,
+    addressesCount: addresses.length,
     showLoader,
-    isAddressStoreLoading,
-  ]);
-
-  // Force re-render when auth state changes
-  useEffect(() => {
-    if (user) {
-      console.log('App: User state changed, forcing address store re-initialization');
-      // Reset address store initialization state when user changes
-      useAddressStore.getState().setLoading(true);
-    }
-  }, [user]);
+    requiresAddress,
+    addressError: addressError?.message
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <Router>
-          <Suspense fallback={<GlobalLoader />}>
-            {showLoader ? (
-              <GlobalLoader />
-            ) : (
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route element={<MainLayout />}>
-                  <Route path="/home" element={<HomePage />} />
-                  <Route
-                    path="/favorites"
-                    element={
-                      <ProtectedRoute>
-                        <FavoritesPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/orders"
-                    element={
-                      <ProtectedRoute>
-                        <OrdersPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/wallet"
-                    element={
-                      <ProtectedRoute>
-                        <WalletPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <ProfilePage />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            )}
-          </Suspense>
-        </Router>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <SupabaseProvider supabase={supabase}>
+          <AuthProvider>
+            {showLoader && <GlobalLoader />}
+            <ForceAddressModal isOpen={requiresAddress} />
+            <div className={showLoader ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route element={<MainLayout />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+                    <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+                    <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                  </Route>
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Router>
+            </div>
+            <Toaster />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </AuthProvider>
+        </SupabaseProvider>
       </ThemeProvider>
-      <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

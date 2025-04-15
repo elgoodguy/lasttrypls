@@ -26,6 +26,7 @@ interface AddressState {
   addOrUpdateAddress: (address: Address) => void;
   removeAddress: (addressId: string) => void;
   resetStore: () => void;
+  resetForNewUser: () => void;
   addAddress: (address: AddressFormData) => Promise<void>;
   updateAddress: (id: string, address: AddressFormData) => Promise<void>;
   deleteAddress: (id: string) => Promise<void>;
@@ -136,6 +137,17 @@ export const useAddressStore = create<AddressState>()(
         set(initialState);
       },
 
+      resetForNewUser: () => {
+        set({
+          isLoading: true,
+          isInitialized: false,
+          addresses: [],
+          activeAddress: null,
+          primaryAddress: null,
+          error: null
+        });
+      },
+
       clearGuestAddressStorage: () => {
         localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
       },
@@ -203,7 +215,15 @@ export const useInitializeAddressStore = () => {
   const { user } = useAuth();
   const supabase = useSupabase();
   const queryClient = useQueryClient();
-  const { setLoading, setError, setAddresses, resetStore, isInitialized, clearGuestAddressStorage } = useAddressStore();
+  const { 
+    setLoading, 
+    setError, 
+    setAddresses, 
+    resetStore, 
+    resetForNewUser,
+    isInitialized,
+    clearGuestAddressStorage 
+  } = useAddressStore();
 
   useEffect(() => {
     console.log('useInitializeAddressStore - useEffect triggered', {
@@ -237,25 +257,24 @@ export const useInitializeAddressStore = () => {
       // Handle authenticated user case
       clearGuestAddressStorage();
       
-      if (!isInitialized) {
-        console.log('useInitializeAddressStore - Initializing for authenticated user:', user.id);
-        setLoading(true);
-
-        console.log('useInitializeAddressStore - Attempting to fetch addresses for user:', user.id);
-        getAddresses(supabase)
-          .then(data => {
-            console.log('useInitializeAddressStore - Successfully fetched addresses:', {
-              addressCount: data?.length || 0,
-              addresses: data
-            });
-            setAddresses(data || []);
-            queryClient.setQueryData(['addresses', user.id], data);
-          })
-          .catch(err => {
-            console.error('useInitializeAddressStore - Failed to fetch addresses:', err);
-            setError(err);
+      // Reset store for new user
+      console.log('useInitializeAddressStore - Resetting store for new user:', user.id);
+      resetForNewUser();
+      
+      console.log('useInitializeAddressStore - Attempting to fetch addresses for user:', user.id);
+      getAddresses(supabase)
+        .then(data => {
+          console.log('useInitializeAddressStore - Successfully fetched addresses:', {
+            addressCount: data?.length || 0,
+            addresses: data
           });
-      }
+          setAddresses(data || []);
+          queryClient.setQueryData(['addresses', user.id], data);
+        })
+        .catch(err => {
+          console.error('useInitializeAddressStore - Failed to fetch addresses:', err);
+          setError(err);
+        });
     }
-  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, supabase, queryClient, clearGuestAddressStorage]);
+  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, resetForNewUser, supabase, queryClient, clearGuestAddressStorage]);
 };

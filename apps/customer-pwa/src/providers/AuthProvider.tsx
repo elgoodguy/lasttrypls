@@ -42,7 +42,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('AuthProvider: Auth state changed', { event: _event, hasSession: !!session });
+      console.log('AuthProvider: Auth state changed', { 
+        event: _event, 
+        hasSession: !!session,
+        userId: session?.user?.id,
+        previousUserId: user?.id
+      });
       if (_event === 'SIGNED_IN' && session) {
         // Clear guest address storage BEFORE updating session
         useAddressStore.getState().clearGuestAddressStorage();
