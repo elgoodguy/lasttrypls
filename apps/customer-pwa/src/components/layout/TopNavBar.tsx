@@ -22,16 +22,36 @@ import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@repo/ui/lib/utils';
+import { useMutation } from '@tanstack/react-query';
+import { addAddress } from '@repo/api-client';
+import { useSupabase } from '@/providers/SupabaseProvider';
+import { toast } from 'sonner';
 
 export const TopNavBar: React.FC = () => {
   const navigate = useNavigate();
   const { user, isLoading: isLoadingAuth, isGuest, signOut } = useAuth();
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const { addresses, activeAddress, isLoading: isLoadingAddresses } = useAddressStore();
+  const { addresses, activeAddress, isLoading: isLoadingAddresses, addOrUpdateAddress, setActiveAddress } = useAddressStore();
   const queryClient = useQueryClient();
+  const supabase = useSupabase();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
+  const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
+    mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
+    onSuccess: (newAddress) => {
+      toast.success('¡Dirección agregada exitosamente!');
+      addOrUpdateAddress(newAddress);
+      setActiveAddress(newAddress);
+      console.log('[TopNavBar] Address added and set as active:', newAddress);
+      setIsAddressModalOpen(false);
+    },
+    onError: (error) => {
+      console.error('Error adding address:', error);
+      toast.error('No se pudo agregar la dirección. Por favor intenta de nuevo.');
+    },
+  });
 
   const handleSignOut = async () => {
     await signOut();
@@ -47,8 +67,9 @@ export const TopNavBar: React.FC = () => {
     setIsAddressModalOpen(true);
   };
 
-  const handleModalSubmit = async () => {
-    // Implementar la lógica para manejar la submisión del formulario de dirección
+  const handleModalSubmit = async (data: any) => {
+    console.log('[TopNavBar] Submitting new address:', data);
+    addAddressMut(data);
   };
 
   const handleSetPrimary = async () => {
@@ -122,7 +143,7 @@ export const TopNavBar: React.FC = () => {
                   {t('address.addNew')}
                 </DropdownMenuItem>
                 <DropdownMenuItem 
-                  onClick={() => isGuest ? setIsAuthModalOpen(true) : navigate('/profile')} 
+                  onClick={() => isGuest ? setIsAuthModalOpen(true) : navigate('profile')} 
                   className="cursor-pointer"
                 >
                   <MapPin className="mr-2 h-4 w-4" />
@@ -216,7 +237,7 @@ export const TopNavBar: React.FC = () => {
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
         onSubmit={handleModalSubmit}
-        isLoading={false}
+        isLoading={isAddingAddress}
         addressToEdit={null}
       />
     </header>

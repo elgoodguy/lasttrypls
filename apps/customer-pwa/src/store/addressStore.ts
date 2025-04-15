@@ -222,89 +222,68 @@ export const useAddressStore = create<AddressState>()(
         activeAddress: state.activeAddress,
         primaryAddress: state.primaryAddress,
       }),
-      onRehydrateStorage: () => (state) => {
-        console.log('Address store hydrated from localStorage:', state);
-        if (state) {
-          state.isLoading = true;
-          state.isInitialized = false;
-          state.error = null;
-        }
-      },
     }
   )
 );
 
 export const useInitializeAddressStore = () => {
-  console.log('--- HOOK useInitializeAddressStore EXECUTING ---');
   const { user } = useAuth();
-  console.log('[Hook Body] User from useAuth:', user?.id);
   const supabase = useSupabase();
-  console.log('[Hook Body] Supabase instance available:', !!supabase);
   const queryClient = useQueryClient();
-  const { 
-    setAddresses, 
-    resetStore, 
+  const {
+    setAddresses,
+    setLoading,
+    setError,
     startInitialization,
     finishInitialization,
-    clearGuestAddressStorage 
+    resetStore,
   } = useAddressStore();
 
-  const initializedForUserIdRef = React.useRef<string | null>(null);
-
   useEffect(() => {
-    console.log('--- useEffect INSIDE useInitializeAddressStore RUNNING ---');
-    
-    const currentUserId = user?.id || null;
-    const lastInitializedId = initializedForUserIdRef.current;
+    const currentUserId = user?.id;
+    startInitialization();
 
-    console.log('[useInitializeAddressStore] State check:', {
-      currentUserId,
-      lastInitializedId
-    });
-
-    if (currentUserId !== lastInitializedId) {
-      console.log('[useInitializeAddressStore] User changed, starting initialization');
-      console.log('[useInitializeAddressStore] Calling startInitialization()');
-      startInitialization();
-      console.log('[useInitializeAddressStore] startInitialization() completed');
-      initializedForUserIdRef.current = currentUserId;
-
-      if (currentUserId) {
-        // Handle authenticated user
-        clearGuestAddressStorage();
-        console.log('[useInitializeAddressStore] Fetching addresses for user:', currentUserId);
-        
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Address fetch timed out after 15s')), 15000)
-        );
-
-        Promise.race<Address[]>([
-          getAddresses(supabase),
-          timeoutPromise
-        ])
-          .then(data => {
-            console.log('[useInitializeAddressStore] Successfully fetched addresses:', {
-              addressCount: data?.length || 0
-            });
-            console.log('[useInitializeAddressStore] Calling finishInitialization(null)');
-            finishInitialization(null);
-            console.log('[useInitializeAddressStore] finishInitialization(null) completed');
-            console.log('[useInitializeAddressStore] Calling setAddresses()');
-            setAddresses(data || []);
-            console.log('[useInitializeAddressStore] setAddresses() completed');
-            queryClient.setQueryData(['addresses', currentUserId], data);
-          })
-          .catch(err => {
-            console.error('[useInitializeAddressStore] Failed to fetch addresses:', err);
-            console.log('[useInitializeAddressStore] Calling finishInitialization(err)');
-            finishInitialization(err);
-            console.log('[useInitializeAddressStore] finishInitialization(err) completed');
-          });
-      } else {
-        // Handle guest user or logout
-        console.log('[useInitializeAddressStore] Resetting store for guest user or logout');
-        resetStore();
-      }
+    if (currentUserId === null) {
+      localStorage.removeItem(STORAGE_KEY);
+      resetStore();
+      finishInitialization(null);
+      return;
     }
-  }, [user]); // Solo dependemos de user
+
+    if (currentUserId) {
+      // Handle authenticated user
+      console.log('[useInitializeAddressStore] Fetching addresses for user:', currentUserId);
+      
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Address fetch timed out after 15s')), 15000)
+      );
+
+      Promise.race<Address[]>([
+        getAddresses(supabase),
+        timeoutPromise
+      ])
+        .then(data => {
+          console.log('[useInitializeAddressStore] Successfully fetched addresses:', {
+            addressCount: data?.length || 0
+          });
+          console.log('[useInitializeAddressStore] Calling finishInitialization(null)');
+          finishInitialization(null);
+          console.log('[useInitializeAddressStore] finishInitialization(null) completed');
+          console.log('[useInitializeAddressStore] Calling setAddresses()');
+          setAddresses(data || []);
+          console.log('[useInitializeAddressStore] setAddresses() completed');
+          queryClient.setQueryData(['addresses', currentUserId], data);
+        })
+        .catch(err => {
+          console.error('[useInitializeAddressStore] Failed to fetch addresses:', err);
+          console.log('[useInitializeAddressStore] Calling finishInitialization(err)');
+          finishInitialization(err);
+          console.log('[useInitializeAddressStore] finishInitialization(err) completed');
+        });
+    } else {
+      // Handle guest user or logout
+      console.log('[useInitializeAddressStore] Resetting store for guest user or logout');
+      resetStore();
+    }
+  }, [user?.id, supabase, queryClient, setAddresses, setLoading, setError, startInitialization, finishInitialization, resetStore]);
 };
