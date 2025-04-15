@@ -6,7 +6,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 export const OrdersPage: React.FC = () => {
-  const { user, isLoading, isGuest } = useAuth();
+  const { isLoading, isGuest } = useAuth();
   const { t } = useTranslation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 

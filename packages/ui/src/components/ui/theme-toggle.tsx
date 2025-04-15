@@ -12,10 +12,10 @@ interface ThemeToggleProps {
   className?: string;
 }
 
-export function ThemeToggle({ theme, setTheme, className }: ThemeToggleProps) {
-  const toggleTheme = () => {
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, setTheme, className }) => {
+  const toggleTheme = React.useCallback(() => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  }, [theme, setTheme]);
 
   return (
     <Button

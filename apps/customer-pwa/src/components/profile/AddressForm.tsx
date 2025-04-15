@@ -53,9 +53,8 @@ export function AddressForm({
     searchPlaces,
     predictions,
     getPlaceDetails,
-    isLoading: isLoadingSearch,
   } = useGooglePlacesAutocomplete();
-  const { isLoaded: isGoogleMapsLoaded, loadError: googleMapsError } = useGoogleMapsScript();
+  const { isLoaded: isGoogleMapsLoaded } = useGoogleMapsScript();
 
   const form = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
@@ -138,10 +137,6 @@ export function AddressForm({
     }
   };
 
-  if (googleMapsError) {
-    toast.error(t('address.googleMapsError'));
-  }
-
   return (
     <>
       <Dialog open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen}>
@@ -154,27 +149,23 @@ export function AddressForm({
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder={googleMapsError ? t('address.googleMapsNotAvailable') : t('address.searchPlaceholder')}
+                placeholder={t('address.searchPlaceholder')}
                 className="w-full pl-8 p-2 border rounded-md bg-white text-foreground"
                 onChange={e => searchPlaces(e.target.value)}
-                disabled={!isGoogleMapsLoaded || !!googleMapsError}
+                disabled={!isGoogleMapsLoaded}
               />
             </div>
-            {isLoadingSearch ? (
-              <div className="text-center py-4">{t('common.searching')}</div>
-            ) : (
-              <div className="space-y-2">
-                {predictions.map((prediction: Prediction) => (
-                  <button
-                    key={prediction.place_id}
-                    className="w-full text-left p-2 hover:bg-accent rounded-md transition-colors"
-                    onClick={() => handleSearchSelect(prediction.place_id)}
-                  >
-                    {prediction.description}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="space-y-2">
+              {predictions.map((prediction: Prediction) => (
+                <button
+                  key={prediction.place_id}
+                  className="w-full text-left p-2 hover:bg-accent rounded-md transition-colors"
+                  onClick={() => handleSearchSelect(prediction.place_id)}
+                >
+                  {prediction.description}
+                </button>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -189,7 +180,7 @@ export function AddressForm({
             variant="outline"
             className="flex-1"
             onClick={() => setIsSearchModalOpen(true)}
-            disabled={!isGoogleMapsLoaded || !!googleMapsError}
+            disabled={!isGoogleMapsLoaded}
           >
             <Search className="mr-2 h-4 w-4" />
             {t('address.searchAddress')}
@@ -199,18 +190,12 @@ export function AddressForm({
             variant="outline"
             className="flex-1"
             onClick={handleUseCurrentLocation}
-            disabled={isLoadingLocation || !isGoogleMapsLoaded || !!googleMapsError}
+            disabled={isLoadingLocation || !isGoogleMapsLoaded}
           >
             <MapPin className="mr-2 h-4 w-4" />
             {isLoadingLocation ? t('address.gettingLocation') : t('address.useMyLocation')}
           </Button>
         </div>
-
-        {googleMapsError && (
-          <div className="text-sm text-yellow-600 bg-yellow-50 p-3 rounded-md">
-            {t('address.manualEntryRequired')}
-          </div>
-        )}
 
         <div className="grid gap-2">
           <label htmlFor="street_address" className="text-sm font-medium">

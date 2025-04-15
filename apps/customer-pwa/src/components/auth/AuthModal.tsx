@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,6 @@ import { Button } from '@repo/ui/components/ui/button';
 import { Input } from '@repo/ui/components/ui/input';
 import { Label } from '@repo/ui/components/ui/label';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { useAuth } from '@/providers/AuthProvider';
 import { Provider } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +21,6 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
   const supabase = useSupabase();
-  const { isLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningUp, setIsSigningUp] = useState(false);
@@ -101,7 +99,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              disabled={isLoading}
             />
           </div>
           <div className="grid gap-2">
@@ -113,11 +110,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
               minLength={6}
-              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? t('auth.form.processing') : isSigningUp ? t('auth.signup.button') : t('auth.login.button')}
+          <Button type="submit" className="w-full">
+            {isSigningUp ? t('auth.signup.button') : t('auth.login.button')}
           </Button>
         </form>
 
@@ -135,7 +131,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
 
         {/* OAuth Buttons */}
         <div className="grid gap-4 px-6 py-4">
-          <Button variant="outline" onClick={() => handleOAuthLogin('google')} disabled={isLoading}>
+          <Button variant="outline" onClick={() => handleOAuthLogin('google')} disabled={true}>
             <svg
               className="mr-2 h-4 w-4"
               aria-hidden="true"

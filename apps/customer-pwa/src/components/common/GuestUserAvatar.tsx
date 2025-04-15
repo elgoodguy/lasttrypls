@@ -10,7 +10,6 @@ import {
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/providers/AuthProvider';
 import { AuthModal } from '@/components/auth/AuthModal';
 
 export const GuestUserAvatar: React.FC = () => {

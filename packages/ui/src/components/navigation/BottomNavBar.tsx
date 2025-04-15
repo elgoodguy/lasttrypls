@@ -1,12 +1,11 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
-import { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   path: string;
   label: string;
-  icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   requiresAuth?: boolean;
 }
 
@@ -50,7 +49,7 @@ export function BottomNavBar({
               aria-current={isActive ? 'page' : undefined}
             >
               <div className="flex h-10 items-center justify-center w-full">
-                <Icon className="mx-auto" />
+                <Icon className="mx-auto h-6 w-6" />
               </div>
               <span className="text-xs text-center w-full">{item.label}</span>
             </Button>

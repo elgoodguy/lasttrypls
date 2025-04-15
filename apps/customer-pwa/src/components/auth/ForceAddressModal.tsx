@@ -1,9 +1,8 @@
 import React from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { addAddress } from '@repo/api-client';
 import { toast } from 'sonner';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { useAuth } from '@/providers/AuthProvider';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
 
@@ -13,8 +12,6 @@ interface ForceAddressModalProps {
 
 export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) => {
   const supabase = useSupabase();
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
   const { addOrUpdateAddress } = useAddressStore();
 
   const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({

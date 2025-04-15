@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
+import { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
 
 // Tipo para los posibles temas
 export type Theme = 'light' | 'dark' | 'system';

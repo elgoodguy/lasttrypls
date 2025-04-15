@@ -1,10 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getStoreDetailsById, getAvailableProductsForStore, type StoreDetails } from '@repo/api-client';
+import { getStoreDetailsById, getAvailableProductsForStore, type StoreDetails, type Product } from '@repo/api-client';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { StoreHeader } from '@/components/store/StoreHeader';
 import { ProductCard } from '@repo/ui';
-import { Box } from '@mui/material';
 
 export default function StoreDetailPage() {
   const { storeId } = useParams();
@@ -26,7 +25,7 @@ export default function StoreDetailPage() {
     isLoading: isLoadingProducts,
     isError: isProductsError,
     error: productsError,
-  } = useQuery({
+  } = useQuery<Product[]>({
     queryKey: ['storeProducts', storeId],
     queryFn: () => getAvailableProductsForStore(supabase, storeId!),
     enabled: !!storeId,
@@ -73,7 +72,7 @@ export default function StoreDetailPage() {
   return (
     <div>
       <StoreHeader store={storeDetails} />
-      <Box p={2}>
+      <div className="p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products?.map((product) => (
             <div key={product.id}>
@@ -81,7 +80,7 @@ export default function StoreDetailPage() {
             </div>
           ))}
         </div>
-      </Box>
+      </div>
     </div>
   );
 }

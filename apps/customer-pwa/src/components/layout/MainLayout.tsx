@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { TopNavBar } from './TopNavBar';
 import { BottomNavBar } from './BottomNavBar';
@@ -6,7 +5,7 @@ import { Button } from '@repo/ui/components/ui/button';
 import { useAuth } from '@/providers/AuthProvider';
 
 export const MainLayout: React.FC = () => {
-  const { user, isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
   const cartItemCount = 0; // TODO: Get actual cart count from state/context
   const isLoggedIn = !isLoading && !!user;
 

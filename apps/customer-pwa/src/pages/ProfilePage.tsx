@@ -10,7 +10,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 export const ProfilePage = () => {
-  const { signOut, user, isLoading, isGuest } = useAuth();
+  const { signOut, isLoading, isGuest } = useAuth();
   const { t } = useTranslation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 

@@ -1,12 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@repo/ui/components/ui/button';
-import { Input } from '@repo/ui/components/ui/input';
 import { useAuth } from '@/providers/AuthProvider';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '@/schemas/auth';
-import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
@@ -39,14 +34,6 @@ export const LandingPage: React.FC = () => {
   const handleContinueAsGuest = () => {
     setIsGuest(true);
     setIsAddressModalOpen(true);
-  };
-
-  const handleAuthSuccess = () => {
-    setIsAuthModalOpen(false);
-    // Si el usuario no tiene dirección, mostrar el modal de dirección
-    if (!activeAddress) {
-      setIsAddressModalOpen(true);
-    }
   };
 
   const handleAddressSubmit = async (data: any) => {

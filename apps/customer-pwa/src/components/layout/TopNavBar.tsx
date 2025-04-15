@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
@@ -16,7 +16,7 @@ import {
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
 import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin } from 'lucide-react';
-import { NotificationIcon, LocationIcon } from '@/components/icons';
+import { LocationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
@@ -24,7 +24,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@repo/ui/lib/utils';
 
 export const TopNavBar: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { user, isLoading: isLoadingAuth, isGuest, signOut } = useAuth();
   const { t } = useTranslation();
@@ -48,11 +47,11 @@ export const TopNavBar: React.FC = () => {
     setIsAddressModalOpen(true);
   };
 
-  const handleModalSubmit = async (addressData: any) => {
+  const handleModalSubmit = async () => {
     // Implementar la lógica para manejar la submisión del formulario de dirección
   };
 
-  const handleSetPrimary = async (addressId: string) => {
+  const handleSetPrimary = async () => {
     // Implementar la lógica para establecer la dirección principal
   };
 
@@ -131,7 +130,7 @@ export const TopNavBar: React.FC = () => {
                 </DropdownMenuItem>
                 {activeAddress && !activeAddress.is_primary && (
                   <DropdownMenuItem
-                    onClick={() => isGuest ? setIsAuthModalOpen(true) : handleSetPrimary(activeAddress.id)}
+                    onClick={() => isGuest ? setIsAuthModalOpen(true) : handleSetPrimary()}
                     className="cursor-pointer"
                   >
                     <Home className="mr-2 h-4 w-4" />
