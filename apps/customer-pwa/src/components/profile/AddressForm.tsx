@@ -179,7 +179,10 @@ export function AddressForm({
         </DialogContent>
       </Dialog>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit((data) => {
+        console.log('AddressForm submitted:', data);
+        onSubmit(data);
+      })} className="space-y-4">
         <div className="flex gap-2">
           <Button
             type="button"

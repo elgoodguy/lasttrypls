@@ -12,7 +12,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/ui/*": ["../../packages/ui/src/*"],
-      "@repo/api-client/*": ["../../packages/api-client/src/*"],
+      "@repo/api-client/*": ["../../packages/api-client/*"],
       "@repo/ui/components/ui/*": ["../../packages/ui/src/components/ui/*"]
     },
 

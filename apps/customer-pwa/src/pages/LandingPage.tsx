@@ -72,6 +72,9 @@ export const LandingPage: React.FC = () => {
       } catch (error) {
         console.error('[LandingPage] Error saving guest address to localStorage:', error);
       }
+
+      // Navegar a /home después de guardar la dirección
+      navigate('/home', { replace: true });
     } else {
       // Para usuarios registrados, guardamos la dirección en el backend
       try {

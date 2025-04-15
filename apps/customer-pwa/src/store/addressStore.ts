@@ -235,15 +235,12 @@ export const useAddressStore = create<AddressState>()(
 );
 
 export const useInitializeAddressStore = () => {
-  console.log('--- useInitializeAddressStore Hook Rendered ---');
-  
+  console.log('--- HOOK useInitializeAddressStore EXECUTING ---');
   const { user } = useAuth();
+  console.log('[Hook Body] User from useAuth:', user?.id);
   const supabase = useSupabase();
+  console.log('[Hook Body] Supabase instance available:', !!supabase);
   const queryClient = useQueryClient();
-  
-  console.log('[useInitializeAddressStore] Supabase instance:', supabase);
-  console.log('[useInitializeAddressStore] User from useAuth:', user);
-  
   const { 
     setAddresses, 
     resetStore, 
@@ -255,7 +252,7 @@ export const useInitializeAddressStore = () => {
   const initializedForUserIdRef = React.useRef<string | null>(null);
 
   useEffect(() => {
-    console.log('[Effect Triggered] User:', user?.id);
+    console.log('--- useEffect INSIDE useInitializeAddressStore RUNNING ---');
     
     const currentUserId = user?.id || null;
     const lastInitializedId = initializedForUserIdRef.current;

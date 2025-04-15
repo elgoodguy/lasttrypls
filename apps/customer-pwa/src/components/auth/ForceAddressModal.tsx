@@ -22,6 +22,7 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
     onSuccess: newAddress => {
       toast.success('¡Dirección agregada exitosamente!');
       addOrUpdateAddress(newAddress);
+      console.log('[ForceAddressModal onSuccess] Zustand updated. App should re-render and navigate.');
     },
     onError: error => {
       console.error('Error al agregar dirección:', error);

@@ -53,8 +53,12 @@ function App() {
     addresses,
     error: addressError,
     isInitialized: isAddressStoreInitialized,
+    activeAddress
   } = useAddressStore();
   const supabase = useSupabase();
+
+  // Initialize address store
+  useInitializeAddressStore();
 
   // Calculate loading states
   const showLoader = isLoadingSession || (!!user && isLoadingAddresses && !isAddressStoreInitialized);
@@ -69,8 +73,16 @@ function App() {
     addressesCount: addresses.length,
     showLoader,
     requiresAddress,
-    addressError: addressError?.message
+    addressError: addressError?.message,
+    hasActiveAddress: !!activeAddress
   });
+
+  console.log(`[App Render] User: ${user?.id}, CanShowApp: ${canShowApp}, RequiresAddress: ${requiresAddress}, ActiveAddress: ${!!activeAddress}`);
+  if (!isLoadingSession && (user || activeAddress) && !requiresAddress) {
+    console.log('[App Render] Condition met: Should navigate to /home or stay there.');
+  } else if (!isLoadingSession && !user && !activeAddress) {
+    console.log('[App Render] Condition met: Should navigate to / or stay there.');
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -82,8 +94,8 @@ function App() {
             {canShowApp && (
               <Router>
                 <Routes>
-                  <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/home" replace />} />
-                  <Route path="/home" element={user ? <MainLayout /> : <Navigate to="/" replace />}>
+                  <Route path="/" element={!user && !activeAddress ? <LandingPage /> : <Navigate to="/home" replace />} />
+                  <Route path="/home" element={(user || activeAddress) ? <MainLayout /> : <Navigate to="/" replace />}>
                     <Route index element={<HomePage />} />
                     <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                     <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />

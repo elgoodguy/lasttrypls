@@ -169,15 +169,15 @@ export const TopNavBar: React.FC = () => {
                 <DropdownMenuSeparator />
                 {!isGuest && (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <DropdownMenuItem onClick={() => navigate('profile')}>
                       <UserIcon className="mr-2 h-4 w-4" />
                       {t('navigation.profile')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                    <DropdownMenuItem onClick={() => navigate('orders')}>
                       <Star className="mr-2 h-4 w-4" />
                       {t('navigation.orders')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/wallet')}>
+                    <DropdownMenuItem onClick={() => navigate('wallet')}>
                       <PlusCircle className="mr-2 h-4 w-4" />
                       {t('navigation.wallet')}
                     </DropdownMenuItem>
