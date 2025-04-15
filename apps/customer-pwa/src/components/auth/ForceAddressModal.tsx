@@ -22,7 +22,6 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
     onSuccess: newAddress => {
       toast.success('¡Dirección agregada exitosamente!');
       addOrUpdateAddress(newAddress);
-      queryClient.invalidateQueries({ queryKey: ['addresses', user?.id] });
     },
     onError: error => {
       console.error('Error al agregar dirección:', error);

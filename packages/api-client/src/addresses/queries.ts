@@ -14,16 +14,23 @@ export const getAddresses = async (supabase: SupabaseClient<Database>): Promise<
   } = await supabase.auth.getUser();
   if (!user) return []; // Return empty array if no user
 
+  console.log('[getAddresses] Fetching for user:', user.id);
+  console.log('[getAddresses] Executing Supabase query...');
+
   const { data, error } = (await supabase
     .from('addresses')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })) as { data: Address[] | null; error: any };
 
+  console.log('[getAddresses] Supabase query finished. Result:', { data, error });
+
   if (error) {
-    console.error('Error fetching addresses:', error);
+    console.error('[getAddresses] Supabase Error:', error);
     throw error;
   }
+
+  console.log('[getAddresses] Returning data:', data || []);
   return data || [];
 };
 

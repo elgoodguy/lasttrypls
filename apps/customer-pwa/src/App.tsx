@@ -10,7 +10,7 @@ import { GlobalLoader } from '@/components/common/GlobalLoader';
 import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
-import { createClient } from '@supabase/supabase-js';
+import { useSupabase } from '@/providers/SupabaseProvider';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
@@ -46,17 +46,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Get Supabase URL and Key from environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase URL and Anon Key must be provided in .env');
-}
-
-// Create the Supabase client instance
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 function App() {
   const { isLoading: isLoadingSession, user } = useAuth();
   const {
@@ -65,13 +54,12 @@ function App() {
     error: addressError,
     isInitialized: isAddressStoreInitialized,
   } = useAddressStore();
-
-  // Initialize address store only when there is a user
-  useInitializeAddressStore();
+  const supabase = useSupabase();
 
   // Calculate loading states
-  const showLoader = isLoadingSession || (!!user && isLoadingAddresses);
-  const requiresAddress = !showLoader && !!user && !addressError && addresses.length === 0 && isAddressStoreInitialized;
+  const showLoader = isLoadingSession || (!!user && isLoadingAddresses && !isAddressStoreInitialized);
+  const requiresAddress = !!user && isAddressStoreInitialized && !addressError && addresses.length === 0;
+  const canShowApp = !showLoader && !requiresAddress;
 
   console.log('App: State update', {
     isLoadingSession,
@@ -91,21 +79,21 @@ function App() {
           <AuthProvider>
             {showLoader && <GlobalLoader />}
             <ForceAddressModal isOpen={requiresAddress} />
-            <div className={showLoader ? 'opacity-0 pointer-events-none' : 'opacity-100'}>
+            {canShowApp && (
               <Router>
                 <Routes>
-                  <Route path="/" element={<LandingPage />} />
-                  <Route element={<MainLayout />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
-                    <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-                    <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-                    <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                  <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/home" replace />} />
+                  <Route path="/home" element={user ? <MainLayout /> : <Navigate to="/" replace />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+                    <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+                    <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+                    <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Router>
-            </div>
+            )}
             <Toaster />
             <ReactQueryDevtools initialIsOpen={false} />
           </AuthProvider>
