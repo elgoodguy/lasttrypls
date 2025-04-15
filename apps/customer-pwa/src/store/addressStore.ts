@@ -7,6 +7,7 @@ import { getAddresses } from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
+import React from 'react';
 
 export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
 const STORAGE_KEY = 'customer-address-storage';
@@ -32,6 +33,8 @@ interface AddressState {
   deleteAddress: (id: string) => Promise<void>;
   setPrimaryAddress: (id: string) => Promise<void>;
   clearGuestAddressStorage: () => void;
+  startInitialization: () => void;
+  finishInitialization: (error: Error | null) => void;
 }
 
 const initialState = {
@@ -195,6 +198,22 @@ export const useAddressStore = create<AddressState>()(
           })),
         }));
       },
+
+      startInitialization: () => {
+        set({
+          isLoading: true,
+          isInitialized: false,
+          error: null
+        });
+      },
+
+      finishInitialization: (error: Error | null) => {
+        set({
+          isLoading: false,
+          isInitialized: true,
+          error: error
+        });
+      },
     }),
     {
       name: STORAGE_KEY,
@@ -202,7 +221,6 @@ export const useAddressStore = create<AddressState>()(
         addresses: state.addresses,
         activeAddress: state.activeAddress,
         primaryAddress: state.primaryAddress,
-        isInitialized: state.isInitialized,
       }),
       onRehydrateStorage: () => (state) => {
         console.log('Address store hydrated from localStorage:', state);
@@ -220,61 +238,72 @@ export const useInitializeAddressStore = () => {
     setError, 
     setAddresses, 
     resetStore, 
-    resetForNewUser,
+    startInitialization,
+    finishInitialization,
     isInitialized,
     clearGuestAddressStorage 
   } = useAddressStore();
 
+  const initializedForUserIdRef = React.useRef<string | null>(null);
+
   useEffect(() => {
-    console.log('useInitializeAddressStore - useEffect triggered', {
-      hasUser: !!user,
-      isInitialized,
-      user: user?.id
+    const currentUserId = user?.id || null;
+    const lastInitializedId = initializedForUserIdRef.current;
+
+    console.log('useInitializeAddressStore - State check', {
+      currentUserId,
+      lastInitializedId,
+      isInitialized
     });
 
-    if (!user) {
-      // Handle guest user case
-      if (!isInitialized) {
+    if (currentUserId !== lastInitializedId) {
+      console.log('useInitializeAddressStore - User changed, starting initialization');
+      startInitialization();
+      initializedForUserIdRef.current = currentUserId;
+
+      if (currentUserId) {
+        // Handle authenticated user
+        clearGuestAddressStorage();
+        console.log('useInitializeAddressStore - Fetching addresses for user:', currentUserId);
+        
+        getAddresses(supabase)
+          .then(data => {
+            console.log('useInitializeAddressStore - Successfully fetched addresses:', {
+              addressCount: data?.length || 0
+            });
+            setAddresses(data || []);
+            finishInitialization(null);
+            queryClient.setQueryData(['addresses', currentUserId], data);
+          })
+          .catch(err => {
+            console.error('useInitializeAddressStore - Failed to fetch addresses:', err);
+            finishInitialization(err);
+          });
+      } else {
+        // Handle guest user
         console.log('useInitializeAddressStore - Initializing for guest user');
         const storedGuestAddress = localStorage.getItem(GUEST_ADDRESS_STORAGE_KEY);
         
         if (storedGuestAddress) {
           try {
             const guestAddress = JSON.parse(storedGuestAddress);
-            console.log('useInitializeAddressStore - Loading guest address from localStorage:', guestAddress);
+            console.log('useInitializeAddressStore - Loading guest address from localStorage');
             setAddresses([guestAddress]);
+            finishInitialization(null);
           } catch (error) {
             console.error('useInitializeAddressStore - Failed to parse stored guest address:', error);
             localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
             setAddresses([]);
+            finishInitialization(null);
           }
         } else {
           console.log('useInitializeAddressStore - Initializing empty store for guest user');
           setAddresses([]);
+          finishInitialization(null);
         }
       }
     } else {
-      // Handle authenticated user case
-      clearGuestAddressStorage();
-      
-      // Reset store for new user
-      console.log('useInitializeAddressStore - Resetting store for new user:', user.id);
-      resetForNewUser();
-      
-      console.log('useInitializeAddressStore - Attempting to fetch addresses for user:', user.id);
-      getAddresses(supabase)
-        .then(data => {
-          console.log('useInitializeAddressStore - Successfully fetched addresses:', {
-            addressCount: data?.length || 0,
-            addresses: data
-          });
-          setAddresses(data || []);
-          queryClient.setQueryData(['addresses', user.id], data);
-        })
-        .catch(err => {
-          console.error('useInitializeAddressStore - Failed to fetch addresses:', err);
-          setError(err);
-        });
+      console.log('useInitializeAddressStore - No initialization needed, user unchanged');
     }
-  }, [user, isInitialized, setLoading, setError, setAddresses, resetStore, resetForNewUser, supabase, queryClient, clearGuestAddressStorage]);
+  }, [user, supabase, queryClient]);
 };

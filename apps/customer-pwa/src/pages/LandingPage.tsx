@@ -46,8 +46,6 @@ export const LandingPage: React.FC = () => {
     // Si el usuario no tiene dirección, mostrar el modal de dirección
     if (!activeAddress) {
       setIsAddressModalOpen(true);
-    } else {
-      navigate('/home');
     }
   };
 
@@ -74,28 +72,18 @@ export const LandingPage: React.FC = () => {
       } catch (error) {
         console.error('[LandingPage] Error saving guest address to localStorage:', error);
       }
-      
-      navigate('/home');
     } else {
       // Para usuarios registrados, guardamos la dirección en el backend
       try {
         const newAddress = await addAddress(supabase, { ...data, is_primary: true });
         addOrUpdateAddress(newAddress);
         queryClient.invalidateQueries({ queryKey: ['addresses'] });
-        navigate('/home');
       } catch (error) {
         console.error('Error adding address:', error);
       }
     }
     setIsAddressModalOpen(false);
   };
-
-  // Redirect to home if user is logged in and has address
-  React.useEffect(() => {
-    if (user && activeAddress) {
-      navigate('/home');
-    }
-  }, [user, activeAddress, navigate]);
 
   return (
     <div className="flex flex-col min-h-screen">

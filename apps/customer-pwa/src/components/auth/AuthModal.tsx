@@ -46,7 +46,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onOpenChange }) => {
           setMessage(t('auth.messages.verificationNeeded'));
         } else if (response.data.session) {
           setMessage(t('auth.messages.signupSuccess'));
-          onOpenChange(false); // Close modal on successful login
+          onOpenChange(false); // Close modal on successful signup
         } else {
           setMessage(t('auth.messages.checkEmail'));
         }
