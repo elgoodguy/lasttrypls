@@ -1,45 +1,54 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { translations } from '@repo/i18n';
 
-// Importar los JSON directamente - Vite maneja esto
-// Asegúrate que las rutas sean correctas RELATIVAS a este archivo (i18n.ts)
-import enTranslation from '../public/locales/en/translation.json';
-import esTranslation from '../public/locales/es/translation.json';
+// Log the imported translations object
+console.log('Imported translations object:', JSON.stringify(translations, null, 2));
 
+// Simplified resources definition with only base languages
 const resources = {
   en: {
-    translation: enTranslation,
-  },
-  'en-US': {
-    translation: enTranslation, // Mapea en-US a en
+    translation: translations.en
   },
   es: {
-    translation: esTranslation,
-  },
-  'es-MX': {
-    translation: esTranslation, // Mapea es-MX a es
-  },
+    translation: translations.es
+  }
 };
 
+// Log the resources being passed to i18n.init
+console.log('Resources being passed to i18n.init:', JSON.stringify(resources, null, 2));
+
 i18n
-  .use(LanguageDetector) // Detecta idioma
-  .use(initReactI18next) // Vincula con React
+  .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
-    resources, // Tus traducciones importadas
-    fallbackLng: 'en', // Idioma por defecto si el detectado no existe
-    debug: import.meta.env.DEV, // Logs en consola durante desarrollo
+    resources,
+    fallbackLng: {
+      'en-US': ['en'],
+      'es-MX': ['es'],
+      'default': ['en']
+    },
+    debug: import.meta.env.DEV,
     interpolation: {
-      escapeValue: false, // React ya hace el escape
+      escapeValue: false,
     },
     detection: {
-      // Orden de detección: localStorage primero, luego navegador
       order: ['localStorage', 'navigator'],
-      // Key para guardar en localStorage
-      lookupLocalStorage: 'i18nextLng-customer-pwa', // Nombre específico para evitar colisiones
-      // Cachés a usar
+      lookupLocalStorage: 'i18nextLng-customer-pwa',
       caches: ['localStorage'],
     },
+    ns: ['translation'],
+    defaultNS: 'translation',
+    react: {
+      useSuspense: false
+    }
+  })
+  .then(() => {
+    console.log('i18next: initialized');
   });
+
+// Force a language change to ensure translations are properly loaded
+i18n.changeLanguage(i18n.language);
 
 export default i18n; 

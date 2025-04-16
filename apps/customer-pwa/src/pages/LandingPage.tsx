@@ -5,7 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
-import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
+import { useAddressStore } from '@/store/addressStore';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
 import { LanguageToggle } from '@/components/common/LanguageToggle';
 import { BenefitsList } from '@/components/landing/BenefitsList';

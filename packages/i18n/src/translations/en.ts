@@ -14,84 +14,104 @@ export const enTranslations: TranslationResources = {
     continue: 'Continue',
     min: 'Min.',
     search: 'Search stores or products...',
-    hi: 'Hi, there!',
+    hi: 'Hi',
     back: 'Back'
   },
   navigation: {
     home: 'Home',
-    about: 'About',
-    contact: 'Contact',
     favorites: 'Favorites',
     orders: 'Orders',
     wallet: 'Wallet',
-    cart: 'Cart',
     profile: 'Profile',
+    setlocation: 'Set Location',
+    guest: 'User',
     search: 'Search',
-    setlocation: 'Set location',
     notifications: 'Notifications'
   },
   address: {
-    title: 'Delivery Addresses',
+    title: 'Addresses',
     add: 'Add address',
     addNew: 'New address',
+    addSuccess: 'Address added successfully!',
     search: 'Search address',
     searchTitle: 'Search Address',
-    searchPlaceholder: 'Enter a location to search',
-    searchAddress: 'Search address',
+    searchPlaceholder: 'Enter an address',
+    searchAddress: 'Search Address',
     useLocation: 'Use my location',
     useMyLocation: 'Use my location',
-    manage: 'Manage addresses',
-    setPrimary: 'Set as primary',
+    manage: 'Manage Addresses',
+    setPrimary: 'Set as Primary',
     addTitle: 'Add Address',
     editTitle: 'Edit Address',
-    modalDescription: 'Add or edit your address',
+    modalDescription: 'Enter your address details',
     forceModalDescription: 'Please add an address to continue',
-    deliverTo: 'Deliver to:',
-    loading: 'Loading addresses...',
-    googleMapsError: 'Google Maps service is not available',
+    gettingLocation: 'Getting location...',
+    deliverTo: 'Deliver to',
+    loading: 'Loading...',
+    googleMapsError: 'Error loading Google Maps',
     locationError: 'Error getting location',
     manualEntryRequired: 'Search and geolocation features are not available. Please enter your address manually.',
     details: {
-      street: 'Street and number',
-      interior: 'Interior number (optional)',
+      street: 'Street Address',
+      interior: 'Interior Number',
+      example: 'Example',
       neighborhood: 'Neighborhood',
       city: 'City',
       zipCode: 'ZIP Code',
-      instructions: 'Delivery instructions (optional)',
-      example: 'Ex: Ring the bell twice'
+      instructions: 'Delivery Instructions'
     },
-    save: 'Save address',
+    save: 'Save Address',
     empty: 'No saved addresses',
     noneSaved: 'No saved addresses'
   },
   auth: {
-    email: 'Email',
-    password: 'Password',
-    confirmPassword: 'Confirm Password',
-    forgotPassword: 'Forgot Password?',
-    rememberMe: 'Remember Me',
-    noAccount: "Don't have an account?",
-    haveAccount: 'Already have an account?',
-    logout: 'Log Out',
-    signup: 'Sign Up',
-    login: 'Log In'
+    login: {
+      title: 'Log In',
+      description: 'Log in to access your account',
+      button: 'Log In',
+      haveAccount: 'Already have an account?'
+    },
+    signup: {
+      title: 'Sign Up',
+      description: 'Create an account to get started',
+      button: 'Sign Up',
+      noAccount: "Don't have an account?"
+    },
+    form: {
+      email: 'Email',
+      emailPlaceholder: 'you@example.com',
+      password: 'Password',
+      processing: 'Processing...'
+    },
+    oauth: {
+      continueWith: 'Or continue with',
+      google: 'Google',
+      phone: 'Phone (OTP)'
+    },
+    messages: {
+      verificationNeeded: 'Signup successful, but user needs verification. Please check your email.',
+      signupSuccess: 'Signup successful! You are now logged in.',
+      checkEmail: 'Signup successful! Please check your email to verify your account.',
+      loginSuccess: 'Login successful!',
+      unexpectedError: 'An unexpected error occurred.',
+      oauthError: 'Failed to sign in with'
+    },
+    logout: 'Log Out'
   },
   profile: {
     title: 'Profile Settings',
     description: 'Manage your account details',
-    personalInfo: 'Personal Information',
-    fullName: 'Full Name',
-    fullNamePlaceholder: 'Enter your full name',
-    email: 'Email',
-    saveChanges: 'Save Changes',
-    addresses: {
-      title: 'Delivery Addresses',
-      add: 'Add Address',
-      primary: 'Primary Address',
-      address: 'Address',
-      instructions: 'Instructions',
-      confirmDelete: 'Are you sure you want to delete this address?',
-      noAddresses: 'You haven\'t added any addresses. Add your first delivery address.'
+    personalInfo: {
+      title: 'Personal Information',
+      fullName: 'Full Name',
+      fullNamePlaceholder: 'Enter your full name',
+      fullNameRequired: 'Full name is required',
+      email: 'Email',
+      emailPlaceholder: 'you@email.com',
+      saveChanges: 'Save Changes',
+      updateSuccess: 'Profile updated successfully!',
+      updateError: 'Failed to update profile: ',
+      loadError: 'Error loading profile'
     },
     security: {
       title: 'Security',
@@ -99,42 +119,70 @@ export const enTranslations: TranslationResources = {
       changePassword: 'Change Password'
     },
     preferences: 'Preferences',
-    prefsDescription: 'Set your language and theme',
+    prefsDescription: 'Configure your language and theme',
     setLanguage: 'Language',
-    setTheme: 'Theme'
+    setTheme: 'Theme',
+    addresses: {
+      title: 'My Addresses',
+      add: 'Add Address',
+      primary: 'Primary Address',
+      noAddresses: 'You haven\'t added any addresses. Add your first delivery address.'
+    },
+    loginRequired: 'Login required',
+    loginMessage: 'Log in to see this page'
   },
   store: {
-    nearLocation: 'Stores near {location}',
-    categories: {
-      all: 'All',
-      restaurants: 'Restaurants',
-      cafes: 'Cafes',
-      food: 'Food'
-    },
+    minOrder: 'Minimum order',
+    noMinimum: 'No minimum',
+    cashback: 'Cashback',
+    free: 'Free',
+    deliveryTime: 'Delivery Time',
     status: {
       open: 'Open',
-      closed: 'Closed',
-      schedule: 'Schedule'
+      schedule: 'Scheduled',
+      closed: 'Closed'
     },
-    minOrder: 'Min. Order',
-    noMinimum: 'No minimum',
-    deliveryTime: 'min',
-    rating: 'Rating',
-    reviews: 'reviews',
-    cashback: 'Cashback',
-    free: 'Free'
+    list: {
+      all: 'All',
+      near: 'Stores near',
+      noStores: 'No stores found delivering to',
+      inCategory: 'in'
+    }
   },
-  wallet: {
-    title: 'My Wallet',
-    empty: 'No payment methods configured'
+  landing: {
+    login: 'Login',
+    signup: 'Sign up',
+    continueAsGuest: 'Continue as Guest',
+    benefits: {
+      title: 'Why create an account?',
+      saveAddresses: 'Save and manage your delivery addresses',
+      trackOrders: 'Track your orders in real-time',
+      manageWallet: 'Manage your wallet and payments',
+      saveFavorites: 'Save your favorite stores and items'
+    },
+    hero: {
+      title: 'Your favorite stores, delivered to your door',
+      subtitle: 'Get everything you need from local stores delivered in minutes',
+      cta: 'Start shopping'
+    }
   },
   favorites: {
     title: 'My Favorites',
-    empty: 'No favorites yet'
+    empty: 'No favorites yet',
+    loginRequired: 'Login required',
+    loginMessage: 'Log in to see your favorites'
   },
   orders: {
     title: 'My Orders',
-    empty: 'No recent orders'
+    empty: 'No recent orders',
+    loginRequired: 'Login required',
+    loginMessage: 'Log in to see your orders'
+  },
+  wallet: {
+    title: 'My Wallet',
+    empty: 'No payment methods configured',
+    loginRequired: 'Login required',
+    loginMessage: 'Log in to see your wallet'
   },
   error: {
     notFound: {
@@ -145,19 +193,10 @@ export const enTranslations: TranslationResources = {
   },
   product: {
     description: {
-      classicBurger: 'Classic burger with lettuce, tomato, and cheese',
+      classicBurger: 'Classic burger with lettuce, tomato, and cheese'
     },
     outOfStock: 'Out of stock',
     addToCart: 'Add to cart',
-    quantity: 'Quantity',
-  },
-  landing: {
-    login: 'Login',
-    signup: 'Sign up',
-    hero: {
-      title: 'Your favorite stores, delivered to your door',
-      subtitle: 'Get everything you need from local stores delivered in minutes',
-      cta: 'Start shopping',
-    },
-  },
-} as const; 
+    quantity: 'Quantity'
+  }
+}; 

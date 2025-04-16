@@ -7,7 +7,6 @@ import { getAddresses } from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
-import React from 'react';
 
 export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
 const STORAGE_KEY = 'customer-address-storage';

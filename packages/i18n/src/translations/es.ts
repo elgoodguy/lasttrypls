@@ -12,28 +12,27 @@ export const esTranslations: TranslationResources = {
     saving: 'Guardando...',
     confirm: 'Confirmar',
     continue: 'Continuar',
-    min: 'Min.',
+    min: 'Mín.',
     search: 'Buscar tiendas o productos...',
     hi: '¡Hola!',
     back: 'Volver'
   },
   navigation: {
     home: 'Inicio',
-    about: 'Acerca de',
-    contact: 'Contacto',
     favorites: 'Favoritos',
     orders: 'Pedidos',
     wallet: 'Billetera',
-    cart: 'Carrito',
     profile: 'Perfil',
+    setlocation: 'Establecer Ubicación',
+    guest: 'Usuario',
     search: 'Buscar',
-    setlocation: 'Establecer ubicación',
     notifications: 'Notificaciones'
   },
   address: {
     title: 'Direcciones de entrega',
     add: 'Agregar dirección',
     addNew: 'Nueva dirección',
+    addSuccess: '¡Dirección agregada exitosamente!',
     search: 'Buscar dirección',
     searchTitle: 'Buscar Dirección',
     searchPlaceholder: 'Ingresa una ubicación para buscar',
@@ -46,11 +45,12 @@ export const esTranslations: TranslationResources = {
     editTitle: 'Editar dirección',
     modalDescription: 'Agregar o editar tu dirección',
     forceModalDescription: 'Por favor agrega una dirección para continuar',
+    gettingLocation: 'Obteniendo ubicación...',
     deliverTo: 'Entregar a:',
     loading: 'Cargando direcciones...',
     googleMapsError: 'El servicio de Google Maps no está disponible',
     locationError: 'Error al obtener la ubicación',
-    manualEntryRequired: 'Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manualmente.',
+    manualEntryRequired: 'Las funciones de búsqueda y geolocalización no están disponibles. Por favor, ingresa tu dirección manually.',
     details: {
       street: 'Calle y número',
       interior: 'Número interior (opcional)',
@@ -65,33 +65,53 @@ export const esTranslations: TranslationResources = {
     noneSaved: 'No hay direcciones guardadas'
   },
   auth: {
-    email: 'Correo electrónico',
-    password: 'Contraseña',
-    confirmPassword: 'Confirmar Contraseña',
-    forgotPassword: '¿Olvidaste tu contraseña?',
-    rememberMe: 'Recordarme',
-    noAccount: '¿No tienes una cuenta?',
-    haveAccount: '¿Ya tienes una cuenta?',
-    logout: 'Cerrar Sesión',
-    signup: 'Registrarse',
-    login: 'Iniciar Sesión'
+    login: {
+      title: 'Iniciar Sesión',
+      description: 'Inicia sesión para acceder a tu cuenta',
+      button: 'Iniciar Sesión',
+      haveAccount: '¿Ya tienes una cuenta?'
+    },
+    signup: {
+      title: 'Registrarse',
+      description: 'Crea una cuenta para comenzar',
+      button: 'Registrarse',
+      noAccount: '¿No tienes una cuenta?'
+    },
+    form: {
+      email: 'Correo Electrónico',
+      emailPlaceholder: 'tú@ejemplo.com',
+      password: 'Contraseña',
+      processing: 'Procesando...'
+    },
+    oauth: {
+      continueWith: 'O continuar con',
+      google: 'Google',
+      phone: 'Teléfono (OTP)'
+    },
+    messages: {
+      verificationNeeded: 'Registro exitoso, pero el usuario necesita verificación. Por favor, revisa tu correo electrónico.',
+      signupSuccess: '¡Registro exitoso! Ahora estás conectado.',
+      checkEmail: '¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.',
+      loginSuccess: '¡Inicio de sesión exitoso!',
+      unexpectedError: 'Ocurrió un error inesperado.',
+      oauthError: 'Error al iniciar sesión con'
+    },
+    logout: 'Cerrar Sesión'
   },
   profile: {
     title: 'Configuración de Perfil',
     description: 'Administra los detalles de tu cuenta',
-    personalInfo: 'Información Personal',
-    fullName: 'Nombre Completo',
-    fullNamePlaceholder: 'Ingresa tu nombre completo',
-    email: 'Correo electrónico',
-    saveChanges: 'Guardar Cambios',
-    addresses: {
-      title: 'Direcciones de Entrega',
-      add: 'Agregar Dirección',
-      primary: 'Dirección Principal',
-      address: 'Dirección',
-      instructions: 'Instrucciones',
-      confirmDelete: '¿Estás seguro que deseas eliminar esta dirección?',
-      noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.'
+    personalInfo: {
+      title: 'Información Personal',
+      fullName: 'Nombre Completo',
+      fullNamePlaceholder: 'Ingresa tu nombre completo',
+      fullNameRequired: 'El nombre completo es requerido',
+      email: 'Correo electrónico',
+      emailPlaceholder: 'tu@ejemplo.com',
+      saveChanges: 'Guardar Cambios',
+      updateSuccess: '¡Perfil actualizado exitosamente!',
+      updateError: 'Error al actualizar perfil: ',
+      loadError: 'Error al cargar perfil'
     },
     security: {
       title: 'Seguridad',
@@ -101,40 +121,68 @@ export const esTranslations: TranslationResources = {
     preferences: 'Preferencias',
     prefsDescription: 'Configura tu idioma y tema',
     setLanguage: 'Idioma',
-    setTheme: 'Tema'
+    setTheme: 'Tema',
+    addresses: {
+      title: 'Direcciones de Entrega',
+      add: 'Agregar Dirección',
+      primary: 'Dirección Principal',
+      noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.'
+    },
+    loginRequired: 'Inicio de sesión requerido',
+    loginMessage: 'Inicia sesión para ver esta página'
   },
   store: {
-    nearLocation: 'Tiendas cerca de {location}',
-    categories: {
-      all: 'Todas',
-      restaurants: 'Restaurantes',
-      cafes: 'Cafeterías',
-      food: 'Comida'
-    },
+    minOrder: 'Pedido Mín.',
+    noMinimum: 'Sin mínimo',
+    cashback: 'Cashback',
+    free: 'Gratis',
+    deliveryTime: 'min',
     status: {
       open: 'Abierto',
       closed: 'Cerrado',
       schedule: 'Horario'
     },
-    minOrder: 'Pedido Mín.',
-    noMinimum: 'Sin mínimo',
-    deliveryTime: 'min',
-    rating: 'Calificación',
-    reviews: 'reseñas',
-    cashback: 'Cashback',
-    free: 'Gratis'
+    list: {
+      all: 'Todo',
+      near: 'Tiendas cerca de',
+      noStores: 'No hay tiendas que entreguen en',
+      inCategory: 'en'
+    }
   },
-  wallet: {
-    title: 'Mi Billetera',
-    empty: 'No hay métodos de pago configurados'
+  landing: {
+    login: 'Iniciar sesión',
+    signup: 'Registrarse',
+    continueAsGuest: 'Continuar como invitado',
+    benefits: {
+      title: '¿Por qué crear una cuenta?',
+      saveAddresses: 'Guarda y gestiona tus direcciones de entrega',
+      trackOrders: 'Sigue tus pedidos en tiempo real',
+      manageWallet: 'Gestiona tu billetera y pagos',
+      saveFavorites: 'Guarda tus tiendas y productos favoritos'
+    },
+    hero: {
+      title: 'Tus tiendas favoritas, entregadas en tu puerta',
+      subtitle: 'Recibe todo lo que necesitas de tiendas locales en minutos',
+      cta: 'Empieza a comprar'
+    }
   },
   favorites: {
     title: 'Mis Favoritos',
-    empty: 'No tienes favoritos aún'
+    empty: 'Aún no hay favoritos',
+    loginRequired: 'Inicio de sesión requerido',
+    loginMessage: 'Inicia sesión para ver tus favoritos'
   },
   orders: {
     title: 'Mis Pedidos',
-    empty: 'No tienes pedidos recientes'
+    empty: 'No tienes pedidos recientes',
+    loginRequired: 'Inicio de sesión requerido',
+    loginMessage: 'Inicia sesión para ver tus pedidos'
+  },
+  wallet: {
+    title: 'Mi Billetera',
+    empty: 'No hay métodos de pago configurados',
+    loginRequired: 'Inicio de sesión requerido',
+    loginMessage: 'Inicia sesión para ver tu billetera'
   },
   error: {
     notFound: {
@@ -143,21 +191,12 @@ export const esTranslations: TranslationResources = {
       action: 'Volver al inicio'
     }
   },
-  landing: {
-    login: 'Iniciar sesión',
-    signup: 'Registrarse',
-    hero: {
-      title: 'Tus tiendas favoritas, entregadas a tu puerta',
-      subtitle: 'Recibe todo lo que necesitas de tiendas locales en minutos',
-      cta: 'Empieza a comprar',
-    },
-  },
   product: {
     description: {
-      classicBurger: 'Hamburguesa clásica con lechuga, tomate y queso',
+      classicBurger: 'Hamburguesa clásica con lechuga, tomate y queso'
     },
     outOfStock: 'Agotado',
     addToCart: 'Agregar al carrito',
-    quantity: 'Cantidad',
+    quantity: 'Cantidad'
   }
 }; 

@@ -1,3 +1,2 @@
-export * from './config';
 export * from './types';
-export * from './translations'; 
+export { translations } from './translations'; 

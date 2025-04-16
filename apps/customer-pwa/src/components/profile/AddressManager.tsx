@@ -18,7 +18,7 @@ export const AddressManager: React.FC = () => {
   const { addresses, addOrUpdateAddress, setActiveAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
   const { t } = useTranslation();
 
-  const { isLoading: isLoadingAddresses } = useQuery({
+  useQuery({
     queryKey: ['addresses'],
     queryFn: () => getAddresses(supabase),
   });

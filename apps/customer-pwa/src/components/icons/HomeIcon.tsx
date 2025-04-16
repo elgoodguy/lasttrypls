@@ -1,7 +1,7 @@
 import { SVGProps } from 'react';
 
 export const HomeIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="100%" height="auto" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg width="100%" height="100%" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
     {/* Base verde */}
     <rect x="12" y="52" width="40" height="4" rx="2" fill="#4CAF50" stroke="#4CAF50" strokeWidth="2"/>
 

@@ -19,15 +19,13 @@ export interface CommonTranslations {
 
 export interface NavigationTranslations {
   home: string;
-  about: string;
-  contact: string;
   favorites: string;
   orders: string;
   wallet: string;
-  cart: string;
   profile: string;
-  search: string;
   setlocation: string;
+  guest: string;
+  search: string;
   notifications: string;
 }
 
@@ -35,6 +33,7 @@ export interface AddressTranslations {
   title: string;
   add: string;
   addNew: string;
+  addSuccess: string;
   search: string;
   searchTitle: string;
   searchPlaceholder: string;
@@ -47,6 +46,7 @@ export interface AddressTranslations {
   editTitle: string;
   modalDescription: string;
   forceModalDescription: string;
+  gettingLocation: string;
   deliverTo: string;
   loading: string;
   googleMapsError: string;
@@ -55,11 +55,11 @@ export interface AddressTranslations {
   details: {
     street: string;
     interior: string;
+    example: string;
     neighborhood: string;
     city: string;
     zipCode: string;
     instructions: string;
-    example: string;
   };
   save: string;
   empty: string;
@@ -67,34 +67,54 @@ export interface AddressTranslations {
 }
 
 export interface AuthTranslations {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  forgotPassword: string;
-  rememberMe: string;
-  noAccount: string;
-  haveAccount: string;
+  login: {
+    title: string;
+    description: string;
+    button: string;
+    haveAccount: string;
+  };
+  signup: {
+    title: string;
+    description: string;
+    button: string;
+    noAccount: string;
+  };
+  form: {
+    email: string;
+    emailPlaceholder: string;
+    password: string;
+    processing: string;
+  };
+  oauth: {
+    continueWith: string;
+    google: string;
+    phone: string;
+  };
+  messages: {
+    verificationNeeded: string;
+    signupSuccess: string;
+    checkEmail: string;
+    loginSuccess: string;
+    unexpectedError: string;
+    oauthError: string;
+  };
   logout: string;
-  signup: string;
-  login: string;
 }
 
 export interface ProfileTranslations {
   title: string;
   description: string;
-  personalInfo: string;
-  fullName: string;
-  fullNamePlaceholder: string;
-  email: string;
-  saveChanges: string;
-  addresses: {
+  personalInfo: {
     title: string;
-    add: string;
-    primary: string;
-    address: string;
-    instructions: string;
-    confirmDelete: string;
-    noAddresses: string;
+    fullName: string;
+    fullNamePlaceholder: string;
+    fullNameRequired: string;
+    email: string;
+    emailPlaceholder: string;
+    saveChanges: string;
+    updateSuccess: string;
+    updateError: string;
+    loadError: string;
   };
   security: {
     title: string;
@@ -105,43 +125,54 @@ export interface ProfileTranslations {
   prefsDescription: string;
   setLanguage: string;
   setTheme: string;
+  addresses: {
+    title: string;
+    add: string;
+    primary: string;
+    noAddresses: string;
+  };
+  loginRequired: string;
+  loginMessage: string;
 }
 
 export interface StoreTranslations {
-  nearLocation: string;
-  categories: {
-    all: string;
-    restaurants: string;
-    cafes: string;
-    food: string;
-  };
-  status: {
-    open: string;
-    closed: string;
-    schedule: string;
-  };
   minOrder: string;
   noMinimum: string;
-  deliveryTime: string;
-  rating: string;
-  reviews: string;
   cashback: string;
   free: string;
+  deliveryTime: string;
+  status: {
+    open: string;
+    schedule: string;
+    closed: string;
+  };
+  list: {
+    all: string;
+    near: string;
+    noStores: string;
+    inCategory: string;
+  };
 }
 
 export interface WalletTranslations {
   title: string;
   empty: string;
+  loginRequired: string;
+  loginMessage: string;
 }
 
 export interface FavoritesTranslations {
   title: string;
   empty: string;
+  loginRequired: string;
+  loginMessage: string;
 }
 
 export interface OrdersTranslations {
   title: string;
   empty: string;
+  loginRequired: string;
+  loginMessage: string;
 }
 
 export interface ErrorTranslations {
@@ -164,6 +195,14 @@ export interface ProductTranslations {
 export interface LandingTranslations {
   login: string;
   signup: string;
+  continueAsGuest: string;
+  benefits: {
+    title: string;
+    saveAddresses: string;
+    trackOrders: string;
+    manageWallet: string;
+    saveFavorites: string;
+  };
   hero: {
     title: string;
     subtitle: string;
