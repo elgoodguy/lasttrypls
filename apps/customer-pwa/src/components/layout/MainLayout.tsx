@@ -15,7 +15,7 @@ export const MainLayout: React.FC = () => {
       <TopNavBar />
 
       {/* Main Content - Scrollable with padding for fixed navbars */}
-      <main className="flex-1 container overflow-y-auto mt-14 pb-20 pt-6">
+      <main className="flex-1 container overflow-y-auto mt-4 pb-24">
         <Outlet />
       </main>
 

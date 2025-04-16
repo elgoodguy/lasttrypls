@@ -16,7 +16,7 @@ import {
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
 import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin, Package, Wallet } from 'lucide-react';
-import { LocationIcon } from '@/components/icons';
+import { LocationIcon, NotificationsIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
@@ -210,6 +210,16 @@ export const TopNavBar: React.FC = () => {
 
         {/* User Avatar Dropdown */}
         <div className="flex items-center gap-4">
+          {!isLoadingAuth && !isGuest && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10"
+              onClick={() => navigate('/home/notifications')}
+            >
+              <NotificationsIcon className="h-6 w-6" />
+            </Button>
+          )}
           {!isLoadingAuth && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -229,7 +239,7 @@ export const TopNavBar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>
-                  {isGuest ? t('nav.guest') : user?.user_metadata?.full_name || user?.email}
+                  {isGuest ? t('navigation.guest') : user?.user_metadata?.full_name || user?.email}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {!isGuest && (
@@ -271,7 +281,7 @@ export const TopNavBar: React.FC = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setIsAuthModalOpen(true)}>
                       <UserIcon className="mr-2 h-4 w-4" />
-                      {t('auth.login')} / {t('auth.signup')}
+                      {`${t('auth.login.button')} / ${t('auth.signup.button')}`}
                     </DropdownMenuItem>
                   </>
                 )}

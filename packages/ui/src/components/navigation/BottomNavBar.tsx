@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils';
 export interface NavItem {
   path: string;
   label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: React.ComponentType<any>;
   requiresAuth?: boolean;
 }
 
@@ -42,16 +42,16 @@ export function BottomNavBar({
               variant="ghost"
               onClick={() => onNavigate(item.path)}
               className={cn(
-                'flex h-auto w-1/4 flex-col items-center justify-center gap-0.5 p-1',
+                'flex h-auto w-1/4 flex-col items-center justify-center p-1',
                 isActive ? 'text-primary' : 'text-muted-foreground',
                 'hover:bg-transparent hover:text-primary/80'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
-              <div className="flex h-10 items-center justify-center w-full">
-                <Icon className="mx-auto h-6 w-6" />
+              <div className="flex items-center justify-center w-full">
+                <Icon className="mx-auto h-8 w-8" />
               </div>
-              <span className="text-xs text-center w-full">{item.label}</span>
+              <span className="text-xs text-center w-full mt-0.5">{item.label}</span>
             </Button>
           );
         })}

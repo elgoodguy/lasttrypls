@@ -1,14 +1,16 @@
-import { SVGProps } from 'react';
+import { HTMLAttributes } from 'react';
 
-export const OrdersIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="100%" height="100%" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
-    {/* Parte superior de la caja cerrada */}
-    <polygon points="8,20 32,8 56,20 32,32" fill="#E76F51" stroke="#070707" strokeWidth="2" strokeLinejoin="round"/>
+interface OrdersIconProps extends HTMLAttributes<HTMLImageElement> {
+  className?: string;
+}
 
-    {/* Parte frontal de la caja */}
-    <polygon points="8,20 8,44 32,56 32,32" fill="#F4A261" stroke="#070707" strokeWidth="2" strokeLinejoin="round"/>
-
-    {/* Parte lateral de la caja */}
-    <polygon points="56,20 56,44 32,56 32,32" fill="#F4A261" stroke="#070707" strokeWidth="2" strokeLinejoin="round"/>
-  </svg>
+export const OrdersIcon = ({ className, ...props }: OrdersIconProps) => (
+  <img
+    src="/icons-3d/icons8-package-100 1.png"
+    alt="Orders"
+    className={className}
+    width="100%"
+    height="100%"
+    {...props}
+  />
 ); 

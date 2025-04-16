@@ -198,15 +198,21 @@ export const enTranslations: TranslationResources = {
   },
   wallet: {
     title: 'My Wallet',
-    empty: 'No payment methods configured',
+    empty: 'No funds available',
     loginRequired: 'Login required',
     loginMessage: 'Log in to see your wallet'
   },
+  notifications: {
+    title: 'My Notifications',
+    empty: 'No notifications yet',
+    loginRequired: 'Login required',
+    loginMessage: 'Log in to see your notifications'
+  },
   error: {
     notFound: {
-      title: '404',
-      description: 'Page not found',
-      action: 'Back to home'
+      title: 'Page Not Found',
+      description: 'The page you are looking for does not exist.',
+      action: 'Go back home'
     }
   },
   product: {

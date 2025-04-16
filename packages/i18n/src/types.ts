@@ -175,6 +175,13 @@ export interface OrdersTranslations {
   loginMessage: string;
 }
 
+export interface NotificationsTranslations {
+  title: string;
+  empty: string;
+  loginRequired: string;
+  loginMessage: string;
+}
+
 export interface ErrorTranslations {
   notFound: {
     title: string;
@@ -223,4 +230,5 @@ export interface TranslationResources {
   error: ErrorTranslations;
   product: ProductTranslations;
   landing: LandingTranslations;
+  notifications: NotificationsTranslations;
 } 

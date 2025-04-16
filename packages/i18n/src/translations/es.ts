@@ -198,14 +198,20 @@ export const esTranslations: TranslationResources = {
   },
   wallet: {
     title: 'Mi Billetera',
-    empty: 'No hay métodos de pago configurados',
+    empty: 'No hay fondos disponibles',
     loginRequired: 'Inicio de sesión requerido',
     loginMessage: 'Inicia sesión para ver tu billetera'
   },
+  notifications: {
+    title: 'Mis Notificaciones',
+    empty: 'No hay notificaciones',
+    loginRequired: 'Inicio de sesión requerido',
+    loginMessage: 'Inicia sesión para ver tus notificaciones'
+  },
   error: {
     notFound: {
-      title: '404',
-      description: 'Página no encontrada',
+      title: 'Página No Encontrada',
+      description: 'La página que buscas no existe.',
       action: 'Volver al inicio'
     }
   },

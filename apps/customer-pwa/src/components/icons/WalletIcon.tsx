@@ -1,14 +1,16 @@
-import { SVGProps } from 'react';
+import { HTMLAttributes } from 'react';
 
-export const WalletIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg width="100%" height="100%" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
-    {/* Cuerpo principal rectangular de la cartera */}
-    <rect x="12" y="20" width="40" height="28" fill="#8B4513" stroke="#070707" strokeWidth="2"/>
+interface WalletIconProps extends HTMLAttributes<HTMLImageElement> {
+  className?: string;
+}
 
-    {/* Solapa de la cartera */}
-    <rect x="12" y="16" width="40" height="12" fill="#A0522D" stroke="#070707" strokeWidth="2"/>
-
-    {/* Botón o broche */}
-    <circle cx="42" cy="22" r="2" fill="#FFD700" stroke="#070707" strokeWidth="1"/>
-  </svg>
+export const WalletIcon = ({ className, ...props }: WalletIconProps) => (
+  <img
+    src="/icons-3d/icons8-wallet-100 1.png"
+    alt="Wallet"
+    className={className}
+    width="100%"
+    height="100%"
+    {...props}
+  />
 ); 

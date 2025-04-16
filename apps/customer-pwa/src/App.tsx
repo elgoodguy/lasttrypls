@@ -22,6 +22,7 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(module => ({ d
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
 const StoreDetailPage = lazy(() => import('@/pages/StoreDetailPage'));
 const CartPage = lazy(() => import('@/pages/CartPage').then(module => ({ default: module.CartPage })));
+const NotificationsPage = lazy(() => import('@/pages/NotificationsPage').then(module => ({ default: module.NotificationsPage })));
 
 // Componente wrapper para rutas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -105,6 +106,7 @@ function App() {
                     <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
                     <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
                     <Route path="cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+                    <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
