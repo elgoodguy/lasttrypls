@@ -19,13 +19,14 @@ import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin, Package, Wallet } fro
 import { LocationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
-import { useAddressStore } from '@/store/addressStore';
+import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@repo/ui/lib/utils';
 import { useMutation } from '@tanstack/react-query';
-import { addAddress } from '@repo/api-client';
+import { addAddress, Address } from '@repo/api-client';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { toast } from 'sonner';
+import { AddressFormData } from '@/lib/validations/address';
 
 export const TopNavBar: React.FC = () => {
   const navigate = useNavigate();
@@ -39,9 +40,9 @@ export const TopNavBar: React.FC = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
-    mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
+    mutationFn: (newData: AddressFormData) => addAddress(supabase, { ...newData, is_primary: true }),
     onSuccess: (newAddress) => {
-      toast.success('¡Dirección agregada exitosamente!');
+      toast.success(t('address.addSuccess'));
       addOrUpdateAddress(newAddress);
       setActiveAddress(newAddress);
       console.log('[TopNavBar] Address added and set as active:', newAddress);
@@ -49,7 +50,7 @@ export const TopNavBar: React.FC = () => {
     },
     onError: (error) => {
       console.error('Error adding address:', error);
-      toast.error('No se pudo agregar la dirección. Por favor intenta de nuevo.');
+      toast.error(t('address.addError'));
     },
   });
 
@@ -59,16 +60,60 @@ export const TopNavBar: React.FC = () => {
     navigate('/');
   };
 
-  const handleAddressSelect = (_addressId: string) => {
-    // Implementar lógica para seleccionar dirección
+  const handleAddressSelect = (addressId: string) => {
+    const selectedAddress = addresses.find(addr => addr.id === addressId);
+    if (!selectedAddress) {
+      console.warn('[TopNavBar] Selected address not found:', addressId);
+      return;
+    }
+
+    // Update active address in store
+    setActiveAddress(selectedAddress);
+    
+    // If this is a guest address, update localStorage
+    if (selectedAddress.id === 'guest-address') {
+      localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(selectedAddress));
+    }
+
+    // Show success message
+    toast.success(t('address.selectSuccess'));
+    
+    // Invalidate queries that depend on the address
+    queryClient.invalidateQueries({ queryKey: ['restaurants'] });
+    queryClient.invalidateQueries({ queryKey: ['menu'] });
   };
 
   const handleOpenAddAddress = () => {
     setIsAddressModalOpen(true);
   };
 
-  const handleModalSubmit = async (data: any) => {
+  const handleModalSubmit = async (data: AddressFormData) => {
     console.log('[TopNavBar] Submitting new address:', data);
+    
+    if (isGuest) {
+      const guestAddress: Address = {
+        ...data,
+        id: 'guest-address',
+        is_primary: true,
+        user_id: 'guest-user',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      
+      // Update the store
+      addOrUpdateAddress(guestAddress);
+      setActiveAddress(guestAddress);
+      
+      // Save to localStorage
+      localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(guestAddress));
+      
+      // Close modal and show success
+      toast.success(t('address.addSuccess'));
+      setIsAddressModalOpen(false);
+      return;
+    }
+    
+    // For registered users, use the mutation
     addAddressMut(data);
   };
 
@@ -76,7 +121,7 @@ export const TopNavBar: React.FC = () => {
     // Implementar la lógica para establecer la dirección principal
   };
 
-  const formatShortAddress = (address: any) => {
+  const formatShortAddress = (address: Address | null) => {
     if (!address) return t('navigation.setlocation');
     
     // Extraer solo la calle y número
