@@ -43,7 +43,7 @@ export const LandingPage: React.FC = () => {
         ...data,
         id: 'guest-address',
         is_primary: true,
-        user_id: null,
+        user_id: 'guest-user',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };

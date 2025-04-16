@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getAddresses, addAddress, updateAddress } from '@repo/api-client';
+import { getAddresses, addAddress, updateAddress, Address } from '@repo/api-client';
 import { Button } from '@repo/ui/components/ui/button';
 import { AddressCard } from './AddressCard';
 import { Plus } from 'lucide-react';
@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 
 export const AddressManager: React.FC = () => {
   const supabase = useSupabase();
-  const [selectedAddress, setSelectedAddress] = useState<AddressFormData | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { addresses, addOrUpdateAddress, setActiveAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
   const { t } = useTranslation();
@@ -46,7 +46,8 @@ export const AddressManager: React.FC = () => {
     onSuccess: (updatedAddress) => {
       toast.success(t('address.updateSuccess'));
       addOrUpdateAddress(updatedAddress);
-      if (selectedAddress?.id === addresses.find(addr => addr.id === selectedAddress.id)?.id) {
+      const currentActiveId = addresses.find(addr => addr.is_primary)?.id;
+      if (selectedAddress?.id === currentActiveId) {
         setActiveAddress(updatedAddress);
       }
       setIsModalOpen(false);
@@ -61,22 +62,27 @@ export const AddressManager: React.FC = () => {
   const handleAddressSubmit = (data: AddressFormData) => {
     console.log('[AddressManager] Submitting address:', data);
     if (selectedAddress?.id) {
-      updateAddressMutation.mutate({ addressId: selectedAddress.id, updates: data });
+      updateAddressMutation.mutate({ 
+        addressId: selectedAddress.id, 
+        updates: data
+      });
     } else {
       addAddressMutation.mutate(data);
     }
   };
 
-  const handleEdit = (address: AddressFormData) => {
+  const handleEdit = (address: Address) => {
     setSelectedAddress(address);
     setIsModalOpen(true);
   };
 
   const handleDelete = async (addressId: string) => {
+    if (!addressId) return;
     await deleteAddress(addressId);
   };
 
   const handleSetPrimary = async (addressId: string) => {
+    if (!addressId) return;
     await setPrimaryAddress(addressId);
   };
 
