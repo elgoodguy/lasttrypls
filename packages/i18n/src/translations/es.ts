@@ -42,7 +42,7 @@ export const esTranslations: TranslationResources = {
     wallet: 'Billetera',
     profile: 'Perfil',
     setlocation: 'Establecer Ubicación',
-    guest: 'Usuario',
+    guest: 'Invitado',
     search: 'Buscar',
     notifications: 'Notificaciones'
   },

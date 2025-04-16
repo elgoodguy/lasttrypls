@@ -8,21 +8,28 @@ const resources = {
   en: {
     translation: translations.en
   },
+  'en-US': {
+    translation: translations.en
+  },
   es: {
+    translation: translations.es
+  },
+  'es-MX': {
+    translation: translations.es
+  },
+  'es-ES': {
     translation: translations.es
   }
 };
+
+console.log('DEBUG: Translations object loaded into i18n.ts:', JSON.stringify(translations, null, 2));
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: {
-      'en-US': ['en'],
-      'es-MX': ['es'],
-      'default': ['en']
-    },
+    fallbackLng: 'en',
     debug: import.meta.env.DEV,
     interpolation: {
       escapeValue: false,
@@ -40,6 +47,6 @@ i18n
   });
 
 // Force a language change to ensure translations are properly loaded
-i18n.changeLanguage(i18n.language);
+// i18n.changeLanguage(i18n.language);
 
 export default i18n; 

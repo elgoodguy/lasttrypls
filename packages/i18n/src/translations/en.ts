@@ -42,7 +42,7 @@ export const enTranslations: TranslationResources = {
     wallet: 'Wallet',
     profile: 'Profile',
     setlocation: 'Set Location',
-    guest: 'User',
+    guest: 'Guest',
     search: 'Search',
     notifications: 'Notifications'
   },
