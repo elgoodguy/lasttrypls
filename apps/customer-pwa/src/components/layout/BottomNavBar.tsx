@@ -16,9 +16,9 @@ export const BottomNavBar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { path: '/home', label: t('navigation.home'), icon: HomeIcon, requiresAuth: false },
-    { path: 'favorites', label: t('navigation.favorites'), icon: FavoritesIcon, requiresAuth: true },
-    { path: 'orders', label: t('navigation.orders'), icon: OrdersIcon, requiresAuth: true },
-    { path: 'wallet', label: t('navigation.wallet'), icon: WalletIcon, requiresAuth: true },
+    { path: '/home/favorites', label: t('navigation.favorites'), icon: FavoritesIcon, requiresAuth: true },
+    { path: '/home/orders', label: t('navigation.orders'), icon: OrdersIcon, requiresAuth: true },
+    { path: '/home/wallet', label: t('navigation.wallet'), icon: WalletIcon, requiresAuth: true },
   ];
 
   const handleNavigate = (path: string, requiresAuth: boolean) => {

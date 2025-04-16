@@ -13,13 +13,14 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { addAddress } from '@repo/api-client';
+import { AddressFormData } from '@/lib/validations/address';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
-  const { activeAddress, addOrUpdateAddress } = useAddressStore();
+  const { activeAddress, addOrUpdateAddress, setActiveAddress } = useAddressStore();
   const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = React.useState(false);
   const [isGuest, setIsGuest] = React.useState(false);
@@ -36,41 +37,28 @@ export const LandingPage: React.FC = () => {
     setIsAddressModalOpen(true);
   };
 
-  const handleAddressSubmit = async (data: any) => {
+  const handleAddressSubmit = async (data: AddressFormData) => {
     if (isGuest) {
-      // Para usuarios guest, creamos una dirección con ID único
-      const guestAddressId = 'guest-address-' + Date.now();
       const guestAddress = {
         ...data,
-        id: guestAddressId,
+        id: 'guest-address',
         is_primary: true,
-        user_id: 'guest',
+        user_id: null,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
-      
-      // Actualizar el store de Zustand
       addOrUpdateAddress(guestAddress);
-      
-      // Guardar en localStorage
-      try {
-        localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(guestAddress));
-        console.log('[LandingPage] Saved guest address to localStorage:', guestAddress);
-      } catch (error) {
-        console.error('[LandingPage] Error saving guest address to localStorage:', error);
-      }
-
-      // Navegar a /home después de guardar la dirección
+      setActiveAddress(guestAddress);
       navigate('/home', { replace: true });
-    } else {
-      // Para usuarios registrados, guardamos la dirección en el backend
-      try {
-        const newAddress = await addAddress(supabase, { ...data, is_primary: true });
-        addOrUpdateAddress(newAddress);
-        queryClient.invalidateQueries({ queryKey: ['addresses'] });
-      } catch (error) {
-        console.error('Error adding address:', error);
-      }
+      return;
+    }
+    // Para usuarios registrados, guardamos la dirección en el backend
+    try {
+      const newAddress = await addAddress(supabase, { ...data, is_primary: true });
+      addOrUpdateAddress(newAddress);
+      queryClient.invalidateQueries({ queryKey: ['addresses'] });
+    } catch (error) {
+      console.error('Error adding address:', error);
     }
     setIsAddressModalOpen(false);
   };

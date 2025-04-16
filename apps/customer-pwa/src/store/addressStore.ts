@@ -136,8 +136,12 @@ export const useAddressStore = create<AddressState>()(
         }),
 
       resetStore: () => {
-        localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
-        set(initialState);
+        localStorage.removeItem(STORAGE_KEY);
+        set({
+          ...initialState,
+          isLoading: false,
+          isInitialized: true
+        });
       },
 
       resetForNewUser: () => {
@@ -217,11 +221,7 @@ export const useAddressStore = create<AddressState>()(
     }),
     {
       name: STORAGE_KEY,
-      partialize: (state) => ({
-        addresses: state.addresses,
-        activeAddress: state.activeAddress,
-        primaryAddress: state.primaryAddress,
-      }),
+      skipHydration: true
     }
   )
 );
@@ -243,7 +243,7 @@ export const useInitializeAddressStore = () => {
     const currentUserId = user?.id;
     startInitialization();
 
-    if (currentUserId === null) {
+    if (!currentUserId) {
       localStorage.removeItem(STORAGE_KEY);
       resetStore();
       finishInitialization(null);

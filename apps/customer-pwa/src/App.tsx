@@ -20,6 +20,8 @@ const OrdersPage = lazy(() => import('@/pages/OrdersPage').then(module => ({ def
 const WalletPage = lazy(() => import('@/pages/WalletPage').then(module => ({ default: module.WalletPage })));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage').then(module => ({ default: module.ProfilePage })));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
+const StoreDetailPage = lazy(() => import('@/pages/StoreDetailPage'));
+const CartPage = lazy(() => import('@/pages/CartPage').then(module => ({ default: module.CartPage })));
 
 // Componente wrapper para rutas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -97,10 +99,12 @@ function App() {
                   <Route path="/" element={!user && !activeAddress ? <LandingPage /> : <Navigate to="/home" replace />} />
                   <Route path="/home" element={(user || activeAddress) ? <MainLayout /> : <Navigate to="/" replace />}>
                     <Route index element={<HomePage />} />
+                    <Route path="store/:storeId" element={<StoreDetailPage />} />
+                    <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                     <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                     <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
                     <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-                    <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                    <Route path="cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

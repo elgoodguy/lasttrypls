@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getAddresses } from '@repo/api-client';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getAddresses, addAddress, updateAddress } from '@repo/api-client';
 import { Button } from '@repo/ui/components/ui/button';
 import { AddressCard } from './AddressCard';
 import { Plus } from 'lucide-react';
@@ -9,28 +9,62 @@ import { AddressModal } from './AddressModal';
 import { AddressFormData } from '@/lib/validations/address';
 import { useAddressStore } from '@/store/addressStore';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export const AddressManager: React.FC = () => {
   const supabase = useSupabase();
   const [selectedAddress, setSelectedAddress] = useState<AddressFormData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { addresses, addAddress, updateAddress, deleteAddress, setPrimaryAddress } =
-    useAddressStore();
+  const { addresses, addOrUpdateAddress, setActiveAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
   const { t } = useTranslation();
 
-  useQuery({
+  const { isLoading: isLoadingAddresses } = useQuery({
     queryKey: ['addresses'],
     queryFn: () => getAddresses(supabase),
   });
 
-  const handleAddressSubmit = async (data: AddressFormData) => {
-    if (selectedAddress) {
-      await updateAddress(selectedAddress.id!, data);
+  const addAddressMutation = useMutation({
+    mutationFn: (data: AddressFormData) => addAddress(supabase, data),
+    onSuccess: (newAddress) => {
+      toast.success(t('address.addSuccess'));
+      addOrUpdateAddress(newAddress);
+      if (addresses.length === 0) {
+        setActiveAddress(newAddress);
+      }
+      setIsModalOpen(false);
+      setSelectedAddress(null);
+    },
+    onError: (error) => {
+      console.error('Error adding address:', error);
+      toast.error(t('address.addError'));
+    },
+  });
+
+  const updateAddressMutation = useMutation({
+    mutationFn: ({ addressId, updates }: { addressId: string; updates: AddressFormData }) => 
+      updateAddress(supabase, addressId, updates),
+    onSuccess: (updatedAddress) => {
+      toast.success(t('address.updateSuccess'));
+      addOrUpdateAddress(updatedAddress);
+      if (selectedAddress?.id === addresses.find(addr => addr.id === selectedAddress.id)?.id) {
+        setActiveAddress(updatedAddress);
+      }
+      setIsModalOpen(false);
+      setSelectedAddress(null);
+    },
+    onError: (error) => {
+      console.error('Error updating address:', error);
+      toast.error(t('address.updateError'));
+    },
+  });
+
+  const handleAddressSubmit = (data: AddressFormData) => {
+    console.log('[AddressManager] Submitting address:', data);
+    if (selectedAddress?.id) {
+      updateAddressMutation.mutate({ addressId: selectedAddress.id, updates: data });
     } else {
-      await addAddress(data);
+      addAddressMutation.mutate(data);
     }
-    setIsModalOpen(false);
-    setSelectedAddress(null);
   };
 
   const handleEdit = (address: AddressFormData) => {
@@ -68,7 +102,7 @@ export const AddressManager: React.FC = () => {
           setSelectedAddress(null);
         }}
         onSubmit={handleAddressSubmit}
-        isLoading={false}
+        isLoading={addAddressMutation.isPending || updateAddressMutation.isPending}
         addressToEdit={selectedAddress}
         isForceModal={false}
       />

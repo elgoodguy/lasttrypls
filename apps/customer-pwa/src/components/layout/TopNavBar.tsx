@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
 import { Button } from '@repo/ui/components/ui/button';
-import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin } from 'lucide-react';
+import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin, Package, Wallet } from 'lucide-react';
 import { LocationIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
@@ -189,16 +189,20 @@ export const TopNavBar: React.FC = () => {
                 <DropdownMenuSeparator />
                 {!isGuest && (
                   <>
-                    <DropdownMenuItem onClick={() => navigate('profile')}>
+                    <DropdownMenuItem onClick={() => navigate('/home/profile')}>
                       <UserIcon className="mr-2 h-4 w-4" />
                       {t('navigation.profile')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('orders')}>
+                    <DropdownMenuItem onClick={() => navigate('/home/favorites')}>
                       <Star className="mr-2 h-4 w-4" />
+                      {t('navigation.favorites')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/home/orders')}>
+                      <Package className="mr-2 h-4 w-4" />
                       {t('navigation.orders')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('wallet')}>
-                      <PlusCircle className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem onClick={() => navigate('/home/wallet')}>
+                      <Wallet className="mr-2 h-4 w-4" />
                       {t('navigation.wallet')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
