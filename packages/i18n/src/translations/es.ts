@@ -203,10 +203,8 @@ export const esTranslations: TranslationResources = {
     loginMessage: 'Inicia sesión para ver tu billetera'
   },
   notifications: {
-    title: 'Mis Notificaciones',
-    empty: 'No hay notificaciones',
-    loginRequired: 'Inicio de sesión requerido',
-    loginMessage: 'Inicia sesión para ver tus notificaciones'
+    title: 'Notificaciones',
+    empty: 'Aún no tienes notificaciones'
   },
   error: {
     notFound: {

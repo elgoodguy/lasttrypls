@@ -178,8 +178,6 @@ export interface OrdersTranslations {
 export interface NotificationsTranslations {
   title: string;
   empty: string;
-  loginRequired: string;
-  loginMessage: string;
 }
 
 export interface ErrorTranslations {

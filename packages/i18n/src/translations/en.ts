@@ -203,10 +203,8 @@ export const enTranslations: TranslationResources = {
     loginMessage: 'Log in to see your wallet'
   },
   notifications: {
-    title: 'My Notifications',
-    empty: 'No notifications yet',
-    loginRequired: 'Login required',
-    loginMessage: 'Log in to see your notifications'
+    title: 'Notifications',
+    empty: 'You have no notifications yet'
   },
   error: {
     notFound: {
