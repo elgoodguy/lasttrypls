@@ -30,6 +30,11 @@ export const HomePage: React.FC = () => {
   // Get the active postal code
   const activePostalCode = activeAddress?.postal_code;
 
+  // Debug session
+  supabase.auth.getSession().then(({ data }) => {
+    console.log('DEBUG HomePage: Current session before fetching data:', data.session);
+  });
+
   // --- Data Fetching ---
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery<ProductCategoryType[]>({
     queryKey: ['productCategories'],
