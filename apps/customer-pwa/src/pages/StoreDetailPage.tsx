@@ -4,10 +4,13 @@ import { getStoreDetailsById, getAvailableProductsForStore, type StoreDetails, t
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { StoreHeader } from '@/components/store/StoreHeader';
 import { ProductCard } from '@repo/ui';
+import { useState } from 'react';
+import { ProductDetailModal } from '@/components/product/ProductDetailModal';
 
 export default function StoreDetailPage() {
   const { storeId } = useParams();
   const supabase = useSupabase();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const {
     data: storeDetails,
@@ -34,6 +37,14 @@ export default function StoreDetailPage() {
   const isLoading = isLoadingStore || isLoadingProducts;
   const isError = isStoreError || isProductsError;
   const error = storeError || productsError;
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+  };
 
   if (isLoading) {
     return (
@@ -76,11 +87,23 @@ export default function StoreDetailPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products?.map((product) => (
             <div key={product.id}>
-              <ProductCard product={product} storeId={storeId!} />
+              <ProductCard 
+                product={product} 
+                storeId={storeId!} 
+                onProductClick={handleProductClick}
+              />
             </div>
           ))}
         </div>
       </div>
+
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 }

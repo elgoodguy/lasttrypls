@@ -25,5 +25,5 @@ export * from './components/common/GlobalLoader';
 export * from './components/navigation/BottomNavBar';
 export * from './components/navigation/UserMenu';
 export * from './components/address/AddressSelector';
-export * from './components/ProductCard';
+export { ProductCard } from './components/ProductCard';
 // export * from './MyComponent'; // Ejemplo componente propio

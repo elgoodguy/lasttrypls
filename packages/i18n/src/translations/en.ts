@@ -219,6 +219,9 @@ export const enTranslations: TranslationResources = {
     },
     outOfStock: 'Out of stock',
     addToCart: 'Add to cart',
-    quantity: 'Quantity'
+    quantity: 'Quantity',
+    notes: 'Special Instructions',
+    notesPlaceholder: 'Add any special instructions or requests',
+    included: 'Included'
   }
 }; 

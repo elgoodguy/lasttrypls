@@ -195,6 +195,9 @@ export interface ProductTranslations {
   outOfStock: string;
   addToCart: string;
   quantity: string;
+  notes: string;
+  notesPlaceholder: string;
+  included: string;
 }
 
 export interface LandingTranslations {
