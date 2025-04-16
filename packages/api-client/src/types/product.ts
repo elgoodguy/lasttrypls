@@ -15,6 +15,31 @@ export interface Product {
   };
 }
 
+export interface ProductModifier {
+  id: string;
+  name: string;
+  additional_price: number;
+  is_active: boolean;
+  sort_order: number;
+  group_id: string;
+}
+
+export interface ProductModifierGroup {
+  id: string;
+  name: string;
+  selection_type: 'single' | 'multiple';
+  is_required: boolean;
+  min_selection: number;
+  max_selection: number | null;
+  product_id: string;
+  sort_order: number;
+  product_modifiers: ProductModifier[];
+}
+
+export interface ProductWithModifiers extends Product {
+  product_modifier_groups: ProductModifierGroup[];
+}
+
 export interface ProductCategory {
   id: string;
   name: string;
