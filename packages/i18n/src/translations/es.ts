@@ -1,3 +1,21 @@
+/**
+ * Traducciones en español para la aplicación.
+ * 
+ * Estructura:
+ * - Cada clave de primer nivel representa una característica o sección de la app
+ * - Las claves anidadas representan elementos específicos de la UI o mensajes
+ * - Todas las claves deben coincidir con los tipos definidos en types.ts
+ * 
+ * Uso:
+ * - Usar la función t() de react-i18next para acceder a las traducciones
+ * - Ejemplo: t('common.welcome') -> "Bienvenido"
+ * 
+ * Formato:
+ * - Usar {variable} para contenido dinámico
+ * - Usar etiquetas HTML para formato cuando sea necesario
+ * - Mantener las traducciones concisas y claras
+ */
+
 import { TranslationResources } from '../types';
 
 export const esTranslations: TranslationResources = {

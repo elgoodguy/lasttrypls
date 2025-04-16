@@ -1,3 +1,21 @@
+/**
+ * English translations for the application.
+ * 
+ * Structure:
+ * - Each top-level key represents a feature or section of the app
+ * - Nested keys represent specific UI elements or messages
+ * - All keys must match the types defined in types.ts
+ * 
+ * Usage:
+ * - Use the t() function from react-i18next to access translations
+ * - Example: t('common.welcome') -> "Welcome"
+ * 
+ * Formatting:
+ * - Use {variable} for dynamic content
+ * - Use HTML tags for formatting when needed
+ * - Keep translations concise and clear
+ */
+
 import { TranslationResources } from '../types';
 
 export const enTranslations: TranslationResources = {

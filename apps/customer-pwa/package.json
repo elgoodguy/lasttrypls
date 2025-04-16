@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@repo/api-client": "workspace:*",
     "@repo/hooks": "workspace:*",
     "@repo/types": "workspace:*",

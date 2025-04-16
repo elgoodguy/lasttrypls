@@ -1,10 +1,113 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: true
 ---
 
-# Your rule content
+---
+description: Adds a new translation key to the centralized i18n package (@repo/i18n).
+globs: []
+alwaysApply: true
+---
 
-- You can @ files here
-- You can use markdown but dont have to
+# Add New i18n Translation Key
+
+This rule helps add a new translation key consistently across the type definitions and language files within the `@repo/i18n` package.
+
+**Input:**
+
+1.  `{{keyPath}}`: The full path for the new key (e.g., `common.submitButton`, `auth.login.forgotPasswordHelpText`). Use dots (`.`) as separators. Ensure the parent structure (like `common` or `auth.login`) already exists in the files.
+2.  `{{englishTranslation}}`: The translation text in English for the new key.
+3.  `{{spanishTranslation}}`: The translation text in Spanish for the new key.
+
+**Instructions:**
+
+1.  Update the type definition in `packages/i18n/src/types.ts`.
+2.  Add the English translation to `packages/i18n/src/translations/en.ts`.
+3.  Add the Spanish translation to `packages/i18n/src/translations/es.ts`.
+4.  **Remember:** After applying this rule, you **must** manually:
+    *   Rebuild the i18n package: `pnpm build --filter @repo/i18n`
+    *   Restart the development server for the app using the translations (e.g., `pnpm dev --filter @repo/customer-pwa`).
+
+---
+
+**Modify:** `packages/i18n/src/types.ts`
+
+```typescript
+// Find the appropriate nested interface based on the parts of '{{keyPath}}' before the last segment.
+// For example, if keyPath is 'auth.login.forgotPasswordHelpText', find the 'AuthLoginTranslations' interface (or similar).
+// Add a new property to that interface. The property name should be the *last segment* of '{{keyPath}}'.
+// The type of the new property should be 'string'.
+
+// Example structure for adding 'auth.login.forgotPasswordHelpText':
+export interface AuthLoginTranslations {
+  title: string;
+  description: string;
+  button: string;
+  haveAccount: string;
+  forgotPasswordHelpText?: string; // Add the new key here (make optional '?' if applicable)
+}
+
+// Make sure to add it within the correct nested interface definition.
+
+Modify: packages/i18n/src/translations/en.ts
+// Find the nested object corresponding to the parts of '{{keyPath}}' before the last segment.
+// For example, if keyPath is 'auth.login.forgotPasswordHelpText', find the 'login: { ... }' object within the 'auth: { ... }' object.
+// Add a new key-value pair to that nested object.
+// The key should be the *last segment* of '{{keyPath}}'.
+// The value should be the English translation: "{{englishTranslation}}"
+
+// Example structure for adding 'auth.login.forgotPasswordHelpText':
+export const enTranslations: TranslationResources = {
+  // ... other sections ...
+  auth: {
+    login: {
+      title: "Log In",
+      description: "Log in to access your account",
+      button: "Log In",
+      haveAccount: "Already have an account?",
+      forgotPasswordHelpText: "{{englishTranslation}}", // Add the new key-value pair here
+    },
+    // ... rest of auth ...
+  },
+  // ... other sections ...
+};
+Use code with caution.
+TypeScript
+Modify: packages/i18n/src/translations/es.ts
+// Find the nested object corresponding to the parts of '{{keyPath}}' before the last segment.
+// For example, if keyPath is 'auth.login.forgotPasswordHelpText', find the 'login: { ... }' object within the 'auth: { ... }' object.
+// Add a new key-value pair to that nested object.
+// The key should be the *last segment* of '{{keyPath}}'.
+// The value should be the Spanish translation: "{{spanishTranslation}}"
+
+// Example structure for adding 'auth.login.forgotPasswordHelpText':
+export const esTranslations: TranslationResources = {
+  // ... other sections ...
+  auth: {
+    login: {
+      title: "Iniciar Sesión",
+      description: "Inicia sesión para acceder a tu cuenta",
+      button: "Iniciar Sesión",
+      haveAccount: "¿Ya tienes una cuenta?",
+      forgotPasswordHelpText: "{{spanishTranslation}}", // Add the new key-value pair here
+    },
+    // ... rest of auth ...
+  },
+  // ... other sections ...
+};
+
+Reminder: Rebuild @repo/i18n and restart your dev server after applying this rule!
+**Cómo Usar:**
+
+1.  Guarda el código de arriba como un archivo `.mdc`.
+2.  En Cursor, abre la paleta de comandos (Ctrl+Shift+P o Cmd+Shift+P).
+3.  Escribe "Cursor: Run Rule" y selecciona tu archivo guardado (e.g., `add-i18n-key.mdc`).
+4.  Cursor te pedirá los 3 inputs:
+    *   `keyPath`: Escribe la ruta completa, ej. `common.successMessage`
+    *   `englishTranslation`: Escribe el texto en inglés, ej. `Operation successful!`
+    *   `spanishTranslation`: Escribe el texto en español, ej. `¡Operación exitosa!`
+5.  Cursor intentará aplicar los cambios a los tres archivos especificados. Revisa los cambios que propone antes de aceptarlos.
+6.  **MUY IMPORTANTE:** Después de aceptar los cambios, ejecuta manualmente en tu terminal:
+    *   `pnpm build --filter @repo/i18n`
+    *   Detén y reinicia tu servidor de desarrollo (`pnpm dev --filter @repo/customer-pwa` o similar).
