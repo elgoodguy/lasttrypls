@@ -1,109 +1,100 @@
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { getStoreDetailsById, getAvailableProductsForStore, type StoreDetails, type Product } from '@repo/api-client';
-import { useSupabase } from '@/providers/SupabaseProvider';
-import { StoreHeader } from '@/components/store/StoreHeader';
-import { ProductCard } from '@repo/ui';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Product, StoreDetails, getStoreDetailsById, getAvailableProductsForStore, getProductDetailsById, ProductWithModifiers } from '@repo/api-client';
+import { ProductCard } from '@repo/ui';
+import { useSupabase } from '@/providers/SupabaseProvider';
+import { useQuery } from '@tanstack/react-query';
 import { ProductDetailModal } from '@/components/product/ProductDetailModal';
 
 export default function StoreDetailPage() {
-  const { storeId } = useParams();
-  const supabase = useSupabase();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { storeId } = useParams<{ storeId: string }>();
+  console.log('[StoreDetailPage] storeId from useParams:', storeId);
 
-  const {
-    data: storeDetails,
-    isLoading: isLoadingStore,
-    isError: isStoreError,
-    error: storeError,
-  } = useQuery<StoreDetails | null>({
+  const supabase = useSupabase();
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+
+  const { data: store, isLoading: isLoadingStore, error: storeError } = useQuery<StoreDetails | null>({
     queryKey: ['storeDetails', storeId],
-    queryFn: () => getStoreDetailsById(supabase, storeId!),
+    queryFn: () => {
+      console.log(`[StoreDetailPage] queryFn for storeDetails executing with storeId: ${storeId}`);
+      if (!storeId) return null;
+      return getStoreDetailsById(supabase, storeId);
+    },
     enabled: !!storeId,
   });
 
-  const {
-    data: products,
-    isLoading: isLoadingProducts,
-    isError: isProductsError,
-    error: productsError,
-  } = useQuery<Product[]>({
+  const { data: products, isLoading: isLoadingProducts, error: productsError } = useQuery<Product[]>({
     queryKey: ['storeProducts', storeId],
     queryFn: () => getAvailableProductsForStore(supabase, storeId!),
     enabled: !!storeId,
   });
 
-  const isLoading = isLoadingStore || isLoadingProducts;
-  const isError = isStoreError || isProductsError;
-  const error = storeError || productsError;
+  const { 
+    data: productDetails, 
+    isLoading: isLoadingProductDetails,
+    error: productDetailsError,
+  } = useQuery<ProductWithModifiers | null>({
+    queryKey: ['productDetails', selectedProductId],
+    queryFn: async () => {
+      console.log(`[StoreDetailPage] queryFn for productDetails executing with selectedProductId: ${selectedProductId}`);
+      if (!selectedProductId) return null;
+      return getProductDetailsById(supabase, selectedProductId);
+    },
+    enabled: !!selectedProductId,
+  });
 
   const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
+    console.log(`[StoreDetailPage] Product clicked: ${product.id}`);
+    setSelectedProductId(product.id);
   };
 
   const handleCloseModal = () => {
-    setSelectedProduct(null);
+    console.log('[StoreDetailPage] Closing modal.');
+    setSelectedProductId(null);
   };
 
-  if (isLoading) {
-    return (
-      <div className="animate-pulse">
-        {/* Banner Skeleton */}
-        <div className="h-48 w-full bg-muted" />
-        {/* Content Skeleton */}
-        <div className="p-4">
-          <div className="h-8 w-48 bg-muted rounded-md" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-32 bg-muted rounded-md" />
-            <div className="h-4 w-64 bg-muted rounded-md" />
-          </div>
-        </div>
-      </div>
-    );
+  if (isLoadingStore || isLoadingProducts) {
+    return <div className="container mx-auto px-4 py-8">Loading...</div>;
   }
 
-  if (isError && error) {
-    return (
-      <div className="p-4 text-center text-destructive">
-        <p>Error al cargar los detalles de la tienda:</p>
-        <p>{error.message}</p>
-      </div>
-    );
+  if (storeError) {
+    return <div className="container mx-auto px-4 py-8">Error loading store: {storeError.message}</div>;
   }
 
-  if (!storeDetails) {
-    return (
-      <div className="p-4 text-center text-muted-foreground">
-        <p>Tienda no encontrada</p>
-      </div>
-    );
+  if (productsError) {
+    return <div className="container mx-auto px-4 py-8">Error loading products: {productsError.message}</div>;
+  }
+
+  if (!store) {
+    return <div className="container mx-auto px-4 py-8">Store not found.</div>;
   }
 
   return (
-    <div>
-      <StoreHeader store={storeDetails} />
-      <div className="p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products?.map((product) => (
-            <div key={product.id}>
-              <ProductCard 
-                product={product} 
-                storeId={storeId!} 
-                onProductClick={handleProductClick}
-              />
-            </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">{store.name}</h1>
+      
+      <h2 className="text-2xl font-semibold mb-4">Available Products</h2>
+      {!products || products.length === 0 ? (
+        <p className="text-muted-foreground">No products available for this store.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              storeId={storeId!}
+              onProductClick={handleProductClick}
+            />
           ))}
         </div>
-      </div>
-
-      {selectedProduct && (
-        <ProductDetailModal
-          product={selectedProduct}
-          isOpen={!!selectedProduct}
-          onClose={handleCloseModal}
-        />
       )}
+
+      {/* Modal Logic */}
+      <ProductDetailModal
+        isOpen={!!selectedProductId && !productDetailsError}
+        onClose={handleCloseModal}
+        product={productDetails || undefined}
+      />
     </div>
   );
 }

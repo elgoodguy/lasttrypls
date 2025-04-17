@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Product } from '@repo/api-client';
+import { ProductWithModifiers, ProductModifierGroup, ProductModifier } from '@repo/api-client';
 import { 
   Dialog,
   DialogContent,
@@ -17,31 +17,8 @@ import { Label } from '@repo/ui/components/ui/label';
 import { X, Plus, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface ProductModifierGroup {
-  id: string;
-  name: string;
-  selection_type: 'single' | 'multiple';
-  is_required: boolean;
-  min_selection: number;
-  max_selection: number | null;
-  product_id: string;
-  sort_order: number;
-  product_modifiers: ProductModifier[];
-}
-
-interface ProductModifier {
-  id: string;
-  name: string;
-  additional_price: number;
-  is_active: boolean;
-  sort_order: number;
-  group_id: string;
-}
-
 interface ProductDetailModalProps {
-  product: Product & {
-    product_modifier_groups?: ProductModifierGroup[];
-  };
+  product?: ProductWithModifiers;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -53,9 +30,13 @@ export function ProductDetailModal({ product, isOpen, onClose }: ProductDetailMo
   const [selectedExtras, setSelectedExtras] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState('');
 
+  if (!product) {
+    return null;
+  }
+
   // Get variant and extras groups
-  const variantGroup = product.product_modifier_groups?.find(g => g.selection_type === 'single');
-  const extrasGroups = product.product_modifier_groups?.filter(g => g.selection_type === 'multiple') || [];
+  const variantGroup = product.product_modifier_groups?.find((g: ProductModifierGroup) => g.selection_type === 'single');
+  const extrasGroups = product.product_modifier_groups?.filter((g: ProductModifierGroup) => g.selection_type === 'multiple') || [];
 
   // Calculate total price
   const calculateTotalPrice = () => {
@@ -63,15 +44,15 @@ export function ProductDetailModal({ product, isOpen, onClose }: ProductDetailMo
 
     // Add variant price if selected
     if (selectedVariantId && variantGroup) {
-      const selectedVariant = variantGroup.product_modifiers.find(m => m.id === selectedVariantId);
+      const selectedVariant = variantGroup.product_modifiers.find((m: ProductModifier) => m.id === selectedVariantId);
       if (selectedVariant) {
         total += selectedVariant.additional_price;
       }
     }
 
     // Add extras prices
-    extrasGroups.forEach(group => {
-      group.product_modifiers.forEach(modifier => {
+    extrasGroups.forEach((group: ProductModifierGroup) => {
+      group.product_modifiers.forEach((modifier: ProductModifier) => {
         if (selectedExtras.has(modifier.id)) {
           total += modifier.additional_price;
         }
@@ -150,7 +131,7 @@ export function ProductDetailModal({ product, isOpen, onClose }: ProductDetailMo
           <div className="space-y-3">
             <Label>{variantGroup.name}</Label>
             <div className="grid grid-cols-2 gap-3">
-              {variantGroup.product_modifiers.map(variant => (
+              {variantGroup.product_modifiers.map((variant: ProductModifier) => (
                 <Card
                   key={variant.id}
                   className={cn(
@@ -174,11 +155,11 @@ export function ProductDetailModal({ product, isOpen, onClose }: ProductDetailMo
         )}
 
         {/* Extras */}
-        {extrasGroups.map(group => (
+        {extrasGroups.map((group: ProductModifierGroup) => (
           <div key={group.id} className="space-y-3">
             <Label>{group.name}</Label>
             <div className="space-y-2">
-              {group.product_modifiers.map(extra => (
+              {group.product_modifiers.map((extra: ProductModifier) => (
                 <div key={extra.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={extra.id}

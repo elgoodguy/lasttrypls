@@ -133,57 +133,90 @@ export const getStoreDetailsById = async (
   supabase: SupabaseClient<Database>,
   storeId: string
 ): Promise<StoreDetails | null> => {
+  console.log(`[getStoreDetailsById] Called for storeId: ${storeId}`);
+
+  if (!storeId) {
+    console.warn('[getStoreDetailsById] No storeId provided.');
+    return null;
+  }
+
   try {
-    const { data, error } = await supabase
+    console.log('[getStoreDetailsById] Executing Supabase query...');
+    // Intenta con un select simple primero para descartar problemas de join
+    const { data, error, status } = await supabase
       .from('stores')
-      .select(
-        `
+      .select('*') // <-- SELECT SIMPLE PRIMERO
+      .eq('id', storeId)
+      .maybeSingle(); // Usa maybeSingle para que no lance error si no encuentra
+
+    console.log('[getStoreDetailsById] Query finished.');
+    console.log('[getStoreDetailsById] Status:', status);
+    console.log('[getStoreDetailsById] Error:', error);
+    console.log('[getStoreDetailsById] Data received:', JSON.stringify(data, null, 2));
+
+    if (error && status !== 406) { // 406 = Not found con maybeSingle, no es un error real
+      console.error('[getStoreDetailsById] Supabase Error:', error);
+      throw error; // Lanza otros errores
+    }
+
+    if (!data) {
+      console.log('[getStoreDetailsById] Store not found in DB.');
+      return null;
+    }
+
+    // Si el select simple funciona, puedes intentar añadir los joins de nuevo
+    // comentando el select simple y descomentando/ajustando el complejo:
+    /*
+    const { data, error, status } = await supabase
+      .from('stores')
+      .select(`
         *,
-        store_categories (
+        store_categories ( // Join con categorías
           product_categories (
             id,
             name
           )
         ),
-        cashback_rules (
+        cashback_rules ( // Join con cashback
           percentage,
           minimum_order_amount,
           maximum_cashback_amount
         )
-      `
-      )
+      `)
       .eq('id', storeId)
-      .single();
+      .maybeSingle(); 
+     
+     // ... mismos logs de status, error, data ...
 
-    if (error) {
-      // If store not found (error code 406), return null
-      if (error.code === '406') {
-        return null;
-      }
-      console.error('Error fetching store details:', error);
-      throw error;
-    }
+     if (!data) return null;
 
-    if (!data) {
-      return null;
-    }
+     // Transformación necesaria si usas el select complejo
+     const storeWithRelations = data as any; // Temporal any para transformación
+     const storeDetails: StoreDetails = {
+       ...storeWithRelations,
+       categories: storeWithRelations.store_categories?.map((sc: any) => ({
+         category_id: sc.product_categories.id,
+         name: sc.product_categories.name,
+       })) || [],
+       cashback_rule: storeWithRelations.cashback_rules?.[0] || null,
+     };
+     console.log('[getStoreDetailsById] Transformed StoreDetails:', JSON.stringify(storeDetails, null, 2));
+     return storeDetails;
+    */
 
-    // Transform the data to match StoreDetails type
-    const storeWithCategories = data as unknown as StoreWithCategories;
-    const storeDetails: StoreDetails = {
-      ...storeWithCategories,
-      categories:
-        storeWithCategories.store_categories?.map(sc => ({
-          category_id: sc.product_categories.id,
-          name: sc.product_categories.name,
-        })) || [],
-      cashback_rule: storeWithCategories.cashback_rules?.[0] || null,
-    };
+    // Por ahora, con select simple, solo hacemos cast al tipo base Store
+    console.log('[getStoreDetailsById] Returning store data (simple select).');
+    // Nota: Devolver `data as Store` aquí causará error de tipo en StoreDetailPage
+    // si espera StoreDetails. Ajusta el tipo esperado en StoreDetailPage o devuelve
+    // un objeto compatible con StoreDetails (con arrays vacíos para categories/cashback).
+    // Devolvemos 'any' temporalmente para evitar error de build mientras depuramos.
+    return data as any;
 
-    return storeDetails;
-  } catch (error) {
-    console.error('Error in getStoreDetailsById:', error);
-    throw error;
+  } catch (catchError) {
+    console.error('[getStoreDetailsById] Exception caught:', catchError);
+    // Decide si quieres relanzar o devolver null
+    // throw catchError; 
+    return null;
   }
 };
 

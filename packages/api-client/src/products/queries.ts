@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@repo/types';
 import type { Product, ProductWithModifiers, ProductModifierGroup, ProductModifier } from '../types/product';
 
 interface StoreProductView {
@@ -17,10 +16,42 @@ interface StoreProductView {
   updated_at: string;
 }
 
-type RawProductWithModifiers = Database['public']['Tables']['products']['Row'] & {
-  product_modifier_groups?: (Database['public']['Tables']['product_modifier_groups']['Row'] & {
-    product_modifiers?: Database['public']['Tables']['product_modifiers']['Row'][];
-  })[];
+interface RawProduct {
+  id: string;
+  name: string;
+  description: string | null;
+  base_price: number;
+  compare_at_price: number | null;
+  image_urls: string[] | null;
+  is_active: boolean;
+  product_type: 'physical' | 'prepared';
+  created_at: string;
+  updated_at: string;
+}
+
+interface RawProductModifierGroup {
+  id: string;
+  name: string;
+  selection_type: 'single' | 'multiple';
+  is_required: boolean;
+  min_selection: number;
+  max_selection: number | null;
+  product_id: string;
+  sort_order: number;
+  product_modifiers?: RawProductModifier[];
+}
+
+interface RawProductModifier {
+  id: string;
+  name: string;
+  additional_price: number;
+  is_active: boolean;
+  sort_order: number;
+  group_id: string;
+}
+
+type RawProductWithModifiers = RawProduct & {
+  product_modifier_groups?: RawProductModifierGroup[];
 };
 
 type CategoryAssignment = {
@@ -32,7 +63,7 @@ type CategoryAssignment = {
  * Obtiene los detalles completos de un producto por su ID, incluyendo sus grupos de modificadores y opciones
  */
 export async function getProductDetailsById(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient,
   productId: string
 ): Promise<ProductWithModifiers | null> {
   try {
@@ -68,21 +99,21 @@ export async function getProductDetailsById(
       compare_at_price: rawData.compare_at_price,
       image_urls: rawData.image_urls,
       is_active: rawData.is_active,
-      product_type: rawData.product_type as 'physical' | 'prepared',
+      product_type: rawData.product_type,
       created_at: rawData.created_at,
       updated_at: rawData.updated_at,
       product_modifier_groups: rawData.product_modifier_groups
         ?.map((group): ProductModifierGroup => ({
           id: group.id,
           name: group.name,
-          selection_type: group.selection_type as 'single' | 'multiple',
+          selection_type: group.selection_type,
           is_required: group.is_required,
           min_selection: group.min_selection,
           max_selection: group.max_selection,
           product_id: group.product_id,
           sort_order: group.sort_order,
           product_modifiers: group.product_modifiers
-            ?.filter((modifier): modifier is Database['public']['Tables']['product_modifiers']['Row'] => 
+            ?.filter((modifier): modifier is RawProductModifier => 
               modifier.is_active
             )
             .map((modifier): ProductModifier => ({
@@ -109,7 +140,7 @@ export async function getProductDetailsById(
  * Obtiene los productos disponibles para una tienda específica
  */
 export async function getAvailableProductsForStore(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient,
   storeId: string
 ): Promise<Product[]> {
   try {
@@ -159,7 +190,7 @@ export async function getAvailableProductsForStore(
  * Obtiene las asignaciones de categorías para un conjunto de productos
  */
 export async function getProductCategoryAssignments(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient,
   productIds: string[]
 ): Promise<CategoryAssignment[]> {
   if (productIds.length === 0) {
@@ -183,7 +214,7 @@ export async function getProductCategoryAssignments(
  * Obtiene los grupos de modificadores y sus opciones para un producto específico
  */
 export async function getProductModifierGroups(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient,
   productId: string
 ): Promise<ProductModifierGroup[]> {
   try {
@@ -205,7 +236,7 @@ export async function getProductModifierGroups(
       return [];
     }
 
-    const rawData = data as unknown as RawProductWithModifiers['product_modifier_groups'];
+    const rawData = data as unknown as RawProductModifierGroup[];
 
     if (!rawData) {
       return [];
@@ -215,14 +246,14 @@ export async function getProductModifierGroups(
     return rawData.map(group => ({
       id: group.id,
       name: group.name,
-      selection_type: group.selection_type as 'single' | 'multiple',
+      selection_type: group.selection_type,
       is_required: group.is_required,
       min_selection: group.min_selection,
       max_selection: group.max_selection,
       product_id: group.product_id,
       sort_order: group.sort_order,
       product_modifiers: group.product_modifiers
-        ?.filter((modifier): modifier is Database['public']['Tables']['product_modifiers']['Row'] => 
+        ?.filter((modifier): modifier is RawProductModifier => 
           modifier.is_active
         )
         .map((modifier): ProductModifier => ({
@@ -241,4 +272,19 @@ export async function getProductModifierGroups(
   }
 }
 
-export type { ProductModifierGroup, ProductModifier }; 
+export type { ProductModifierGroup, ProductModifier };
+
+export async function getProducts(supabase: SupabaseClient): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+
+  return (data as unknown as Product[]) || [];
+} 

@@ -22,11 +22,21 @@ export * from './stores/queries';
 export * from './orders/queries';
 
 // Export product queries
-export { getAvailableProductsForStore, getProductCategoryAssignments } from './products/queries';
+export { 
+  getAvailableProductsForStore, 
+  getProductCategoryAssignments,
+  getProductDetailsById
+} from './products/queries';
 
 // Export common types
 export type { Database };
-export type { Product, ProductCategory as ProductCategoryType } from './types/product';
+export type { 
+  Product, 
+  ProductCategory as ProductCategoryType,
+  ProductWithModifiers,
+  ProductModifierGroup,
+  ProductModifier
+} from './types/product';
 
 // Note: React hooks are exported separately through the hooks entry point
 // They are not included in the main bundle to avoid React dependencies
