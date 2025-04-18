@@ -64,27 +64,35 @@ export const useCartStore = create<CartState>()(
               areOptionsEqual(item.selectedOptions, newItem.selectedOptions)
           );
 
+          let newState;
           if (existingItem) {
             // If item exists, update quantity
-            return {
+            newState = {
               items: state.items.map((item) =>
                 item.id === existingItem.id
                   ? { ...item, quantity: item.quantity + newItem.quantity }
                   : item
               ),
             };
+          } else {
+            // If item doesn't exist, add new item with generated ID
+            newState = {
+              items: [
+                ...state.items,
+                {
+                  ...newItem,
+                  id: Math.random().toString(36).substr(2, 9),
+                },
+              ],
+            };
           }
 
-          // If item doesn't exist, add new item with generated ID
-          return {
-            items: [
-              ...state.items,
-              {
-                ...newItem,
-                id: Math.random().toString(36).substr(2, 9),
-              },
-            ],
-          };
+          // Log the new total items count
+          const totalItems = newState.items.reduce((sum, item) => sum + item.quantity, 0);
+          console.log('[cartStore addItem] New total items:', totalItems);
+          console.log('[cartStore addItem] New state:', newState);
+
+          return newState;
         });
       },
 
@@ -109,7 +117,10 @@ export const useCartStore = create<CartState>()(
       },
 
       getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
+        const items = get().items;
+        const total = items.reduce((sum, item) => sum + item.quantity, 0);
+        console.log('[cartStore getTotalItems] Calculated:', total);
+        return total;
       },
 
       getSubtotal: () => {

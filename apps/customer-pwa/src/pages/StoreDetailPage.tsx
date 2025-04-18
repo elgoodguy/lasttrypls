@@ -94,6 +94,8 @@ export default function StoreDetailPage() {
         isOpen={!!selectedProductId && !productDetailsError}
         onClose={handleCloseModal}
         product={productDetails || undefined}
+        storeId={storeId!}
+        isLoading={isLoadingProductDetails}
       />
     </div>
   );

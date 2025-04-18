@@ -198,6 +198,7 @@ export interface ProductTranslations {
   notes: string;
   notesPlaceholder: string;
   included: string;
+  addedToCart: string;
 }
 
 export interface LandingTranslations {

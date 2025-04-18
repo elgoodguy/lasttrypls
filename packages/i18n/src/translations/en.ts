@@ -222,6 +222,7 @@ export const enTranslations: TranslationResources = {
     quantity: 'Quantity',
     notes: 'Special Instructions',
     notesPlaceholder: 'Add any special instructions or requests',
-    included: 'Included'
+    included: 'Included',
+    addedToCart: 'Item added to cart!'
   }
 }; 

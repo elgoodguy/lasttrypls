@@ -105,7 +105,7 @@ function App() {
                     <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                     <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
                     <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-                    <Route path="cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+                    <Route path="cart" element={<CartPage />} />
                     <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />

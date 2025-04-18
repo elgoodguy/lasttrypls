@@ -222,6 +222,7 @@ export const esTranslations: TranslationResources = {
     quantity: 'Cantidad',
     notes: 'Instrucciones Especiales',
     notesPlaceholder: 'Agrega instrucciones o solicitudes especiales',
-    included: 'Incluido'
+    included: 'Incluido',
+    addedToCart: '¡Producto añadido al carrito!'
   }
 }; 
