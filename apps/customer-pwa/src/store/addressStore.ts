@@ -74,15 +74,13 @@ export const useAddressStore = create<AddressState>()(
 
       setActiveAddress: address => {
         if (address && !get().addresses.some(a => a.id === address.id)) {
-          console.warn("Attempted to set an active address that is not in the store's list.");
-          return;
+          // For guest addresses, we don't need to check if it's in the addresses list
+          if (address.id !== 'guest-address') {
+            console.warn("Attempted to set an active address that is not in the store's list.");
+            return;
+          }
         }
         set({ activeAddress: address });
-        
-        // If this is a guest address, persist it to localStorage
-        if (address?.id === 'guest-address') {
-          localStorage.setItem(GUEST_ADDRESS_STORAGE_KEY, JSON.stringify(address));
-        }
       },
 
       addOrUpdateAddress: address =>
@@ -135,7 +133,6 @@ export const useAddressStore = create<AddressState>()(
         }),
 
       resetStore: () => {
-        localStorage.removeItem(STORAGE_KEY);
         set({
           ...initialState,
           isLoading: false,
@@ -145,69 +142,34 @@ export const useAddressStore = create<AddressState>()(
 
       resetForNewUser: () => {
         set({
+          ...initialState,
           isLoading: true,
-          isInitialized: false,
-          addresses: [],
-          activeAddress: null,
-          primaryAddress: null,
-          error: null
+          isInitialized: false
         });
+      },
+
+      addAddress: async (address: AddressFormData) => {
+        // Implementation will be added later
+      },
+
+      updateAddress: async (id: string, address: AddressFormData) => {
+        // Implementation will be added later
+      },
+
+      deleteAddress: async (id: string) => {
+        // Implementation will be added later
+      },
+
+      setPrimaryAddress: async (id: string) => {
+        // Implementation will be added later
       },
 
       clearGuestAddressStorage: () => {
         localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
       },
 
-      addAddress: async (address: AddressFormData) => {
-        const newAddress: Address = {
-          ...address,
-          id: Math.random().toString(36).substr(2, 9),
-          user_id: '', // This will be set by the backend
-          is_primary: get().addresses.length === 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-        set(state => ({
-          addresses: [...state.addresses, newAddress],
-        }));
-      },
-
-      updateAddress: async (id: string, address: AddressFormData) => {
-        set(state => ({
-          addresses: state.addresses.map(a =>
-            a.id === id
-              ? {
-                  ...a,
-                  ...address,
-                  updated_at: new Date().toISOString(),
-                }
-              : a
-          ),
-        }));
-      },
-
-      deleteAddress: async (id: string) => {
-        set(state => ({
-          addresses: state.addresses.filter(a => a.id !== id),
-        }));
-      },
-
-      setPrimaryAddress: async (id: string) => {
-        set(state => ({
-          addresses: state.addresses.map(a => ({
-            ...a,
-            is_primary: a.id === id,
-            updated_at: new Date().toISOString(),
-          })),
-        }));
-      },
-
       startInitialization: () => {
-        set({
-          isLoading: true,
-          isInitialized: false,
-          error: null
-        });
+        set({ isLoading: true, isInitialized: false, error: null });
       },
 
       finishInitialization: (error: Error | null) => {
@@ -220,7 +182,7 @@ export const useAddressStore = create<AddressState>()(
     }),
     {
       name: STORAGE_KEY,
-      skipHydration: true
+      partialize: (state) => ({ activeAddress: state.activeAddress })
     }
   )
 );
@@ -236,53 +198,48 @@ export const useInitializeAddressStore = () => {
     startInitialization,
     finishInitialization,
     resetStore,
+    activeAddress
   } = useAddressStore();
 
   useEffect(() => {
     const currentUserId = user?.id;
+    
+    // If we already have an activeAddress (from persist), we can skip initialization
+    if (activeAddress) {
+      finishInitialization(null);
+      return;
+    }
+
     startInitialization();
 
     if (!currentUserId) {
-      localStorage.removeItem(STORAGE_KEY);
       resetStore();
       finishInitialization(null);
       return;
     }
 
-    if (currentUserId) {
-      // Handle authenticated user
-      console.log('[useInitializeAddressStore] Fetching addresses for user:', currentUserId);
-      
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Address fetch timed out after 15s')), 15000)
-      );
+    // Handle authenticated user
+    console.log('[useInitializeAddressStore] Fetching addresses for user:', currentUserId);
+    
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Address fetch timed out after 15s')), 15000)
+    );
 
-      Promise.race<Address[]>([
-        getAddresses(supabase),
-        timeoutPromise
-      ])
-        .then(data => {
-          console.log('[useInitializeAddressStore] Successfully fetched addresses:', {
-            addressCount: data?.length || 0
-          });
-          console.log('[useInitializeAddressStore] Calling finishInitialization(null)');
-          finishInitialization(null);
-          console.log('[useInitializeAddressStore] finishInitialization(null) completed');
-          console.log('[useInitializeAddressStore] Calling setAddresses()');
-          setAddresses(data || []);
-          console.log('[useInitializeAddressStore] setAddresses() completed');
-          queryClient.setQueryData(['addresses', currentUserId], data);
-        })
-        .catch(err => {
-          console.error('[useInitializeAddressStore] Failed to fetch addresses:', err);
-          console.log('[useInitializeAddressStore] Calling finishInitialization(err)');
-          finishInitialization(err);
-          console.log('[useInitializeAddressStore] finishInitialization(err) completed');
+    Promise.race<Address[]>([
+      getAddresses(supabase),
+      timeoutPromise
+    ])
+      .then(data => {
+        console.log('[useInitializeAddressStore] Successfully fetched addresses:', {
+          addressCount: data?.length || 0
         });
-    } else {
-      // Handle guest user or logout
-      console.log('[useInitializeAddressStore] Resetting store for guest user or logout');
-      resetStore();
-    }
-  }, [user?.id, supabase, queryClient, setAddresses, setLoading, setError, startInitialization, finishInitialization, resetStore]);
+        setAddresses(data || []);
+        finishInitialization(null);
+        queryClient.setQueryData(['addresses', currentUserId], data);
+      })
+      .catch(err => {
+        console.error('[useInitializeAddressStore] Failed to fetch addresses:', err);
+        finishInitialization(err);
+      });
+  }, [user?.id, supabase, queryClient, setAddresses, setLoading, setError, startInitialization, finishInitialization, resetStore, activeAddress]);
 };

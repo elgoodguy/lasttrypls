@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-// import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface CartItem {
   id: string; // Unique client-side ID
@@ -29,7 +29,7 @@ interface CartState {
   getItemsByStore: () => Record<string, CartItem[]>;
 }
 
-// const STORAGE_KEY = 'customer-cart-storage';
+const STORAGE_KEY = 'customer-cart-storage';
 
 // Helper function to compare selected options
 const areOptionsEqual = (a: Record<string, any>, b: Record<string, any>): boolean => {
@@ -51,7 +51,7 @@ const areOptionsEqual = (a: Record<string, any>, b: Record<string, any>): boolea
 };
 
 export const useCartStore = create<CartState>()(
-  // persist(
+  persist(
     (set, get) => ({
       items: [],
 
@@ -143,11 +143,11 @@ export const useCartStore = create<CartState>()(
 
         return storeItems;
       },
-    })
-  //   {
-  //     name: STORAGE_KEY,
-  //     skipHydration: true,
-  //     partialize: (state) => ({ items: state.items }),
-  //   }
-  // )
+    }),
+    {
+      name: STORAGE_KEY,
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ items: state.items }),
+    }
+  )
 ); 
