@@ -24,7 +24,7 @@ const StoreDetailPage = lazy(() => import('@/pages/StoreDetailPage'));
 const CartPage = lazy(() => import('@/pages/CartPage').then(module => ({ default: module.CartPage })));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage').then(module => ({ default: module.NotificationsPage })));
 
-// Componente wrapper para rutas protegidas
+// Protected route wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isGuest, isLoading } = useAuth();
 
@@ -44,18 +44,18 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1, // Retry failed requests once
+      retry: 1,
     },
   },
 });
 
 function App() {
-  const { isLoading: isLoadingSession, user } = useAuth();
+  const { isLoading: isLoadingAuth, user } = useAuth();
   const {
-    isLoading: isLoadingAddresses,
+    isLoading: isLoadingAddr,
     addresses,
     error: addressError,
-    isInitialized: isAddressStoreInitialized,
+    isInitialized: isAddrInitialized,
     activeAddress
   } = useAddressStore();
   const supabase = useSupabase();
@@ -63,55 +63,78 @@ function App() {
   // Initialize address store
   useInitializeAddressStore();
 
-  // Calculate loading states
-  const showLoader = isLoadingSession || (!!user && isLoadingAddresses && !isAddressStoreInitialized);
-  const requiresAddress = !!user && isAddressStoreInitialized && !addressError && addresses.length === 0;
-  const canShowApp = !showLoader && !requiresAddress;
+  // Show loader if either Auth is loading OR if Address is not initialized yet
+  const showLoader = isLoadingAuth || (!isAddrInitialized && !!user);
 
-  console.log('App: State update', {
-    isLoadingSession,
-    userId: user?.id,
-    isLoadingAddresses,
-    isAddressStoreInitialized,
-    addressesCount: addresses.length,
+  // Show force address modal only for logged-in users with no addresses
+  // Added !isLoadingAuth to prevent flash during logout
+  const requiresAddress = !!user && !isLoadingAuth && isAddrInitialized && addresses.length === 0 && !isLoadingAddr;
+
+  // Debug logging
+  console.log('[App Render Check]', {
+    pathname: window.location.pathname,
+    isLoadingAuth,
+    isAddrInitialized,
     showLoader,
     requiresAddress,
-    addressError: addressError?.message,
-    hasActiveAddress: !!activeAddress
+    userId: user?.id,
+    activeAddressId: activeAddress?.id,
+    activeAddressStreet: activeAddress?.street_address
   });
-
-  console.log(`[App Render] User: ${user?.id}, CanShowApp: ${canShowApp}, RequiresAddress: ${requiresAddress}, ActiveAddress: ${!!activeAddress}`);
-  if (!isLoadingSession && (user || activeAddress) && !requiresAddress) {
-    console.log('[App Render] Condition met: Should navigate to /home or stay there.');
-  } else if (!isLoadingSession && !user && !activeAddress) {
-    console.log('[App Render] Condition met: Should navigate to / or stay there.');
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <SupabaseProvider supabase={supabase}>
           <AuthProvider>
+            {/* Show loader while initializing */}
             {showLoader && <GlobalLoader />}
-            <ForceAddressModal isOpen={requiresAddress} />
-            {canShowApp && (
+
+            {/* Show force address modal only if not loading and address is required */}
+            {!showLoader && requiresAddress && <ForceAddressModal isOpen={true} />}
+
+            {/* Render router when not loading and address not required */}
+            {!showLoader && !requiresAddress && (
               <Router>
                 <Routes>
-                  <Route path="/" element={!user && !activeAddress ? <LandingPage /> : <Navigate to="/home" replace />} />
-                  <Route path="/home" element={(user || activeAddress) ? <MainLayout /> : <Navigate to="/" replace />}>
+                  {/* Landing Page Route: Render ONLY if no user AND no active address */}
+                  <Route 
+                    path="/" 
+                    element={
+                      !user && !activeAddress 
+                        ? <LandingPage /> 
+                        : <Navigate to="/home" replace />
+                    } 
+                  />
+                  
+                  {/* Main App Layout Route: Render if user OR activeAddress exists */}
+                  <Route 
+                    path="/home/*"
+                    element={
+                      user || activeAddress 
+                        ? <MainLayout /> 
+                        : <Navigate to="/" replace />
+                    }
+                  >
+                    {/* Public Routes */}
                     <Route index element={<HomePage />} />
                     <Route path="store/:storeId" element={<StoreDetailPage />} />
+                    <Route path="cart" element={<CartPage />} />
+
+                    {/* Protected Routes */}
                     <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                     <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                     <Route path="orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
                     <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-                    <Route path="cart" element={<CartPage />} />
                     <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
                   </Route>
+
+                  {/* Catch-all Not Found Route */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Router>
             )}
+
             <Toaster />
             <ReactQueryDevtools initialIsOpen={false} />
           </AuthProvider>

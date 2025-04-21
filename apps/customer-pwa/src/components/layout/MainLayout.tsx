@@ -11,14 +11,12 @@ import { useState } from 'react';
 
 export const MainLayout: React.FC = () => {
   const { isLoading, user } = useAuth();
+  // Subscribe to cart items directly using the selector
   const totalItems = useCartStore(state => state.getTotalItems());
-  const isLoggedIn = !isLoading && !!user;
   const [isCartSheetOpen, setIsCartSheetOpen] = useState(false);
 
-  // Move console.logs outside of JSX
+  // Debug log to verify re-renders
   console.log('[MainLayout] Rendering FAB check. Total Items:', totalItems);
-  console.log('[MainLayout] Auth state:', { isLoading, user, isLoggedIn });
-  console.log('[MainLayout] Condition Check:', { totalItems });
 
   return (
     <div className="flex flex-col min-h-screen bg-background">

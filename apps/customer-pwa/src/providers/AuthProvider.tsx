@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext, ReactNode, useMe
 import { Session, User } from '@supabase/supabase-js';
 import { useSupabase } from './SupabaseProvider'; // Hook to get Supabase client
 import { useAddressStore } from '@/store/addressStore';
+import { useCartStore } from '@/store/cartStore';
 
 interface AuthContextType {
   session: Session | null;
@@ -25,61 +26,67 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log('AuthProvider: Initializing session check');
+    console.log('[AuthProvider] Initializing session check');
     setIsLoadingSession(true);
 
     supabase.auth
       .getSession()
       .then(({ data: { session } }) => {
-        console.log('AuthProvider: Initial session loaded', { hasSession: !!session });
+        console.log('[AuthProvider] Initial session loaded', { hasSession: !!session });
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoadingSession(false);
       })
       .catch(error => {
-        console.error('AuthProvider: Error getting initial session:', error);
+        console.error('[AuthProvider] Error getting initial session:', error);
         setIsLoadingSession(false);
       });
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('AuthProvider: Auth state changed', { 
+      console.log('[AuthProvider] Auth state changed', { 
         event: _event, 
         hasSession: !!session,
         userId: session?.user?.id,
         previousUserId: user?.id
       });
+
       if (_event === 'SIGNED_IN' && session) {
-        // Clear guest address storage BEFORE updating session
+        // Clear guest cart and address storage on sign in
+        useCartStore.getState().clearCart();
         useAddressStore.getState().clearGuestAddressStorage();
-        console.log('[AuthProvider] Cleared guest address storage on sign in');
+        console.log('[AuthProvider SIGNED_IN] Cleared guest cart and address storage');
+        
         setSession(session);
         setUser(session.user);
       } else if (_event === 'SIGNED_OUT') {
-        // Clear guest address storage BEFORE clearing session
-        useAddressStore.getState().clearGuestAddressStorage();
-        console.log('[AuthProvider] Cleared guest address storage on sign out');
+        // First clear all stores
+        useAddressStore.getState().resetStore();
+        useCartStore.getState().clearCart();
+        console.log('[AuthProvider SIGNED_OUT] Cleared address and cart stores');
+        
+        // Then update auth state
         setSession(null);
         setUser(null);
+        
+        // Finally, force redirect to landing page
+        window.location.assign('/');
       }
     });
 
     return () => {
-      console.log('AuthProvider: Cleaning up auth listener');
+      console.log('[AuthProvider] Cleaning up auth listener');
       authListener?.subscription.unsubscribe();
     };
   }, [supabase]); // Re-run effect if Supabase client instance changes
 
   // Sign out function
   const signOut = async () => {
-    console.log('AuthProvider: Signing out');
-    // Clear guest address storage BEFORE signing out
-    useAddressStore.getState().clearGuestAddressStorage();
-    console.log('[AuthProvider] Cleared guest address storage before sign out');
+    console.log('[AuthProvider] Initiating sign out');
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error('AuthProvider: Error signing out:', error);
+      console.error('[AuthProvider] Error signing out:', error);
     }
-    // State will be updated by the onAuthStateChange listener
+    // Store cleanup and redirect will be handled by onAuthStateChange SIGNED_OUT event
   };
 
   const value = useMemo(

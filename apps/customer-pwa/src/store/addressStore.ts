@@ -7,6 +7,7 @@ import { getAddresses } from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
+import React from 'react';
 
 export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
 const STORAGE_KEY = 'customer-address-storage';
@@ -32,8 +33,8 @@ interface AddressState {
   deleteAddress: (id: string) => Promise<void>;
   setPrimaryAddress: (id: string) => Promise<void>;
   clearGuestAddressStorage: () => void;
-  startInitialization: () => void;
-  finishInitialization: (error: Error | null) => void;
+  setIsInitialized: (initialized: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
 }
 
 const initialState = {
@@ -50,17 +51,22 @@ export const useAddressStore = create<AddressState>()(
     (set, get) => ({
       ...initialState,
 
-      setLoading: loading => set({ isLoading: loading, error: null, isInitialized: false }),
+      setLoading: loading => set({ isLoading: loading, error: null }),
 
-      setError: error => set({ error: error, isLoading: false, isInitialized: true }),
+      setIsLoading: loading => set({ isLoading: loading }),
+
+      setIsInitialized: initialized => set({ isInitialized: initialized }),
+
+      setError: error => set({ error: error, isLoading: false }),
 
       setAddresses: addresses => {
         const primary = addresses.find(addr => addr.is_primary) || null;
         let currentActive = get().activeAddress;
-        let newActive =
-          currentActive && addresses.some(a => a.id === currentActive?.id)
-            ? currentActive
-            : primary || addresses[0] || null;
+        
+        // Only keep currentActive if it exists in the new addresses list
+        let newActive = currentActive && addresses.some(a => a.id === currentActive?.id)
+          ? currentActive
+          : primary || addresses[0] || null;
 
         set({
           addresses: addresses,
@@ -72,15 +78,10 @@ export const useAddressStore = create<AddressState>()(
         });
       },
 
-      setActiveAddress: address => {
-        if (address && !get().addresses.some(a => a.id === address.id)) {
-          // For guest addresses, we don't need to check if it's in the addresses list
-          if (address.id !== 'guest-address') {
-            console.warn("Attempted to set an active address that is not in the store's list.");
-            return;
-          }
-        }
+      setActiveAddress: (address) => {
+        console.log('[addressStore setActiveAddress] Called with:', address);
         set({ activeAddress: address });
+        console.log('[addressStore setActiveAddress] State potentially updated. New activeAddress:', get().activeAddress);
       },
 
       addOrUpdateAddress: address =>
@@ -133,6 +134,7 @@ export const useAddressStore = create<AddressState>()(
         }),
 
       resetStore: () => {
+        localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
         set({
           ...initialState,
           isLoading: false,
@@ -141,6 +143,7 @@ export const useAddressStore = create<AddressState>()(
       },
 
       resetForNewUser: () => {
+        localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
         set({
           ...initialState,
           isLoading: true,
@@ -167,79 +170,46 @@ export const useAddressStore = create<AddressState>()(
       clearGuestAddressStorage: () => {
         localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
       },
-
-      startInitialization: () => {
-        set({ isLoading: true, isInitialized: false, error: null });
-      },
-
-      finishInitialization: (error: Error | null) => {
-        set({
-          isLoading: false,
-          isInitialized: true,
-          error: error
-        });
-      },
     }),
     {
       name: STORAGE_KEY,
-      partialize: (state) => ({ activeAddress: state.activeAddress })
+      partialize: (state) => ({ activeAddress: state.activeAddress }),
+      // Ensure we clear guest address from storage on hydration if needed
+      onRehydrateStorage: () => (state) => {
+        if (state?.activeAddress?.id === 'guest-address') {
+          state.activeAddress = null;
+        }
+      }
     }
   )
 );
 
 export const useInitializeAddressStore = () => {
   const { user } = useAuth();
+  const currentUserId = user?.id;
   const supabase = useSupabase();
-  const queryClient = useQueryClient();
-  const {
-    setAddresses,
-    setLoading,
-    setError,
-    startInitialization,
-    finishInitialization,
-    resetStore,
-    activeAddress
-  } = useAddressStore();
+  const { setAddresses, setIsInitialized, setIsLoading } = useAddressStore();
 
   useEffect(() => {
-    const currentUserId = user?.id;
-    
-    // If we already have an activeAddress (from persist), we can skip initialization
-    if (activeAddress) {
-      finishInitialization(null);
-      return;
-    }
+    const fetchAddresses = async () => {
+      if (!currentUserId) {
+        setIsInitialized(true);
+        setIsLoading(false);
+        return;
+      }
 
-    startInitialization();
+      try {
+        setIsLoading(true);
+        const addresses = await getAddresses(supabase);
+        setAddresses(addresses);
+      } catch (error) {
+        console.error('[useInitializeAddressStore] Error fetching addresses:', error);
+      } finally {
+        setIsInitialized(true);
+        setIsLoading(false);
+      }
+    };
 
-    if (!currentUserId) {
-      resetStore();
-      finishInitialization(null);
-      return;
-    }
-
-    // Handle authenticated user
-    console.log('[useInitializeAddressStore] Fetching addresses for user:', currentUserId);
-    
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Address fetch timed out after 15s')), 15000)
-    );
-
-    Promise.race<Address[]>([
-      getAddresses(supabase),
-      timeoutPromise
-    ])
-      .then(data => {
-        console.log('[useInitializeAddressStore] Successfully fetched addresses:', {
-          addressCount: data?.length || 0
-        });
-        setAddresses(data || []);
-        finishInitialization(null);
-        queryClient.setQueryData(['addresses', currentUserId], data);
-      })
-      .catch(err => {
-        console.error('[useInitializeAddressStore] Failed to fetch addresses:', err);
-        finishInitialization(err);
-      });
-  }, [user?.id, supabase, queryClient, setAddresses, setLoading, setError, startInitialization, finishInitialization, resetStore, activeAddress]);
+    fetchAddresses();
+  }, [currentUserId, supabase]);
 };

@@ -47,9 +47,17 @@ export const LandingPage: React.FC = () => {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
+      console.log('[LandingPage Guest Submit] Guest Address Created:', guestAddress);
       addOrUpdateAddress(guestAddress);
       setActiveAddress(guestAddress);
-      navigate('/home', { replace: true });
+      console.log('[LandingPage Guest Submit] Zustand actions called.');
+      setIsAddressModalOpen(false);
+
+      console.log('[LandingPage Guest Submit] Queuing navigation to /home...');
+      setTimeout(() => {
+        console.log('[LandingPage Guest Submit] Executing navigation inside setTimeout.');
+        navigate('/home', { replace: true });
+      }, 0);
       return;
     }
     // Para usuarios registrados, guardamos la dirección en el backend
