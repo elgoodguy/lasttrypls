@@ -224,5 +224,30 @@ export const enTranslations: TranslationResources = {
     notesPlaceholder: 'Add any special instructions or requests',
     included: 'Included',
     addedToCart: 'Item added to cart!'
+  },
+  checkout: {
+    title: 'Checkout',
+    sections: {
+      address: 'Delivery Address',
+      payment: 'Payment Method',
+      contact: 'Contact Information',
+      tip: 'Driver Tip',
+      order: 'My Order',
+      note: 'Note'
+    },
+    buttons: {
+      selectAddress: 'Select Address',
+      selectPayment: 'Select Payment Method',
+      addContact: 'Add Contact Information',
+      addTip: 'Add Tip',
+      pay: 'Pay'
+    },
+    labels: {
+      subtotal: 'Subtotal',
+      delivery: 'Delivery',
+      total: 'Total',
+      noteToRestaurant: 'Note to restaurant',
+      notePlaceholder: 'Add a note...'
+    }
   }
 }; 

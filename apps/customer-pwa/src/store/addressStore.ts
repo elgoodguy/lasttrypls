@@ -1,30 +1,34 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Address } from '@repo/api-client';
+import { 
+  Address as ApiAddress, 
+  addAddress as apiAddAddress,
+  updateAddress as apiUpdateAddress,
+  deleteAddress as apiDeleteAddress,
+  setPrimaryAddress as apiSetPrimaryAddress,
+  getAddresses 
+} from '@repo/api-client';
 import { useAuth } from '@/providers/AuthProvider';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { getAddresses } from '@repo/api-client';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
-import React from 'react';
 
 export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
 const STORAGE_KEY = 'customer-address-storage';
 
 interface AddressState {
-  addresses: Address[];
-  activeAddress: Address | null;
-  primaryAddress: Address | null;
+  addresses: ApiAddress[];
+  activeAddress: ApiAddress | null;
+  primaryAddress: ApiAddress | null;
   isLoading: boolean;
   error: Error | null;
   isInitialized: boolean;
 
-  setAddresses: (addresses: Address[]) => void;
-  setActiveAddress: (address: Address | null) => void;
+  setAddresses: (addresses: ApiAddress[]) => void;
+  setActiveAddress: (address: ApiAddress | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: Error | null) => void;
-  addOrUpdateAddress: (address: Address) => void;
+  addOrUpdateAddress: (address: ApiAddress) => void;
   removeAddress: (addressId: string) => void;
   resetStore: () => void;
   resetForNewUser: () => void;
@@ -37,179 +41,211 @@ interface AddressState {
   setIsLoading: (loading: boolean) => void;
 }
 
-const initialState = {
-  addresses: [],
-  activeAddress: null,
-  primaryAddress: null,
-  isLoading: true,
-  error: null,
-  isInitialized: false,
-};
-
 export const useAddressStore = create<AddressState>()(
   persist(
-    (set, get) => ({
-      ...initialState,
+    (set) => ({
+      addresses: [],
+      activeAddress: null,
+      primaryAddress: null,
+      isLoading: false,
+      error: null,
+      isInitialized: false,
 
-      setLoading: loading => set({ isLoading: loading, error: null }),
-
-      setIsLoading: loading => set({ isLoading: loading }),
-
-      setIsInitialized: initialized => set({ isInitialized: initialized }),
-
-      setError: error => set({ error: error, isLoading: false }),
-
-      setAddresses: addresses => {
-        const primary = addresses.find(addr => addr.is_primary) || null;
-        let currentActive = get().activeAddress;
-        
-        // Only keep currentActive if it exists in the new addresses list
-        let newActive = currentActive && addresses.some(a => a.id === currentActive?.id)
-          ? currentActive
-          : primary || addresses[0] || null;
-
-        set({
-          addresses: addresses,
-          primaryAddress: primary,
-          activeAddress: newActive,
-          isLoading: false,
-          error: null,
-          isInitialized: true,
-        });
+      setAddresses: (addresses) => {
+        set({ addresses });
+        // Update primary address if exists
+        const primary = addresses.find((addr) => addr.is_primary);
+        if (primary) {
+          set({ primaryAddress: primary });
+        }
       },
 
       setActiveAddress: (address) => {
-        console.log('[addressStore setActiveAddress] Called with:', address);
         set({ activeAddress: address });
-        console.log('[addressStore setActiveAddress] State potentially updated. New activeAddress:', get().activeAddress);
       },
 
-      addOrUpdateAddress: address =>
-        set(state => {
-          const index = state.addresses.findIndex(a => a.id === address.id);
-          let newAddresses = [...state.addresses];
-          if (index > -1) {
-            newAddresses[index] = address;
-          } else {
-            newAddresses.push(address);
+      setLoading: (loading) => {
+        set({ isLoading: loading });
+      },
+
+      setError: (error) => {
+        set({ error });
+      },
+
+      addOrUpdateAddress: (address) => {
+        set((state) => {
+          const existingIndex = state.addresses.findIndex((a) => a.id === address.id);
+          if (existingIndex >= 0) {
+            const newAddresses = [...state.addresses];
+            newAddresses[existingIndex] = address;
+            return { addresses: newAddresses };
           }
+          return { addresses: [...state.addresses, address] };
+        });
+      },
 
-          const newPrimary = newAddresses.find(addr => addr.is_primary) || null;
-          let newActive = state.activeAddress;
-
-          if (address.is_primary) {
-            newActive = address;
-          } else if (!state.activeAddress && newAddresses.length > 0) {
-            newActive = newPrimary || newAddresses[0];
-          }
-
-          return {
-            addresses: newAddresses,
-            primaryAddress: newPrimary,
-            activeAddress: newActive,
-          };
-        }),
-
-      removeAddress: addressId =>
-        set(state => {
-          const newAddresses = state.addresses.filter(a => a.id !== addressId);
-          const removedAddressWasActive = state.activeAddress?.id === addressId;
-          const removedAddressWasPrimary = state.primaryAddress?.id === addressId;
-
-          let newPrimary = removedAddressWasPrimary ? null : state.primaryAddress;
-          if (!newPrimary && !removedAddressWasPrimary) {
-            newPrimary = newAddresses.find(addr => addr.is_primary) || null;
-          }
-
-          let newActive = state.activeAddress;
-          if (removedAddressWasActive) {
-            newActive = newPrimary || newAddresses[0] || null;
-          }
-
-          return {
-            addresses: newAddresses,
-            primaryAddress: newPrimary,
-            activeAddress: newActive,
-          };
-        }),
+      removeAddress: (addressId) => {
+        set((state) => ({
+          addresses: state.addresses.filter((a) => a.id !== addressId),
+          activeAddress: state.activeAddress?.id === addressId ? null : state.activeAddress,
+          primaryAddress: state.primaryAddress?.id === addressId ? null : state.primaryAddress,
+        }));
+      },
 
       resetStore: () => {
-        localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
         set({
-          ...initialState,
+          addresses: [],
+          activeAddress: null,
+          primaryAddress: null,
           isLoading: false,
-          isInitialized: true
+          error: null,
+          isInitialized: false,
         });
       },
 
       resetForNewUser: () => {
-        localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
         set({
-          ...initialState,
-          isLoading: true,
-          isInitialized: false
+          addresses: [],
+          activeAddress: null,
+          primaryAddress: null,
+          error: null,
+          isInitialized: false,
         });
       },
 
-      addAddress: async (address: AddressFormData) => {
-        // Implementation will be added later
+      addAddress: async (address) => {
+        const supabase = useSupabase();
+        const apiAddress = await apiAddAddress(supabase, address);
+        set((state) => ({
+          addresses: [...state.addresses, apiAddress],
+        }));
       },
 
-      updateAddress: async (id: string, address: AddressFormData) => {
-        // Implementation will be added later
+      updateAddress: async (id, address) => {
+        const supabase = useSupabase();
+        const apiAddress = await apiUpdateAddress(supabase, id, address);
+        set((state) => ({
+          addresses: state.addresses.map((a) => (a.id === id ? apiAddress : a)),
+          activeAddress: state.activeAddress?.id === id ? apiAddress : state.activeAddress,
+          primaryAddress: state.primaryAddress?.id === id ? apiAddress : state.primaryAddress,
+        }));
       },
 
-      deleteAddress: async (id: string) => {
-        // Implementation will be added later
+      deleteAddress: async (id) => {
+        const supabase = useSupabase();
+        await apiDeleteAddress(supabase, id);
+        set((state) => ({
+          addresses: state.addresses.filter((a) => a.id !== id),
+          activeAddress: state.activeAddress?.id === id ? null : state.activeAddress,
+          primaryAddress: state.primaryAddress?.id === id ? null : state.primaryAddress,
+        }));
       },
 
-      setPrimaryAddress: async (id: string) => {
-        // Implementation will be added later
+      setPrimaryAddress: async (id) => {
+        const supabase = useSupabase();
+        const apiAddress = await apiSetPrimaryAddress(supabase, id);
+        set((state) => ({
+          addresses: state.addresses.map((a) => ({
+            ...a,
+            is_primary: a.id === id,
+          })),
+          primaryAddress: apiAddress,
+        }));
       },
 
       clearGuestAddressStorage: () => {
         localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
       },
+
+      setIsInitialized: (initialized) => {
+        set({ isInitialized: initialized });
+      },
+
+      setIsLoading: (loading) => {
+        set({ isLoading: loading });
+      },
     }),
     {
       name: STORAGE_KEY,
-      partialize: (state) => ({ activeAddress: state.activeAddress }),
-      // Ensure we clear guest address from storage on hydration if needed
-      onRehydrateStorage: () => (state) => {
-        if (state?.activeAddress?.id === 'guest-address') {
-          state.activeAddress = null;
-        }
-      }
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          if (!str) return null;
+          const data = JSON.parse(str);
+          return {
+            ...data,
+            state: {
+              ...data.state,
+              addresses: data.state.addresses,
+              activeAddress: data.state.activeAddress,
+              primaryAddress: data.state.primaryAddress,
+            },
+          };
+        },
+        setItem: (name, value) => {
+          localStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      },
     }
   )
 );
 
 export const useInitializeAddressStore = () => {
-  const { user } = useAuth();
-  const currentUserId = user?.id;
+  const { isGuest, isLoading: isLoadingAuth } = useAuth();
   const supabase = useSupabase();
-  const { setAddresses, setIsInitialized, setIsLoading } = useAddressStore();
+  const {
+    setAddresses,
+    setActiveAddress,
+    setIsInitialized,
+    setIsLoading,
+    setError,
+    isInitialized,
+  } = useAddressStore();
 
   useEffect(() => {
-    const fetchAddresses = async () => {
-      if (!currentUserId) {
-        setIsInitialized(true);
-        setIsLoading(false);
-        return;
-      }
+    const initializeAddresses = async () => {
+      if (isInitialized || isLoadingAuth) return;
 
       try {
         setIsLoading(true);
-        const addresses = await getAddresses(supabase);
-        setAddresses(addresses);
+        if (isGuest) {
+          // For guest users, try to load the last active address from localStorage
+          const savedAddress = localStorage.getItem(GUEST_ADDRESS_STORAGE_KEY);
+          if (savedAddress) {
+            const address = JSON.parse(savedAddress);
+            setActiveAddress(address);
+          }
+        } else {
+          // For logged-in users, fetch addresses from the API
+          const apiAddresses = await getAddresses(supabase);
+          setAddresses(apiAddresses);
+          
+          // Set active address to primary if exists
+          const primary = apiAddresses.find((addr) => addr.is_primary);
+          if (primary) {
+            setActiveAddress(primary);
+          }
+        }
       } catch (error) {
-        console.error('[useInitializeAddressStore] Error fetching addresses:', error);
+        console.error('Error initializing addresses:', error);
+        setError(error as Error);
       } finally {
-        setIsInitialized(true);
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
-    fetchAddresses();
-  }, [currentUserId, supabase]);
+    initializeAddresses();
+  }, [
+    isGuest,
+    isLoadingAuth,
+    isInitialized,
+    setActiveAddress,
+    setAddresses,
+    setError,
+    setIsInitialized,
+    setIsLoading,
+    supabase,
+  ]);
 };

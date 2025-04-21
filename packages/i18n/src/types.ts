@@ -219,6 +219,32 @@ export interface LandingTranslations {
   };
 }
 
+export interface CheckoutTranslations {
+  title: string;
+  sections: {
+    address: string;
+    payment: string;
+    contact: string;
+    tip: string;
+    order: string;
+    note: string;
+  };
+  buttons: {
+    selectAddress: string;
+    selectPayment: string;
+    addContact: string;
+    addTip: string;
+    pay: string;
+  };
+  labels: {
+    subtotal: string;
+    delivery: string;
+    total: string;
+    noteToRestaurant: string;
+    notePlaceholder: string;
+  };
+}
+
 export interface TranslationResources {
   common: CommonTranslations;
   navigation: NavigationTranslations;
@@ -233,4 +259,5 @@ export interface TranslationResources {
   product: ProductTranslations;
   landing: LandingTranslations;
   notifications: NotificationsTranslations;
+  checkout: CheckoutTranslations;
 } 

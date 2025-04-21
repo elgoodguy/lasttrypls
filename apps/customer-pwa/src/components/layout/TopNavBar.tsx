@@ -125,15 +125,20 @@ export const TopNavBar: React.FC = () => {
     if (!address) return t('navigation.setlocation');
     
     // Extraer solo la calle y número
-    const streetParts = address.street_address.split(',')[0].trim();
+    const parts = [
+      address.street_address,
+      address.internal_number ? `#${address.internal_number}` : null
+    ].filter(Boolean);
     
-    // Limitar la longitud y mantener el formato original (no todo mayúsculas)
+    const streetDisplay = parts.join(' ');
+    
+    // Limitar la longitud
     const maxLength = 25;
-    if (streetParts.length > maxLength) {
-      return `${streetParts.substring(0, maxLength)}...`;
+    if (streetDisplay.length > maxLength) {
+      return `${streetDisplay.substring(0, maxLength)}...`;
     }
     
-    return streetParts;
+    return streetDisplay;
   };
 
   const getInitials = (name: string) => {
@@ -174,7 +179,7 @@ export const TopNavBar: React.FC = () => {
                   addresses.map(addr => (
                     <DropdownMenuItem
                       key={addr.id}
-                      onClick={() => handleAddressSelect(addr.id)}
+                      onClick={() => addr.id && handleAddressSelect(addr.id)}
                       className={cn('cursor-pointer', { 'bg-accent': addr.id === activeAddress?.id })}
                     >
                       {addr.is_primary && <Home className="mr-2 h-4 w-4" />}
@@ -199,7 +204,7 @@ export const TopNavBar: React.FC = () => {
                     onClick={() => isGuest ? setIsAuthModalOpen(true) : handleSetPrimary()}
                     className="cursor-pointer"
                   >
-                    <Home className="mr-2 h-4 w-4" />
+                    <Star className="mr-2 h-4 w-4" />
                     {t('address.setPrimary')}
                   </DropdownMenuItem>
                 )}
@@ -208,96 +213,83 @@ export const TopNavBar: React.FC = () => {
           )}
         </div>
 
-        {/* User Avatar Dropdown */}
-        <div className="flex items-center gap-4">
-          {!isLoadingAuth && !isGuest && (
+        {/* Right Side Menu */}
+        <div className="flex items-center gap-2">
+          {/* Theme Toggle */}
+          <ThemeToggle theme={theme} setTheme={setTheme} />
+
+          {/* Language Toggle */}
+          <LanguageToggle />
+
+          {/* Notifications */}
+          {!isGuest && (
             <Button
               variant="ghost"
               size="icon"
               className="h-10 w-10"
-              onClick={() => navigate('/home/notifications')}
+              onClick={() => navigate('notifications')}
             >
               <NotificationsIcon className="h-6 w-6" />
             </Button>
           )}
+
+          {/* User Menu */}
           {!isLoadingAuth && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-12 w-12 rounded-full">
-                  <Avatar className="h-12 w-12">
-                    {!isGuest && user && (
-                      <AvatarImage
-                        src={user.user_metadata?.avatar_url}
-                        alt={user.user_metadata?.full_name || user.email}
-                      />
-                    )}
-                    <AvatarFallback>
-                      {isGuest ? 'U' : getInitials(user?.user_metadata?.full_name || user?.email || '')}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {isGuest ? t('navigation.guest') : user?.user_metadata?.full_name || user?.email}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {!isGuest && (
-                  <>
-                    <DropdownMenuItem onClick={() => navigate('/home/profile')}>
-                      <UserIcon className="mr-2 h-4 w-4" />
-                      {t('navigation.profile')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/home/favorites')}>
-                      <Star className="mr-2 h-4 w-4" />
-                      {t('navigation.favorites')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/home/orders')}>
-                      <Package className="mr-2 h-4 w-4" />
-                      {t('navigation.orders')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/home/wallet')}>
-                      <Wallet className="mr-2 h-4 w-4" />
-                      {t('navigation.wallet')}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </>
-                )}
-                <div className="flex items-center justify-between px-2 py-1.5">
-                  <ThemeToggle theme={theme} setTheme={setTheme} />
-                  <LanguageToggle />
-                </div>
-                {!isGuest && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      {t('auth.logout')}
-                    </DropdownMenuItem>
-                  </>
-                )}
-                {isGuest && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setIsAuthModalOpen(true)}>
-                      <UserIcon className="mr-2 h-4 w-4" />
-                      {`${t('auth.login.button')} / ${t('auth.signup.button')}`}
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-10 w-10 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.user_metadata?.avatar_url} />
+                      <AvatarFallback>
+                        {getInitials(user.user_metadata?.full_name || 'User')}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{user.user_metadata?.full_name || 'User'}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('profile')} className="cursor-pointer">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    {t('navigation.profile')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('orders')} className="cursor-pointer">
+                    <Package className="mr-2 h-4 w-4" />
+                    {t('navigation.orders')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('wallet')} className="cursor-pointer">
+                    <Wallet className="mr-2 h-4 w-4" />
+                    {t('navigation.wallet')}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {t('auth.signOut')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" onClick={() => setIsAuthModalOpen(true)}>
+                {t('auth.signIn')}
+              </Button>
+            )
           )}
         </div>
       </div>
 
-      <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+      {/* Auth Modal */}
+      <AuthModal
+        open={isAuthModalOpen}
+        onOpenChange={setIsAuthModalOpen}
+      />
+
+      {/* Address Modal */}
       <AddressModal
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
         onSubmit={handleModalSubmit}
         isLoading={isAddingAddress}
-        addressToEdit={null}
       />
     </header>
   );

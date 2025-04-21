@@ -23,6 +23,7 @@ const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then(module => ({
 const StoreDetailPage = lazy(() => import('@/pages/StoreDetailPage'));
 const CartPage = lazy(() => import('@/pages/CartPage').then(module => ({ default: module.CartPage })));
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage').then(module => ({ default: module.NotificationsPage })));
+const CheckoutPage = lazy(() => import('@/pages/CheckoutPage').then(module => ({ default: module.CheckoutPage })));
 
 // Protected route wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -54,7 +55,6 @@ function App() {
   const {
     isLoading: isLoadingAddr,
     addresses,
-    error: addressError,
     isInitialized: isAddrInitialized,
     activeAddress
   } = useAddressStore();
@@ -106,6 +106,9 @@ function App() {
                         : <Navigate to="/home" replace />
                     } 
                   />
+                  
+                  {/* Checkout Route: Top-level route without MainLayout */}
+                  <Route path="/checkout" element={<CheckoutPage />} />
                   
                   {/* Main App Layout Route: Render if user OR activeAddress exists */}
                   <Route 

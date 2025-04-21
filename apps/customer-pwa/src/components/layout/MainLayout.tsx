@@ -3,14 +3,12 @@ import { TopNavBar } from './TopNavBar';
 import { BottomNavBar } from './BottomNavBar';
 import { Button } from '@repo/ui/components/ui/button';
 import { Badge } from '@repo/ui/components/ui/badge';
-import { useAuth } from '@/providers/AuthProvider';
 import { useCartStore } from '@/store/cartStore';
 import { ShoppingCart } from 'lucide-react';
 import { CartSheet } from '@/components/cart/CartSheet';
 import { useState } from 'react';
 
 export const MainLayout: React.FC = () => {
-  const { isLoading, user } = useAuth();
   // Subscribe to cart items directly using the selector
   const totalItems = useCartStore(state => state.getTotalItems());
   const [isCartSheetOpen, setIsCartSheetOpen] = useState(false);

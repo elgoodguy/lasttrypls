@@ -6,7 +6,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
   SheetClose,
 } from '@repo/ui/components/ui/sheet';
 import { Button } from '@repo/ui/components/ui/button';
@@ -14,7 +13,7 @@ import { Card } from '@repo/ui/components/ui/card';
 import { Separator } from '@repo/ui/components/ui/separator';
 import { Textarea } from '@repo/ui/components/ui/textarea';
 import { Avatar } from '@repo/ui/components/ui/avatar';
-import { Plus, Minus, Trash2, X } from 'lucide-react';
+import { Plus, Minus, Trash2 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 
 interface CartSheetProps {
@@ -40,7 +39,7 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
 
   const handleCheckout = () => {
     onOpenChange(false);
-    navigate('/home/checkout');
+    navigate('/checkout');
   };
 
   return (

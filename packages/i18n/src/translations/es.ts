@@ -224,5 +224,30 @@ export const esTranslations: TranslationResources = {
     notesPlaceholder: 'Agrega instrucciones o solicitudes especiales',
     included: 'Incluido',
     addedToCart: '¡Producto añadido al carrito!'
+  },
+  checkout: {
+    title: 'Finalizar Compra',
+    sections: {
+      address: 'Dirección de Entrega',
+      payment: 'Método de Pago',
+      contact: 'Información de Contacto',
+      tip: 'Propina para el Repartidor',
+      order: 'Mi Orden',
+      note: 'Nota'
+    },
+    buttons: {
+      selectAddress: 'Seleccionar Dirección',
+      selectPayment: 'Seleccionar Método de Pago',
+      addContact: 'Agregar Información de Contacto',
+      addTip: 'Agregar Propina',
+      pay: 'Pagar'
+    },
+    labels: {
+      subtotal: 'Subtotal',
+      delivery: 'Envío',
+      total: 'Total',
+      noteToRestaurant: 'Nota para el restaurante',
+      notePlaceholder: 'Agregar nota...'
+    }
   }
 }; 

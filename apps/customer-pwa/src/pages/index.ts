@@ -5,3 +5,4 @@ export { WalletPage } from './WalletPage';
 export { CartPage } from './CartPage';
 export { ProfilePage } from './ProfilePage';
 export { NotFoundPage } from './NotFoundPage';
+export { CheckoutPage } from './CheckoutPage';

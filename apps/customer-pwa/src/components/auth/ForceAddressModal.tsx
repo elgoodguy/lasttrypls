@@ -7,6 +7,7 @@ import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
+import type { AddressFormData } from '@/lib/validations/address';
 
 interface ForceAddressModalProps {
   isOpen: boolean;
@@ -18,8 +19,8 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
-    mutationFn: (newData: any) => addAddress(supabase, { ...newData, is_primary: true }),
+  const { mutate: handleForceSubmit, isPending: isAddingAddress } = useMutation({
+    mutationFn: (data: AddressFormData) => addAddress(supabase, { ...data, is_primary: true }),
     onSuccess: newAddress => {
       toast.success('¡Dirección agregada exitosamente!');
       addOrUpdateAddress(newAddress);
@@ -31,18 +32,6 @@ export const ForceAddressModal: React.FC<ForceAddressModalProps> = ({ isOpen }) 
       toast.error(t('address.addError'));
     },
   });
-
-  const handleForceSubmit = async (data: AddressFormData) => {
-    try {
-      const newAddress = await addAddress(supabase, { ...data, is_primary: true });
-      addOrUpdateAddress(newAddress);
-      setActiveAddress(newAddress);
-      queryClient.invalidateQueries({ queryKey: ['addresses'] });
-    } catch (error) {
-      console.error('Error adding address:', error);
-      toast.error(t('address.addError'));
-    }
-  };
 
   return (
     <AddressModal
