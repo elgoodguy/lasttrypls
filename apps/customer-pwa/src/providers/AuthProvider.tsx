@@ -23,70 +23,82 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const supabase = useSupabase(); // Get Supabase client instance
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
+  const [isLoadingSession, setIsLoadingSession] = useState(true);
+  const [initialSessionProcessed, setInitialSessionProcessed] = useState(false);
 
+  // Efecto para la carga inicial de sesión
   useEffect(() => {
-    console.log('[AuthProvider] Initializing session check');
-    setIsLoadingSession(true);
-
+    console.log('[AuthProvider Initial Load] Running initial session check.');
+    
     supabase.auth
       .getSession()
       .then(({ data: { session } }) => {
-        console.log('[AuthProvider] Initial session loaded', { hasSession: !!session });
         setSession(session);
         setUser(session?.user ?? null);
+        setInitialSessionProcessed(true);
         setIsLoadingSession(false);
+        console.log('[AuthProvider Initial Load] Finished. Session available:', !!session);
       })
       .catch(error => {
-        console.error('[AuthProvider] Error getting initial session:', error);
-        setIsLoadingSession(false);
-      });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('[AuthProvider] Auth state changed', { 
-        event: _event, 
-        hasSession: !!session,
-        userId: session?.user?.id,
-        previousUserId: user?.id
-      });
-
-      if (_event === 'SIGNED_IN' && session) {
-        // Clear guest cart and address storage on sign in
-        useCartStore.getState().clearCart();
-        useAddressStore.getState().clearGuestAddressStorage();
-        console.log('[AuthProvider SIGNED_IN] Cleared guest cart and address storage');
-        
-        setSession(session);
-        setUser(session.user);
-      } else if (_event === 'SIGNED_OUT') {
-        // First clear all stores
-        useAddressStore.getState().resetStore();
-        useCartStore.getState().clearCart();
-        console.log('[AuthProvider SIGNED_OUT] Cleared address and cart stores');
-        
-        // Then update auth state
+        console.error('[AuthProvider Initial Load] Error getting session:', error);
         setSession(null);
         setUser(null);
-        
-        // Finally, force redirect to landing page
+        setInitialSessionProcessed(true);
+        setIsLoadingSession(false);
+      });
+  }, [supabase]);
+
+  // Efecto para el listener de cambios de autenticación
+  useEffect(() => {
+    // No configures el listener hasta que la carga inicial esté completa
+    if (!initialSessionProcessed) return;
+
+    console.log('[AuthProvider Listener] Setting up auth state change listener.');
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('[AuthProvider Listener] Event:', _event, 'Session:', !!session);
+
+      if (_event === 'SIGNED_IN' && session) {
+        const currentUser = user; // Captura el estado actual ANTES de los sets
+        if (!currentUser && session.user) {
+          console.log('[AuthProvider Listener] SIGNED_IN - Guest-to-User transition. Clearing guest data.');
+          useCartStore.getState().clearCart();
+          useAddressStore.getState().clearGuestAddressStorage();
+          useAddressStore.getState().resetForNewUser();
+        } else {
+          console.log('[AuthProvider Listener] SIGNED_IN - Event received, but not clearing data (likely refresh or token update).');
+        }
+        setSession(session);
+        setUser(session.user);
+
+      } else if (_event === 'SIGNED_OUT') {
+        console.log('[AuthProvider Listener] SIGNED_OUT - Clearing stores and resetting state.');
+        useAddressStore.getState().resetStore();
+        useCartStore.getState().clearCart();
+        setSession(null);
+        setUser(null);
+        setInitialSessionProcessed(false); // Resetear para la próxima carga
         window.location.assign('/');
+
+      } else if (_event === 'INITIAL_SESSION' && session) {
+        console.log('[AuthProvider Listener] INITIAL_SESSION - Updating state.');
+        setSession(session);
+        setUser(session.user);
       }
     });
 
     return () => {
-      console.log('[AuthProvider] Cleaning up auth listener');
+      console.log('[AuthProvider Listener] Cleaning up auth state change listener.');
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase]); // Re-run effect if Supabase client instance changes
+  }, [supabase, initialSessionProcessed, user]); // Incluimos user para acceder a su valor actual en el callback
 
   // Sign out function
   const signOut = async () => {
-    console.log('[AuthProvider] Initiating sign out');
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('[AuthProvider] Error signing out:', error);
     }
-    // Store cleanup and redirect will be handled by onAuthStateChange SIGNED_OUT event
   };
 
   const value = useMemo(

@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -11,6 +11,7 @@ import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
 import { useSupabase } from '@/providers/SupabaseProvider';
+import { useCartStore } from '@/store/cartStore';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
@@ -58,6 +59,7 @@ function App() {
     isInitialized: isAddrInitialized,
     activeAddress
   } = useAddressStore();
+  const cartItemCount = useCartStore(state => state.items.length);
   const supabase = useSupabase();
 
   // Initialize address store
@@ -67,20 +69,7 @@ function App() {
   const showLoader = isLoadingAuth || (!isAddrInitialized && !!user);
 
   // Show force address modal only for logged-in users with no addresses
-  // Added !isLoadingAuth to prevent flash during logout
   const requiresAddress = !!user && !isLoadingAuth && isAddrInitialized && addresses.length === 0 && !isLoadingAddr;
-
-  // Debug logging
-  console.log('[App Render Check]', {
-    pathname: window.location.pathname,
-    isLoadingAuth,
-    isAddrInitialized,
-    showLoader,
-    requiresAddress,
-    userId: user?.id,
-    activeAddressId: activeAddress?.id,
-    activeAddressStreet: activeAddress?.street_address
-  });
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 
 export interface CartItem {
   id: string; // Unique client-side ID
@@ -31,6 +32,9 @@ interface CartState {
 
 const STORAGE_KEY = 'customer-cart-storage';
 
+// Debug log for initial store creation
+console.log('[cartStore] Initializing cart store');
+
 // Helper function to compare selected options
 const areOptionsEqual = (a: Record<string, any>, b: Record<string, any>): boolean => {
   const aKeys = Object.keys(a).sort();
@@ -50,104 +54,119 @@ const areOptionsEqual = (a: Record<string, any>, b: Record<string, any>): boolea
   });
 };
 
+// Create initial state factory to ensure consistent state shape
+const createInitialState = (): Omit<CartState, 'addItem' | 'removeItem' | 'updateQuantity' | 'clearCart' | 'getTotalItems' | 'getSubtotal' | 'getItemsByStore'> => ({
+  items: [],
+});
+
+// Wrapper for state updates to log all changes
+const logStateUpdate = (state: CartState, description: string) => {
+  console.log(`[cartStore ${description}]`, {
+    itemCount: state.items.length,
+    items: state.items,
+    timestamp: new Date().toISOString()
+  });
+};
+
 export const useCartStore = create<CartState>()(
-  persist(
-    (set, get) => ({
-      items: [],
+  devtools(
+    persist(
+      (set, get) => ({
+        ...createInitialState(),
 
-      addItem: (newItem) => {
-        set((state) => {
-          // Check for existing item with same productId and selectedOptions
-          const existingItem = state.items.find(
-            (item) =>
-              item.productId === newItem.productId &&
-              areOptionsEqual(item.selectedOptions, newItem.selectedOptions)
-          );
+        addItem: (newItem) => {
+          set((state) => {
+            const existingItem = state.items.find(
+              (item) =>
+                item.productId === newItem.productId &&
+                areOptionsEqual(item.selectedOptions, newItem.selectedOptions)
+            );
 
-          let newState;
-          if (existingItem) {
-            // If item exists, update quantity
-            newState = {
-              items: state.items.map((item) =>
-                item.id === existingItem.id
-                  ? { ...item, quantity: item.quantity + newItem.quantity }
-                  : item
-              ),
-            };
-          } else {
-            // If item doesn't exist, add new item with generated ID
-            newState = {
-              items: [
-                ...state.items,
-                {
-                  ...newItem,
-                  id: Math.random().toString(36).substr(2, 9),
-                },
-              ],
-            };
-          }
+            const newItems = existingItem
+              ? state.items.map((item) =>
+                  item.id === existingItem.id
+                    ? { ...item, quantity: item.quantity + newItem.quantity }
+                    : item
+                )
+              : [
+                  ...state.items,
+                  {
+                    ...newItem,
+                    id: Math.random().toString(36).substr(2, 9),
+                  },
+                ];
 
-          // Log the new total items count
-          const totalItems = newState.items.reduce((sum, item) => sum + item.quantity, 0);
-          console.log('[cartStore addItem] New total items:', totalItems);
-          console.log('[cartStore addItem] New state:', newState);
+            return { ...state, items: newItems };
+          });
+        },
 
-          return newState;
-        });
-      },
+        removeItem: (itemId) => {
+          set((state) => ({
+            ...state,
+            items: state.items.filter((item) => item.id !== itemId),
+          }));
+        },
 
-      removeItem: (itemId) => {
-        set((state) => ({
-          items: state.items.filter((item) => item.id !== itemId),
-        }));
-      },
+        updateQuantity: (itemId, quantity) => {
+          if (quantity < 1) return;
+          set((state) => ({
+            ...state,
+            items: state.items.map((item) =>
+              item.id === itemId ? { ...item, quantity } : item
+            ),
+          }));
+        },
 
-      updateQuantity: (itemId, quantity) => {
-        if (quantity < 1) return;
+        clearCart: () => {
+          set((state) => ({ ...state, items: [] }));
+        },
 
-        set((state) => ({
-          items: state.items.map((item) =>
-            item.id === itemId ? { ...item, quantity } : item
-          ),
-        }));
-      },
+        getTotalItems: () => {
+          return get().items.reduce((sum, item) => sum + item.quantity, 0);
+        },
 
-      clearCart: () => {
-        set({ items: [] });
-      },
-
-      getTotalItems: () => {
-        const items = get().items;
-        const total = items.reduce((sum, item) => sum + item.quantity, 0);
-        console.log('[cartStore getTotalItems] Calculated:', total);
-        return total;
-      },
-
-      getSubtotal: () => {
-        return get().items.reduce(
+        getSubtotal: () => get().items.reduce(
           (total, item) => total + (item.basePrice + item.optionsPrice) * item.quantity,
           0
-        );
-      },
+        ),
 
-      getItemsByStore: () => {
-        const items = get().items;
-        const storeItems: Record<string, CartItem[]> = {};
-
-        items.forEach((item) => {
-          if (!storeItems[item.storeId]) {
-            storeItems[item.storeId] = [];
-          }
-          storeItems[item.storeId].push(item);
-        });
-
-        return storeItems;
-      },
-    }),
+        getItemsByStore: () => {
+          const items = get().items;
+          const storeItems: Record<string, CartItem[]> = {};
+          items.forEach((item) => {
+            if (!storeItems[item.storeId]) {
+              storeItems[item.storeId] = [];
+            }
+            storeItems[item.storeId].push(item);
+          });
+          return storeItems;
+        },
+      }),
+      {
+        name: STORAGE_KEY,
+        storage: createJSONStorage(() => ({
+          getItem: (name) => {
+            const str = localStorage.getItem(name);
+            if (!str) return null;
+            try {
+              return JSON.parse(str);
+            } catch (error) {
+              console.error('[cartStore] Error parsing stored data:', error);
+              return null;
+            }
+          },
+          setItem: (name, value) => {
+            localStorage.setItem(name, JSON.stringify(value));
+          },
+          removeItem: (name) => {
+            localStorage.removeItem(name);
+          },
+        }))
+      }
+    ),
     {
-      name: STORAGE_KEY,
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }),
+      name: 'CartStore',
+      enabled: true,
     }
   )
 ); 

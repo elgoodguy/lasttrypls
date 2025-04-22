@@ -10,7 +10,6 @@ import { Separator } from '@repo/ui/components/ui/separator';
 import { CreditCard, User, Gift, ArrowLeft } from 'lucide-react';
 import { AddressSelectorSheet } from '@/components/profile/AddressSelectorSheet';
 import { AddressModal } from '@/components/profile/AddressModal';
-import type { Address } from '@repo/api-client';
 import type { AddressFormData } from '@/lib/validations/address';
 import { useAddressStore } from '@/store/addressStore';
 import { useSupabase } from '@/providers/SupabaseProvider';

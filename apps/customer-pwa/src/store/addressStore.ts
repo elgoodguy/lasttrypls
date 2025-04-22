@@ -201,34 +201,54 @@ export const useInitializeAddressStore = () => {
     setIsLoading,
     setError,
     isInitialized,
+    addresses,
   } = useAddressStore();
 
   useEffect(() => {
     const initializeAddresses = async () => {
-      if (isInitialized || isLoadingAuth) return;
+      // Don't initialize if we're still loading auth state
+      if (isLoadingAuth) {
+        console.log('[addressStore] Waiting for auth state to load...');
+        return;
+      }
 
+      // Don't re-initialize if we already have addresses loaded
+      if (isInitialized && addresses.length > 0) {
+        console.log('[addressStore] Already initialized with addresses');
+        return;
+      }
+
+      console.log('[addressStore] Initializing addresses', { isGuest });
+      
       try {
         setIsLoading(true);
+        setError(null);
+
         if (isGuest) {
           // For guest users, try to load the last active address from localStorage
           const savedAddress = localStorage.getItem(GUEST_ADDRESS_STORAGE_KEY);
           if (savedAddress) {
+            console.log('[addressStore] Loading guest address from storage');
             const address = JSON.parse(savedAddress);
             setActiveAddress(address);
           }
         } else {
           // For logged-in users, fetch addresses from the API
+          console.log('[addressStore] Fetching addresses for logged-in user');
           const apiAddresses = await getAddresses(supabase);
+          console.log('[addressStore] Fetched addresses:', apiAddresses);
+          
           setAddresses(apiAddresses);
           
           // Set active address to primary if exists
           const primary = apiAddresses.find((addr) => addr.is_primary);
           if (primary) {
+            console.log('[addressStore] Setting primary address as active');
             setActiveAddress(primary);
           }
         }
       } catch (error) {
-        console.error('Error initializing addresses:', error);
+        console.error('[addressStore] Error initializing addresses:', error);
         setError(error as Error);
       } finally {
         setIsLoading(false);
@@ -241,6 +261,7 @@ export const useInitializeAddressStore = () => {
     isGuest,
     isLoadingAuth,
     isInitialized,
+    addresses.length,
     setActiveAddress,
     setAddresses,
     setError,
