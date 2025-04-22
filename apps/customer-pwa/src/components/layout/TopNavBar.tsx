@@ -149,9 +149,26 @@ export const TopNavBar: React.FC = () => {
       .toUpperCase();
   };
 
+  const getUserInitials = () => {
+    if (isGuest) return 'U';
+    if (user?.user_metadata?.full_name) return getInitials(user.user_metadata.full_name);
+    if (user?.email) return getInitials(user.email);
+    return 'U';
+  };
+
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.full_name?.trim()) {
+      return user.user_metadata.full_name;
+    }
+    if (user?.email?.trim()) {
+      return user.email;
+    }
+    return t('common.user');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between px-4">
         {/* Location Dropdown/Button */}
         <div className="flex-1 flex justify-start">
           {!isLoadingAuth && (
@@ -168,7 +185,7 @@ export const TopNavBar: React.FC = () => {
                   </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuContent>
                 <DropdownMenuLabel>{t('address.deliverTo')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {isLoadingAddresses ? (
@@ -199,9 +216,9 @@ export const TopNavBar: React.FC = () => {
                   <MapPin className="mr-2 h-4 w-4" />
                   {t('address.manage')}
                 </DropdownMenuItem>
-                {activeAddress && !activeAddress.is_primary && (
+                {!isGuest && (
                   <DropdownMenuItem
-                    onClick={() => isGuest ? setIsAuthModalOpen(true) : handleSetPrimary()}
+                    onClick={handleSetPrimary}
                     className="cursor-pointer"
                   >
                     <Star className="mr-2 h-4 w-4" />
@@ -215,12 +232,6 @@ export const TopNavBar: React.FC = () => {
 
         {/* Right Side Menu */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
-          <ThemeToggle theme={theme} setTheme={setTheme} />
-
-          {/* Language Toggle */}
-          <LanguageToggle />
-
           {/* Notifications */}
           {!isGuest && (
             <Button
@@ -234,21 +245,26 @@ export const TopNavBar: React.FC = () => {
           )}
 
           {/* User Menu */}
-          {!isLoadingAuth && (
-            user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 w-10 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.user_metadata?.avatar_url} />
-                      <AvatarFallback>
-                        {getInitials(user.user_metadata?.full_name || 'User')}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{user.user_metadata?.full_name || 'User'}</DropdownMenuLabel>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-10 w-10 rounded-full">
+                <Avatar className="h-8 w-8">
+                  {!isGuest && user?.user_metadata?.avatar_url && (
+                    <AvatarImage src={user.user_metadata.avatar_url} />
+                  )}
+                  <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {!isGuest ? (
+                <>
+                  <DropdownMenuLabel className="flex flex-col">
+                    <span className="font-medium">{getUserDisplayName()}</span>
+                    {user?.email && user?.user_metadata?.full_name && (
+                      <span className="text-xs text-muted-foreground">{user.email}</span>
+                    )}
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('profile')} className="cursor-pointer">
                     <UserIcon className="mr-2 h-4 w-4" />
@@ -263,18 +279,32 @@ export const TopNavBar: React.FC = () => {
                     {t('navigation.wallet')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  <div className="px-2 py-1.5 flex items-center justify-between w-full">
+                    <LanguageToggle />
+                    <ThemeToggle theme={theme} setTheme={setTheme} />
+                  </div>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     {t('auth.signOut')}
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button variant="ghost" onClick={() => setIsAuthModalOpen(true)}>
-                {t('auth.signIn')}
-              </Button>
-            )
-          )}
+                </>
+              ) : (
+                <>
+                  <DropdownMenuLabel>Guest</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setIsAuthModalOpen(true)} className="cursor-pointer">
+                    {t('auth.signIn')} / {t('auth.signUp')}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <div className="px-2 py-1.5 flex items-center justify-between w-full">
+                    <LanguageToggle />
+                    <ThemeToggle theme={theme} setTheme={setTheme} />
+                  </div>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
