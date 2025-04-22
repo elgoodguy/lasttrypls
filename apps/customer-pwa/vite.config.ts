@@ -14,17 +14,24 @@ export default defineConfig({
       '@repo/ui': path.resolve(__dirname, '../../packages/ui/src'),
       '@repo/i18n': path.resolve(__dirname, '../../packages/i18n/src'),
     },
+    preserveSymlinks: true
   },
   optimizeDeps: {
-    include: ['@repo/types', '@repo/api-client', '@repo/hooks', '@repo/ui', '@repo/i18n'],
-    exclude: ['i18next']
+    exclude: [
+      '@repo/types',
+      '@repo/api-client',
+      '@repo/hooks',
+      '@repo/ui',
+      '@repo/i18n'
+    ]
   },
   build: {
     commonjsOptions: {
-      include: [/node_modules/]
+      include: [/node_modules/, /@repo\/ui/],
+      transformMixedEsModules: true
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom']
     }
-  },
-  json: {
-    stringify: true,
-  },
+  }
 });

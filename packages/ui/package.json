@@ -2,21 +2,20 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": false,
+  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./styles.css": "./dist/index.css"
   },
   "scripts": {
-    "build": "tsup src/index.tsx --format esm,cjs --dts --external react --external react-dom --external @repo/api-client --out-dir dist --metafile --sourcemap && pnpm build:css",
-    "build:css": "tailwindcss -i ./src/styles.css -o ./dist/index.css --minify",
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react --external react-dom --out-dir dist --sourcemap",
     "dev": "pnpm build --watch",
     "lint": "eslint src/ --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "clean": "rimraf dist .turbo"
@@ -54,6 +53,7 @@
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.15",
+    "esbuild-postcss": "^0.0.4",
     "eslint": "^8.45.0",
     "postcss": "^8.4.29",
     "react": "^18.2.0",

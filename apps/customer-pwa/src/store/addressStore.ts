@@ -59,11 +59,11 @@ export const useAddressStore = create<AddressState>()(
           }
         },
 
-        setActiveAddress: (address) => {
+        setActiveAddress: (address: ApiAddress | null): void => {
            console.log('[addressStore] Setting active address:', address);
            set({ activeAddress: address });
            if(address?.is_primary){
-             set(state => ({ primaryAddress: address }));
+             set({ primaryAddress: address });
            }
         },
 
@@ -76,58 +76,69 @@ export const useAddressStore = create<AddressState>()(
           set({ error: error, isLoading: false });
         },
 
-        addOrUpdateAddressLocally: (address) => {
-          set((state) => {
-            const existingIndex = state.addresses.findIndex((a) => a.id === address.id);
-            let newAddresses: ApiAddress[];
-            if (existingIndex >= 0) {
-              newAddresses = [...state.addresses];
-              newAddresses[existingIndex] = address;
-              console.log('[addressStore] Updating address locally:', address);
-            } else {
-              newAddresses = [...state.addresses, address];
-              console.log('[addressStore] Adding address locally:', address);
-            }
-            if (address.is_primary) {
-              newAddresses = newAddresses.map(a => ({ ...a, is_primary: a.id === address.id }));
-              return { addresses: newAddresses, primaryAddress: address };
-            }
-            return { addresses: newAddresses };
+        addOrUpdateAddressLocally: (address: ApiAddress): void => {
+          const currentState = get();
+          const existingIndex = currentState.addresses.findIndex((a) => a.id === address.id);
+          let newAddresses: ApiAddress[];
+          
+          if (existingIndex >= 0) {
+            newAddresses = [...currentState.addresses];
+            newAddresses[existingIndex] = address;
+            console.log('[addressStore] Updating address locally:', address);
+          } else {
+            newAddresses = [...currentState.addresses, address];
+            console.log('[addressStore] Adding address locally:', address);
+          }
+          
+          if (address.is_primary) {
+            newAddresses = newAddresses.map(a => ({ ...a, is_primary: a.id === address.id }));
+            set({ addresses: newAddresses, primaryAddress: address });
+          } else {
+            set({ addresses: newAddresses });
+          }
+        },
+
+        removeAddressLocally: (addressId: string): void => {
+          const currentState = get();
+          const newAddresses = currentState.addresses.filter((a) => a.id !== addressId);
+          let newActive = currentState.activeAddress;
+          let newPrimary = currentState.primaryAddress;
+
+          if (currentState.activeAddress?.id === addressId) {
+            console.log('[addressStore] Active address removed, selecting new active.');
+            newActive = currentState.primaryAddress?.id !== addressId ? currentState.primaryAddress : (newAddresses[0] || null);
+          }
+          if (currentState.primaryAddress?.id === addressId) {
+            console.log('[addressStore] Primary address removed, selecting new primary.');
+            newPrimary = newAddresses.find(a => a.is_primary) || (newAddresses[0] || null);
+          }
+          console.log('[addressStore] Removing address locally:', addressId);
+          set({ 
+            addresses: newAddresses, 
+            activeAddress: newActive, 
+            primaryAddress: newPrimary 
           });
         },
 
-        removeAddressLocally: (addressId) => {
-          set((state) => {
-            const newAddresses = state.addresses.filter((a) => a.id !== addressId);
-            let newActive = state.activeAddress;
-            let newPrimary = state.primaryAddress;
-
-            if (state.activeAddress?.id === addressId) {
-              console.log('[addressStore] Active address removed, selecting new active.');
-              newActive = state.primaryAddress?.id !== addressId ? state.primaryAddress : (newAddresses[0] || null);
-            }
-            if (state.primaryAddress?.id === addressId) {
-               console.log('[addressStore] Primary address removed, selecting new primary.');
-               newPrimary = newAddresses.find(a => a.is_primary) || (newAddresses[0] || null);
-            }
-            console.log('[addressStore] Removing address locally:', addressId);
-            return { addresses: newAddresses, activeAddress: newActive, primaryAddress: newPrimary };
+        setPrimaryAddressLocally: (addressId: string): void => {
+          const currentState = get();
+          const newAddresses = currentState.addresses.map((address: ApiAddress) => ({
+            ...address,
+            is_primary: address.id === addressId
+          }));
+          
+          const newPrimary = newAddresses.find((address: ApiAddress) => address.id === addressId) || null;
+          const newActive = currentState.activeAddress?.id === addressId 
+            ? newPrimary 
+            : currentState.activeAddress;
+          
+          console.log('[addressStore] Setting primary address locally:', addressId);
+          set({
+            addresses: newAddresses,
+            primaryAddress: newPrimary,
+            activeAddress: newActive ?? newPrimary
           });
         },
-
-         setPrimaryAddressLocally: (addressId) => {
-          set((state) => {
-            let newPrimary: ApiAddress | null = null;
-            const newAddresses = state.addresses.map((a) => {
-               const isNowPrimary = a.id === addressId;
-               if (isNowPrimary) newPrimary = a;
-               return { ...a, is_primary: isNowPrimary };
-            });
-            console.log('[addressStore] Setting primary address locally:', addressId);
-            const newActive = state.activeAddress?.id === addressId ? newPrimary : state.activeAddress;
-            return { addresses: newAddresses, primaryAddress: newPrimary, activeAddress: newActive ?? newPrimary };
-           });
-         },
 
         resetStore: () => {
           console.log('[addressStore] Resetting store completely.');

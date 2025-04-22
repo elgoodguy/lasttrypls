@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup';
+import postcssPlugin from 'esbuild-postcss';
 
 export default defineConfig({
   entry: ['src/index.tsx'],
@@ -7,12 +8,14 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', '@repo/api-client'],
+  external: ['react', 'react-dom'],
   outDir: 'dist',
-  treeshake: true,
-  minify: true,
-  metafile: true,
-  keepNames: true,
   platform: 'browser',
-  target: 'es2020'
+  target: 'es2020',
+  esbuildPlugins: [postcssPlugin()],
+  esbuildOptions(options) {
+    options.banner = {
+      js: '"use esm";'
+    }
+  }
 }); 
