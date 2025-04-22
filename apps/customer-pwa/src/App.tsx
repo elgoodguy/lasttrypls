@@ -8,10 +8,11 @@ import { AuthProvider, useAuth } from '@/providers/AuthProvider';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { GlobalLoader } from '@/components/common/GlobalLoader';
 import { Toaster } from 'sonner';
-import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
+import { useAddressStore } from '@/store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { useCartStore } from '@/store/cartStore';
+import { getAddresses } from '@repo/api-client';
+import { GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
@@ -51,25 +52,87 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
-  const { isLoading: isLoadingAuth, user } = useAuth();
-  const {
-    isLoading: isLoadingAddr,
+export default function App() {
+  const { user, isGuest, isLoading: isLoadingAuth } = useAuth();
+  const supabase = useSupabase();
+  const { 
+    setAddresses, 
+    setActiveAddress, 
+    setLoading: setIsLoadingAddress,
+    setError: setAddressError,
+    setIsInitialized,
+    isInitialized,
     addresses,
-    isInitialized: isAddrInitialized,
+    isLoading: isLoadingAddress,
     activeAddress
   } = useAddressStore();
-  const cartItemCount = useCartStore(state => state.items.length);
-  const supabase = useSupabase();
 
-  // Initialize address store
-  useInitializeAddressStore();
+  // Add new useEffect for address initialization
+  useEffect(() => {
+    const initializeAddresses = async () => {
+      if (isInitialized || isLoadingAuth) {
+        if (isInitialized && !isLoadingAuth) setIsLoadingAddress(false);
+        return;
+      }
+
+      console.log('[App] Initializing addresses...', { isGuest });
+      setIsLoadingAddress(true);
+      setAddressError(null);
+
+      try {
+        if (isGuest) {
+          const savedAddressJson = localStorage.getItem(GUEST_ADDRESS_STORAGE_KEY);
+          if (savedAddressJson) {
+            try {
+              const savedAddress = JSON.parse(savedAddressJson);
+              console.log('[App] Found guest address in localStorage:', savedAddress);
+              setActiveAddress(savedAddress);
+              setAddresses([savedAddress]);
+            } catch (parseError) {
+              console.error('[App] Error parsing guest address from localStorage:', parseError);
+              localStorage.removeItem(GUEST_ADDRESS_STORAGE_KEY);
+              setActiveAddress(null);
+              setAddresses([]);
+            }
+          } else {
+            console.log('[App] No guest address found in localStorage.');
+            setActiveAddress(null);
+            setAddresses([]);
+          }
+        } else {
+          console.log('[App] Fetching addresses from API...');
+          const apiAddresses = await getAddresses(supabase);
+          console.log('[App] Fetched API addresses:', apiAddresses);
+          setAddresses(apiAddresses);
+          const primary = apiAddresses.find((addr) => addr.is_primary);
+          if (primary) {
+            console.log('[App] Setting primary address as active:', primary);
+            setActiveAddress(primary);
+          } else {
+            console.log('[App] No primary address found, setting active to null.');
+            setActiveAddress(null);
+          }
+        }
+      } catch (error) {
+        console.error('[App] Error during initialization:', error);
+        setAddressError(error as Error);
+        setAddresses([]);
+        setActiveAddress(null);
+      } finally {
+        console.log('[App] Initialization finished.');
+        setIsLoadingAddress(false);
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAddresses();
+  }, [isGuest, isLoadingAuth, isInitialized, supabase, setAddresses, setActiveAddress, setIsLoadingAddress, setAddressError, setIsInitialized]);
 
   // Show loader if either Auth is loading OR if Address is not initialized yet
-  const showLoader = isLoadingAuth || (!isAddrInitialized && !!user);
+  const showLoader = isLoadingAuth || (!isInitialized && !!user);
 
   // Show force address modal only for logged-in users with no addresses
-  const requiresAddress = !!user && !isLoadingAuth && isAddrInitialized && addresses.length === 0 && !isLoadingAddr;
+  const requiresAddress = !!user && !isLoadingAuth && isInitialized && addresses.length === 0 && !isLoadingAddress;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -135,5 +198,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

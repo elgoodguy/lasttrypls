@@ -1,7 +1,7 @@
 import { StoreDetails } from '@repo/api-client';
 import { Clock, Heart, Percent, Star, Truck } from 'lucide-react';
-import { Badge } from '@repo/ui/components/ui/badge';
-import { StoreStatusIndicator } from '@repo/ui/components/store/StoreStatusIndicator';
+import { Badge } from '@repo/ui';
+import { StoreStatusIndicator } from '@repo/ui';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
 import { useState } from 'react';

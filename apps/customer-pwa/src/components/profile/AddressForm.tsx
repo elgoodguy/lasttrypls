@@ -1,4 +1,4 @@
-import { Button } from '@repo/ui/components/ui/button';
+import { Button } from '@repo/ui';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addressSchema, AddressFormData } from '@/lib/validations/address';
@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/ui/dialog';
+} from '@repo/ui';
 import { MapPin, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useGeolocation, useGooglePlacesAutocomplete, useGoogleMapsScript } from '@repo/hooks';

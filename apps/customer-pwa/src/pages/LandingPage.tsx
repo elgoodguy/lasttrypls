@@ -1,18 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@repo/ui/components/ui/button';
+import { Button } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
-import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
+import { ThemeToggle } from '@repo/ui';
 import { LanguageToggle } from '@/components/common/LanguageToggle';
 import { BenefitsList } from '@/components/landing/BenefitsList';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { addAddress } from '@repo/api-client';
+import { addApiAddress } from '@/store/addressStore';
 import { AddressFormData } from '@/lib/validations/address';
 
 export const LandingPage: React.FC = () => {
@@ -20,7 +20,7 @@ export const LandingPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
-  const { activeAddress, addOrUpdateAddress, setActiveAddress } = useAddressStore();
+  const { activeAddress, addOrUpdateAddressLocally, setActiveAddress } = useAddressStore();
   const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = React.useState(false);
   const [isGuest, setIsGuest] = React.useState(false);
@@ -48,7 +48,7 @@ export const LandingPage: React.FC = () => {
         updated_at: new Date().toISOString(),
       };
       console.log('[LandingPage Guest Submit] Guest Address Created:', guestAddress);
-      addOrUpdateAddress(guestAddress);
+      addOrUpdateAddressLocally(guestAddress);
       setActiveAddress(guestAddress);
       console.log('[LandingPage Guest Submit] Zustand actions called.');
       setIsAddressModalOpen(false);
@@ -62,13 +62,12 @@ export const LandingPage: React.FC = () => {
     }
     // Para usuarios registrados, guardamos la dirección en el backend
     try {
-      const newAddress = await addAddress(supabase, { ...data, is_primary: true });
-      addOrUpdateAddress(newAddress);
+      await addApiAddress(supabase, { ...data, is_primary: true });
       queryClient.invalidateQueries({ queryKey: ['addresses'] });
+      setIsAddressModalOpen(false);
     } catch (error) {
       console.error('Error adding address:', error);
     }
-    setIsAddressModalOpen(false);
   };
 
   return (

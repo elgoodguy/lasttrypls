@@ -7,12 +7,12 @@ import {
   SheetTitle,
   SheetDescription,
   SheetClose,
-} from '@repo/ui/components/ui/sheet';
-import { Button } from '@repo/ui/components/ui/button';
-import { Card } from '@repo/ui/components/ui/card';
-import { Separator } from '@repo/ui/components/ui/separator';
-import { Textarea } from '@repo/ui/components/ui/textarea';
-import { Avatar } from '@repo/ui/components/ui/avatar';
+} from '@repo/ui';
+import { Button } from '@repo/ui';
+import { Card } from '@repo/ui';
+import { Separator } from '@repo/ui';
+import { Textarea } from '@repo/ui';
+import { Avatar } from '@repo/ui';
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '@/store/cartStore';
-import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/components/ui/card';
-import { Button } from '@repo/ui/components/ui/button';
-import { Textarea } from '@repo/ui/components/ui/textarea';
-import { Label } from '@repo/ui/components/ui/label';
-import { Separator } from '@repo/ui/components/ui/separator';
+import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui';
+import { Button } from '@repo/ui';
+import { Textarea } from '@repo/ui';
+import { Label } from '@repo/ui';
+import { Separator } from '@repo/ui';
 import { CreditCard, User, Gift, ArrowLeft } from 'lucide-react';
 import { AddressSelectorSheet } from '@/components/profile/AddressSelectorSheet';
 import { AddressModal } from '@/components/profile/AddressModal';
@@ -14,7 +14,7 @@ import type { AddressFormData } from '@/lib/validations/address';
 import { useAddressStore } from '@/store/addressStore';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useMutation } from '@tanstack/react-query';
-import { addAddress } from '@repo/api-client';
+import { addApiAddress } from '@/store/addressStore';
 import { toast } from 'sonner';
 
 export const CheckoutPage: React.FC = () => {
@@ -25,7 +25,6 @@ export const CheckoutPage: React.FC = () => {
   const [isAddressSelectorOpen, setIsAddressSelectorOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const supabase = useSupabase();
-  const { addOrUpdateAddress } = useAddressStore();
   
   // Fixed delivery fee placeholder
   const deliveryFee = 62.00;
@@ -36,10 +35,9 @@ export const CheckoutPage: React.FC = () => {
   };
 
   const addAddressMutation = useMutation({
-    mutationFn: (data: AddressFormData) => addAddress(supabase, data),
+    mutationFn: (data: AddressFormData) => addApiAddress(supabase, data),
     onSuccess: (newAddress) => {
       toast.success(t('address.addSuccess'));
-      addOrUpdateAddress(newAddress);
       setActiveAddress(newAddress);
       setIsAddressModalOpen(false);
       setIsAddressSelectorOpen(false);

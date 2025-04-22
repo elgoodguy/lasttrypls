@@ -1,8 +1,8 @@
 import React from 'react';
 import { Address } from '@repo/api-client';
-import { Button } from '@repo/ui/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/components/ui/card';
-import { Badge } from '@repo/ui/components/ui/badge';
+import { Button } from '@repo/ui';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui';
+import { Badge } from '@repo/ui';
 import { Edit3, Trash2, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@repo/ui/components/ui/dialog';
+} from '@repo/ui';
 import { AddressForm } from './AddressForm';
 import { AddressFormData } from '@/lib/validations/address';
 import { useTranslation } from 'react-i18next';

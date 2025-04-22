@@ -1,168 +1,139 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getAddresses, addAddress, updateAddress, Address } from '@repo/api-client';
-import { Button } from '@repo/ui/components/ui/button';
-import { AddressCard } from './AddressCard';
-import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import { Button, Card } from '@repo/ui';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { AddressModal } from './AddressModal';
 import { AddressFormData } from '@/lib/validations/address';
 import { useAddressStore } from '@/store/addressStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { AddressForm } from './AddressForm';
+import { addApiAddress, updateApiAddress, deleteApiAddress, setApiPrimaryAddress } from '@/store/addressStore';
+import type { Address } from '@repo/api-client';
 
-export const AddressManager: React.FC = () => {
-  const supabase = useSupabase();
+export function AddressManager() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null);
-  const { addresses, addOrUpdateAddress, setActiveAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
+  const [isSettingPrimary, setIsSettingPrimary] = useState(false);
+  const { addresses } = useAddressStore();
+  const supabase = useSupabase();
   const { t } = useTranslation();
 
-  useQuery({
-    queryKey: ['addresses'],
-    queryFn: () => getAddresses(supabase),
-  });
-
-  const addAddressMutation = useMutation({
-    mutationFn: (data: AddressFormData) => addAddress(supabase, data),
-    onSuccess: (newAddress) => {
-      toast.success(t('address.addSuccess'));
-      addOrUpdateAddress(newAddress);
-      if (addresses.length === 0) {
-        setActiveAddress(newAddress);
+  const handleAddressSubmit = async (data: AddressFormData) => {
+    try {
+      setIsLoading(true);
+      if (selectedAddress?.id) {
+        await updateApiAddress(supabase, selectedAddress.id, data);
+        toast.success(t('address.updateSuccess'));
+      } else {
+        await addApiAddress(supabase, data);
+        toast.success(t('address.addSuccess'));
       }
-      setIsModalOpen(false);
       setSelectedAddress(null);
-    },
-    onError: (error) => {
-      console.error('Error adding address:', error);
-      toast.error(t('address.addError'));
-    },
-  });
-
-  const updateAddressMutation = useMutation({
-    mutationFn: ({ addressId, updates }: { addressId: string; updates: AddressFormData }) => 
-      updateAddress(supabase, addressId, updates),
-    onSuccess: (updatedAddress) => {
-      toast.success(t('address.updateSuccess'));
-      addOrUpdateAddress(updatedAddress);
-      const currentActiveId = addresses.find(addr => addr.is_primary)?.id;
-      if (selectedAddress?.id === currentActiveId) {
-        setActiveAddress(updatedAddress);
-      }
-      setIsModalOpen(false);
-      setSelectedAddress(null);
-    },
-    onError: (error) => {
-      console.error('Error updating address:', error);
-      toast.error(t('address.updateError'));
-    },
-  });
-
-  const handleAddressSubmit = (data: AddressFormData) => {
-    console.log('[AddressManager] Submitting address:', data);
-    if (selectedAddress?.id) {
-      updateAddressMutation.mutate({ 
-        addressId: selectedAddress.id, 
-        updates: data
-      });
-    } else {
-      addAddressMutation.mutate(data);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error submitting address:', error);
+      toast.error(t(selectedAddress ? 'address.updateError' : 'address.addError'));
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const handleEdit = (address: Address) => {
-    setSelectedAddress(address);
-    setIsModalOpen(true);
   };
 
   const handleDelete = async (addressId: string) => {
-    if (!addressId) return;
-    
-    if (!window.confirm(t('profile.addresses.confirmDelete'))) {
-      return;
-    }
-
-    try {
-      console.log('[AddressManager] Starting address deletion:', addressId);
-      setDeletingAddressId(addressId);
-      
-      await deleteAddress(supabase, addressId);
-      
-      console.log('[AddressManager] Address deleted successfully:', addressId);
-      toast.success(t('address.deleteSuccess'));
-    } catch (error) {
-      console.error('[AddressManager] Error deleting address:', error);
-      
-      // Handle specific error cases
-      let errorMessage = t('address.deleteError');
-      
-      if (error instanceof Error) {
-        if (error.message.includes('not found') || error.message.includes('unauthorized')) {
-          errorMessage = t('address.deleteErrorUnauthorized', 'You are not authorized to delete this address');
-        } else if (error.message.includes('foreign key')) {
-          errorMessage = t('address.deleteErrorInUse', 'This address cannot be deleted because it is in use');
-        }
+    if (!addressId || deletingAddressId) return;
+    if (window.confirm(t('profile.addresses.confirmDelete'))) {
+      try {
+        setDeletingAddressId(addressId);
+        await deleteApiAddress(supabase, addressId);
+        toast.success(t('address.deleteSuccess'));
+      } catch (error) {
+        console.error('[AddressManager] Error deleting address:', error);
+        toast.error(t('address.deleteError'));
+      } finally {
+        setDeletingAddressId(null);
       }
-      
-      toast.error(errorMessage);
-    } finally {
-      setDeletingAddressId(null);
     }
   };
 
   const handleSetPrimary = async (addressId: string) => {
-    if (!addressId) return;
-    await setPrimaryAddress(addressId);
-  };
-
-  const handleAddNew = () => {
-    setSelectedAddress(null);
-    setIsModalOpen(true);
+    if (!addressId || isSettingPrimary) return;
+    try {
+      setIsSettingPrimary(true);
+      await setApiPrimaryAddress(supabase, addressId);
+      toast.success(t('address.setPrimarySuccess'));
+    } catch (error) {
+      console.error('[AddressManager] Error setting primary:', error);
+      toast.error(t('address.setPrimaryError'));
+    } finally {
+      setIsSettingPrimary(false);
+    }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">{t('profile.addresses.title')}</h2>
-        <Button onClick={handleAddNew} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
+        <h2 className="text-2xl font-bold">{t('profile.addresses.title')}</h2>
+        <Button onClick={() => setIsEditing(true)}>
           {t('profile.addresses.add')}
         </Button>
       </div>
 
-      <AddressModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedAddress(null);
-        }}
-        onSubmit={handleAddressSubmit}
-        isLoading={addAddressMutation.isPending || updateAddressMutation.isPending}
-        addressToEdit={selectedAddress}
-        isForceModal={false}
-      />
-
-      {addresses.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          {t('profile.addresses.noAddresses')}
-        </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {addresses.map(address => (
-            <AddressCard
-              key={address.id}
-              address={address}
-              onEdit={() => handleEdit(address)}
-              onDelete={() => handleDelete(address.id)}
-              onSetPrimary={() => handleSetPrimary(address.id)}
-              isDeleting={deletingAddressId === address.id}
-              isSettingPrimary={false}
-            />
-          ))}
-        </div>
+      {isEditing && (
+        <Card className="p-4">
+          <AddressForm
+            onSubmit={handleAddressSubmit}
+            defaultValues={selectedAddress || undefined}
+            isLoading={isLoading}
+          />
+        </Card>
       )}
+
+      <div className="grid gap-4">
+        {addresses.map((address) => (
+          <Card key={address.id} className="p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="font-semibold">{address.street_address}</p>
+                <p>{address.city}, {address.postal_code}</p>
+                {address.neighborhood && <p>{address.neighborhood}</p>}
+                <p>{address.country}</p>
+                {address.is_primary && <span className="text-sm text-primary">{t('address.primary')}</span>}
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedAddress(address);
+                    setIsEditing(true);
+                  }}
+                  disabled={isLoading}
+                >
+                  {t('common.edit')}
+                </Button>
+                {!address.is_primary && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSetPrimary(address.id)}
+                    disabled={isSettingPrimary}
+                  >
+                    {t('address.setPrimary')}
+                  </Button>
+                )}
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(address.id)}
+                  disabled={deletingAddressId === address.id}
+                >
+                  {t('common.delete')}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   );
-};
+}

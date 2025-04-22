@@ -14,9 +14,14 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@lasttrypls/ui/*": ["packages/ui/src/*"],
-      "@lasttrypls/types/*": ["packages/types/src/*"],
-      "@lasttrypls/api-client/*": ["packages/api-client/src/*"]
+      "@repo/ui/*": ["packages/ui/src/*"],
+      "@repo/types/*": ["packages/types/src/*"],
+      "@repo/api-client/*": ["packages/api-client/src/*"],
+      "@repo/hooks/*": ["packages/hooks/src/*"],
+      "@repo/i18n": ["packages/i18n/src/index.ts"],
+      "@repo/tsconfig/*": ["packages/tsconfig/src/*"],
+      "@repo/typescript-config/*": ["packages/typescript-config/src/*"],
+      "@repo/eslint-config/*": ["packages/eslint-config/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", ".turbo"]

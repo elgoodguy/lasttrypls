@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { TopNavBar } from './TopNavBar';
 import { BottomNavBar } from './BottomNavBar';
-import { Button } from '@repo/ui/components/ui/button';
-import { Badge } from '@repo/ui/components/ui/badge';
+import { Button } from '@repo/ui';
+import { Badge } from '@repo/ui';
 import { useCartStore } from '@/store/cartStore';
 import { ShoppingCart } from 'lucide-react';
 import { CartSheet } from '@/components/cart/CartSheet';

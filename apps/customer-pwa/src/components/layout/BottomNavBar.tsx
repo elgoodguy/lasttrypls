@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BottomNavBar as UIBottomNavBar, NavItem } from '@repo/ui/components/navigation/BottomNavBar';
+import { BottomNavBar as UIBottomNavBar, NavItem } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { HomeIcon, FavoritesIcon, OrdersIcon, WalletIcon } from '@/components/icons';

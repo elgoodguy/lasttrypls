@@ -2,57 +2,30 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
-import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
+import { ThemeToggle, Avatar, AvatarFallback, AvatarImage, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, Button, cn } from '@repo/ui';
 import { LanguageToggle } from '@/components/common/LanguageToggle';
 import { useTheme } from '@/providers/ThemeProvider';
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@repo/ui/components/ui/dropdown-menu';
-import { Button } from '@repo/ui/components/ui/button';
 import { LogOut, UserIcon, PlusCircle, Star, Home, MapPin, Package, Wallet } from 'lucide-react';
 import { LocationIcon, NotificationsIcon } from '@/components/icons';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
-import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY } from '@/store/addressStore';
+import { useAddressStore, GUEST_ADDRESS_STORAGE_KEY, addApiAddress } from '@/store/addressStore';
 import { useQueryClient } from '@tanstack/react-query';
-import { cn } from '@repo/ui/lib/utils';
-import { useMutation } from '@tanstack/react-query';
-import { addAddress, Address } from '@repo/api-client';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { toast } from 'sonner';
 import { AddressFormData } from '@/lib/validations/address';
+import type { Address } from '@repo/api-client';
 
 export const TopNavBar: React.FC = () => {
   const navigate = useNavigate();
   const { user, isLoading: isLoadingAuth, isGuest, signOut } = useAuth();
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const { addresses, activeAddress, isLoading: isLoadingAddresses, addOrUpdateAddress, setActiveAddress } = useAddressStore();
+  const { addresses, activeAddress, isLoading: isLoadingAddresses, addOrUpdateAddressLocally, setActiveAddress } = useAddressStore();
   const queryClient = useQueryClient();
   const supabase = useSupabase();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-
-  const { mutate: addAddressMut, isPending: isAddingAddress } = useMutation({
-    mutationFn: (newData: AddressFormData) => addAddress(supabase, { ...newData, is_primary: true }),
-    onSuccess: (newAddress) => {
-      toast.success(t('address.addSuccess'));
-      addOrUpdateAddress(newAddress);
-      setActiveAddress(newAddress);
-      console.log('[TopNavBar] Address added and set as active:', newAddress);
-      setIsAddressModalOpen(false);
-    },
-    onError: (error) => {
-      console.error('Error adding address:', error);
-      toast.error(t('address.addError'));
-    },
-  });
 
   const handleSignOut = async () => {
     await signOut();
@@ -101,7 +74,7 @@ export const TopNavBar: React.FC = () => {
       };
       
       // Update the store
-      addOrUpdateAddress(guestAddress);
+      addOrUpdateAddressLocally(guestAddress);
       setActiveAddress(guestAddress);
       
       // Save to localStorage
@@ -113,8 +86,15 @@ export const TopNavBar: React.FC = () => {
       return;
     }
     
-    // For registered users, use the mutation
-    addAddressMut(data);
+    // For registered users, use the API function
+    try {
+      await addApiAddress(supabase, data);
+      toast.success(t('address.addSuccess'));
+      setIsAddressModalOpen(false);
+    } catch (error) {
+      console.error('Error adding address:', error);
+      toast.error(t('address.addError'));
+    }
   };
 
   const handleSetPrimary = async () => {
@@ -319,7 +299,6 @@ export const TopNavBar: React.FC = () => {
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
         onSubmit={handleModalSubmit}
-        isLoading={isAddingAddress}
       />
     </header>
   );

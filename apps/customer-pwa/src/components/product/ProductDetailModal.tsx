@@ -7,13 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@repo/ui/components/ui/dialog';
-import { Button } from '@repo/ui/components/ui/button';
-import { Card } from '@repo/ui/components/ui/card';
-import { Checkbox } from '@repo/ui/components/ui/checkbox';
-import { Input } from '@repo/ui/components/ui/input';
-import { Textarea } from '@repo/ui/components/ui/textarea';
-import { Label } from '@repo/ui/components/ui/label';
+} from '@repo/ui';
+import { Button } from '@repo/ui';
+import { Card } from '@repo/ui';
+import { Checkbox } from '@repo/ui';
+import { Input } from '@repo/ui';
+import { Textarea } from '@repo/ui';
+import { Label } from '@repo/ui';
 import { X, Plus, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
@@ -115,6 +115,10 @@ export function ProductDetailModal({
           const handleQuantityChange = (delta: number) => {
             const newQuantity = Math.max(1, quantity + delta);
             setQuantity(newQuantity);
+          };
+
+          const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setNotes(e.target.value);
           };
 
           const handleAddToCart = () => {
@@ -282,7 +286,7 @@ export function ProductDetailModal({
                 <Textarea
                   placeholder={t('product.notesPlaceholder')}
                   value={notes}
-                  onChange={e => setNotes(e.target.value)}
+                  onChange={handleNotesChange}
                 />
               </div>
 

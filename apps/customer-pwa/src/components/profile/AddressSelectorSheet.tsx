@@ -6,10 +6,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@repo/ui/components/ui/sheet';
-import { Button } from '@repo/ui/components/ui/button';
+} from '@repo/ui';
+import { Button } from '@repo/ui';
 import { Check, MapPin, PlusCircle } from 'lucide-react';
-import { cn } from '@repo/ui/lib/utils';
+import { cn } from '@repo/ui';
 
 interface AddressSelectorSheetProps {
   isOpen: boolean;

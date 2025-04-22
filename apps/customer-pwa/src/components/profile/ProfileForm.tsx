@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Button } from '@repo/ui/components/ui/button';
-import { Input } from '@repo/ui/components/ui/input';
-import { Label } from '@repo/ui/components/ui/label';
+import { Button } from '@repo/ui';
+import { Input } from '@repo/ui';
+import { Label } from '@repo/ui';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { getProfile, updateProfile, Profile, ProfileUpdate } from '@repo/api-client';

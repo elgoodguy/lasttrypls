@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, AvatarFallback } from '@repo/ui/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,8 +7,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/ui/dropdown-menu';
-import { Button } from '@repo/ui/components/ui/button';
+} from '@repo/ui';
+import { Button } from '@repo/ui';
 import { useTranslation } from 'react-i18next';
 import { AuthModal } from '@/components/auth/AuthModal';
 

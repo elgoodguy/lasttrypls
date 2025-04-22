@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@repo/ui/components/ui/dialog';
-import { Button } from '@repo/ui/components/ui/button';
-import { Input } from '@repo/ui/components/ui/input';
-import { Label } from '@repo/ui/components/ui/label';
+} from '@repo/ui';
+import { Button } from '@repo/ui';
+import { Input } from '@repo/ui';
+import { Label } from '@repo/ui';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { Provider } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';

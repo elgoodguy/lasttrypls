@@ -11,10 +11,15 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./locales/*": {
+      "import": "./dist/locales/*.mjs",
+      "require": "./dist/locales/*.js",
+      "types": "./dist/locales/*.d.ts"
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist --metafile --sourcemap",
     "dev": "tsup --watch",
     "clean": "rimraf .turbo node_modules dist",
     "validate": "tsc --noEmit"
