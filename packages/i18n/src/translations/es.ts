@@ -51,6 +51,12 @@ export const esTranslations: TranslationResources = {
     add: 'Agregar dirección',
     addNew: 'Nueva dirección',
     addSuccess: '¡Dirección agregada exitosamente!',
+    addError: 'Error al agregar dirección',
+    updateSuccess: '¡Dirección actualizada exitosamente!',
+    updateError: 'Error al actualizar dirección',
+    deleteSuccess: '¡Dirección eliminada exitosamente!',
+    deleteError: 'Error al eliminar dirección',
+    deleteErrorUnauthorized: 'No estás autorizado para eliminar esta dirección',
     search: 'Buscar dirección',
     searchTitle: 'Buscar Dirección',
     searchPlaceholder: 'Ingresa una ubicación para buscar',
@@ -144,7 +150,8 @@ export const esTranslations: TranslationResources = {
       title: 'Direcciones de Entrega',
       add: 'Agregar Dirección',
       primary: 'Dirección Principal',
-      noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.'
+      noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.',
+      confirmDelete: '¿Estás seguro que deseas eliminar esta dirección?'
     },
     loginRequired: 'Inicio de sesión requerido',
     loginMessage: 'Inicia sesión para ver esta página'

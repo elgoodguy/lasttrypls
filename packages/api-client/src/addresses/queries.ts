@@ -108,15 +108,41 @@ export const deleteAddress = async (
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error('User not logged in'); // Or rely on RLS
+  if (!user) throw new Error('User not logged in');
 
-  const { error } = await supabase.from('addresses').delete().eq('id', addressId);
-  // Optional: .eq('user_id', user.id)
+  console.log('[deleteAddress] Attempting to delete address:', { addressId, userId: user.id });
 
-  if (error) {
-    console.error('Error deleting address:', error);
-    throw error;
+  // First verify the address belongs to the user
+  const { data: addressData, error: fetchError } = await supabase
+    .from('addresses')
+    .select('id')
+    .eq('id', addressId)
+    .eq('user_id', user.id)
+    .single();
+
+  if (fetchError) {
+    console.error('[deleteAddress] Error verifying address ownership:', fetchError);
+    throw new Error('Failed to verify address ownership');
   }
+
+  if (!addressData) {
+    console.error('[deleteAddress] Address not found or does not belong to user');
+    throw new Error('Address not found or unauthorized');
+  }
+
+  // Proceed with deletion
+  const { error: deleteError } = await supabase
+    .from('addresses')
+    .delete()
+    .eq('id', addressId)
+    .eq('user_id', user.id); // Add user_id check for extra security
+
+  if (deleteError) {
+    console.error('[deleteAddress] Error deleting address:', deleteError);
+    throw deleteError;
+  }
+
+  console.log('[deleteAddress] Successfully deleted address:', addressId);
 };
 
 /**

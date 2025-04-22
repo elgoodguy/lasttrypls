@@ -34,6 +34,12 @@ export interface AddressTranslations {
   add: string;
   addNew: string;
   addSuccess: string;
+  addError: string;
+  updateSuccess: string;
+  updateError: string;
+  deleteSuccess: string;
+  deleteError: string;
+  deleteErrorUnauthorized: string;
   search: string;
   searchTitle: string;
   searchPlaceholder: string;
@@ -130,6 +136,7 @@ export interface ProfileTranslations {
     add: string;
     primary: string;
     noAddresses: string;
+    confirmDelete: string;
   };
   loginRequired: string;
   loginMessage: string;

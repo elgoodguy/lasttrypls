@@ -133,12 +133,27 @@ export const useAddressStore = create<AddressState>()(
 
       deleteAddress: async (id) => {
         const supabase = useSupabase();
-        await apiDeleteAddress(supabase, id);
-        set((state) => ({
-          addresses: state.addresses.filter((a) => a.id !== id),
-          activeAddress: state.activeAddress?.id === id ? null : state.activeAddress,
-          primaryAddress: state.primaryAddress?.id === id ? null : state.primaryAddress,
-        }));
+        try {
+          console.log('[addressStore] Attempting to delete address:', id);
+          await apiDeleteAddress(supabase, id);
+          
+          // Only update state if deletion was successful
+          set((state) => {
+            console.log('[addressStore] Updating local state after successful deletion');
+            return {
+              addresses: state.addresses.filter((a) => a.id !== id),
+              activeAddress: state.activeAddress?.id === id ? null : state.activeAddress,
+              primaryAddress: state.primaryAddress?.id === id ? null : state.primaryAddress,
+            };
+          });
+          
+          console.log('[addressStore] Address deleted successfully:', id);
+        } catch (error) {
+          console.error('[addressStore] Error deleting address:', error);
+          // Add error to state for potential UI handling
+          set({ error: error as Error });
+          throw error; // Re-throw to be handled by the component
+        }
       },
 
       setPrimaryAddress: async (id) => {

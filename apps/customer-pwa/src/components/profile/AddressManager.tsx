@@ -15,6 +15,7 @@ export const AddressManager: React.FC = () => {
   const supabase = useSupabase();
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletingAddressId, setDeletingAddressId] = useState<string | null>(null);
   const { addresses, addOrUpdateAddress, setActiveAddress, deleteAddress, setPrimaryAddress } = useAddressStore();
   const { t } = useTranslation();
 
@@ -78,7 +79,35 @@ export const AddressManager: React.FC = () => {
 
   const handleDelete = async (addressId: string) => {
     if (!addressId) return;
-    await deleteAddress(addressId);
+    
+    if (!window.confirm(t('profile.addresses.confirmDelete'))) {
+      return;
+    }
+
+    try {
+      console.log('[AddressManager] Starting address deletion:', addressId);
+      setDeletingAddressId(addressId);
+      
+      await deleteAddress(addressId);
+      
+      console.log('[AddressManager] Address deleted successfully:', addressId);
+      toast.success(t('address.deleteSuccess'));
+    } catch (error) {
+      console.error('[AddressManager] Error deleting address:', error);
+      
+      // Provide more specific error messages based on the error type
+      if (error instanceof Error) {
+        if (error.message.includes('unauthorized') || error.message.includes('ownership')) {
+          toast.error(t('address.deleteErrorUnauthorized', 'You are not authorized to delete this address'));
+        } else {
+          toast.error(t('address.deleteError'));
+        }
+      } else {
+        toast.error(t('address.deleteError'));
+      }
+    } finally {
+      setDeletingAddressId(null);
+    }
   };
 
   const handleSetPrimary = async (addressId: string) => {
@@ -126,7 +155,7 @@ export const AddressManager: React.FC = () => {
               onEdit={() => handleEdit(address)}
               onDelete={() => handleDelete(address.id)}
               onSetPrimary={() => handleSetPrimary(address.id)}
-              isDeleting={false}
+              isDeleting={deletingAddressId === address.id}
               isSettingPrimary={false}
             />
           ))}

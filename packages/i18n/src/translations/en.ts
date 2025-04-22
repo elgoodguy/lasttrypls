@@ -51,6 +51,12 @@ export const enTranslations: TranslationResources = {
     add: 'Add address',
     addNew: 'New address',
     addSuccess: 'Address added successfully!',
+    addError: 'Error adding address',
+    updateSuccess: 'Address updated successfully!',
+    updateError: 'Error updating address',
+    deleteSuccess: 'Address deleted successfully!',
+    deleteError: 'Error deleting address',
+    deleteErrorUnauthorized: 'You are not authorized to delete this address',
     search: 'Search address',
     searchTitle: 'Search Address',
     searchPlaceholder: 'Enter an address',
@@ -144,7 +150,8 @@ export const enTranslations: TranslationResources = {
       title: 'My Addresses',
       add: 'Add Address',
       primary: 'Primary Address',
-      noAddresses: 'You haven\'t added any addresses. Add your first delivery address.'
+      noAddresses: 'You haven\'t added any addresses. Add your first delivery address.',
+      confirmDelete: 'Are you sure you want to delete this address?'
     },
     loginRequired: 'Login required',
     loginMessage: 'Log in to see this page'
