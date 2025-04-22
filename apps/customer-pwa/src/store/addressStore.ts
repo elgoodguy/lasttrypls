@@ -12,6 +12,8 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { useEffect } from 'react';
 import { AddressFormData } from '@/lib/validations/address';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '@repo/types';
 
 export const GUEST_ADDRESS_STORAGE_KEY = 'guestActiveAddress';
 const STORAGE_KEY = 'customer-address-storage';
@@ -34,7 +36,7 @@ interface AddressState {
   resetForNewUser: () => void;
   addAddress: (address: AddressFormData) => Promise<void>;
   updateAddress: (id: string, address: AddressFormData) => Promise<void>;
-  deleteAddress: (id: string) => Promise<void>;
+  deleteAddress: (supabase: SupabaseClient<Database>, id: string) => Promise<void>;
   setPrimaryAddress: (id: string) => Promise<void>;
   clearGuestAddressStorage: () => void;
   setIsInitialized: (initialized: boolean) => void;
@@ -131,28 +133,48 @@ export const useAddressStore = create<AddressState>()(
         }));
       },
 
-      deleteAddress: async (id) => {
-        const supabase = useSupabase();
+      deleteAddress: async (supabase, id) => {
         try {
           console.log('[addressStore] Attempting to delete address:', id);
+          
+          // Attempt to delete the address
           await apiDeleteAddress(supabase, id);
           
           // Only update state if deletion was successful
           set((state) => {
             console.log('[addressStore] Updating local state after successful deletion');
+            
+            // Get the new primary address if we're deleting the current one
+            const deletingPrimary = state.primaryAddress?.id === id;
+            const remainingAddresses = state.addresses.filter((a) => a.id !== id);
+            const newPrimaryAddress = deletingPrimary 
+              ? remainingAddresses.length > 0 ? remainingAddresses[0] : null 
+              : state.primaryAddress;
+            
             return {
-              addresses: state.addresses.filter((a) => a.id !== id),
-              activeAddress: state.activeAddress?.id === id ? null : state.activeAddress,
-              primaryAddress: state.primaryAddress?.id === id ? null : state.primaryAddress,
+              addresses: remainingAddresses,
+              activeAddress: state.activeAddress?.id === id ? newPrimaryAddress : state.activeAddress,
+              primaryAddress: newPrimaryAddress,
+              error: null, // Clear any previous errors
             };
           });
           
           console.log('[addressStore] Address deleted successfully:', id);
         } catch (error) {
           console.error('[addressStore] Error deleting address:', error);
-          // Add error to state for potential UI handling
-          set({ error: error as Error });
-          throw error; // Re-throw to be handled by the component
+          
+          // Handle specific error cases
+          let errorMessage = 'Failed to delete address';
+          if (error instanceof Error) {
+            if (error.message.includes('not found') || error.message.includes('unauthorized')) {
+              errorMessage = 'You are not authorized to delete this address';
+            } else if (error.message.includes('foreign key')) {
+              errorMessage = 'This address cannot be deleted because it is in use';
+            }
+          }
+          
+          set({ error: new Error(errorMessage) });
+          throw new Error(errorMessage); // Re-throw with a more user-friendly message
         }
       },
 

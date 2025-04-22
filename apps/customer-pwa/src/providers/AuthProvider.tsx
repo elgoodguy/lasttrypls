@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo, useCallback } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { useSupabase } from './SupabaseProvider'; // Hook to get Supabase client
 import { useAddressStore } from '@/store/addressStore';
@@ -25,6 +25,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
   const [initialSessionProcessed, setInitialSessionProcessed] = useState(false);
+
+  // Memoize the signOut function
+  const signOut = useCallback(async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('[AuthProvider] Error signing out:', error);
+    }
+  }, [supabase]);
+
+  // Memoize the store reset functions
+  const resetStores = useCallback(() => {
+    useAddressStore.getState().resetStore();
+    useCartStore.getState().clearCart();
+  }, []);
+
+  const resetForNewUser = useCallback(() => {
+    useCartStore.getState().clearCart();
+    useAddressStore.getState().clearGuestAddressStorage();
+    useAddressStore.getState().resetForNewUser();
+  }, []);
 
   // Efecto para la carga inicial de sesión
   useEffect(() => {
@@ -61,45 +81,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (_event === 'SIGNED_IN' && session) {
         const currentUser = user; // Captura el estado actual ANTES de los sets
         if (!currentUser && session.user) {
-          console.log('[AuthProvider Listener] SIGNED_IN - Guest-to-User transition. Clearing guest data.');
-          useCartStore.getState().clearCart();
-          useAddressStore.getState().clearGuestAddressStorage();
-          useAddressStore.getState().resetForNewUser();
+          console.log('[AuthProvider Listener] SIGNED_IN - Guest-to-User transition');
+          resetForNewUser();
         } else {
-          console.log('[AuthProvider Listener] SIGNED_IN - Event received, but not clearing data (likely refresh or token update).');
+          console.log('[AuthProvider Listener] SIGNED_IN - Event received (likely refresh)');
         }
         setSession(session);
         setUser(session.user);
 
       } else if (_event === 'SIGNED_OUT') {
-        console.log('[AuthProvider Listener] SIGNED_OUT - Clearing stores and resetting state.');
-        useAddressStore.getState().resetStore();
-        useCartStore.getState().clearCart();
+        console.log('[AuthProvider Listener] SIGNED_OUT - Clearing stores');
+        resetStores();
         setSession(null);
         setUser(null);
-        setInitialSessionProcessed(false); // Resetear para la próxima carga
         window.location.assign('/');
 
       } else if (_event === 'INITIAL_SESSION' && session) {
-        console.log('[AuthProvider Listener] INITIAL_SESSION - Updating state.');
+        console.log('[AuthProvider Listener] INITIAL_SESSION - Updating state');
         setSession(session);
         setUser(session.user);
       }
     });
 
     return () => {
-      console.log('[AuthProvider Listener] Cleaning up auth state change listener.');
+      console.log('[AuthProvider Listener] Cleaning up auth state change listener');
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase, initialSessionProcessed, user]); // Incluimos user para acceder a su valor actual en el callback
-
-  // Sign out function
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('[AuthProvider] Error signing out:', error);
-    }
-  };
+  }, [supabase, initialSessionProcessed, resetStores, resetForNewUser]);
 
   const value = useMemo(
     () => ({
@@ -109,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isGuest: !isLoadingSession && !user,
       signOut,
     }),
-    [session, user, isLoadingSession]
+    [session, user, isLoadingSession, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

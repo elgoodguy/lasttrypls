@@ -88,23 +88,25 @@ export const AddressManager: React.FC = () => {
       console.log('[AddressManager] Starting address deletion:', addressId);
       setDeletingAddressId(addressId);
       
-      await deleteAddress(addressId);
+      await deleteAddress(supabase, addressId);
       
       console.log('[AddressManager] Address deleted successfully:', addressId);
       toast.success(t('address.deleteSuccess'));
     } catch (error) {
       console.error('[AddressManager] Error deleting address:', error);
       
-      // Provide more specific error messages based on the error type
+      // Handle specific error cases
+      let errorMessage = t('address.deleteError');
+      
       if (error instanceof Error) {
-        if (error.message.includes('unauthorized') || error.message.includes('ownership')) {
-          toast.error(t('address.deleteErrorUnauthorized', 'You are not authorized to delete this address'));
-        } else {
-          toast.error(t('address.deleteError'));
+        if (error.message.includes('not found') || error.message.includes('unauthorized')) {
+          errorMessage = t('address.deleteErrorUnauthorized', 'You are not authorized to delete this address');
+        } else if (error.message.includes('foreign key')) {
+          errorMessage = t('address.deleteErrorInUse', 'This address cannot be deleted because it is in use');
         }
-      } else {
-        toast.error(t('address.deleteError'));
       }
+      
+      toast.error(errorMessage);
     } finally {
       setDeletingAddressId(null);
     }

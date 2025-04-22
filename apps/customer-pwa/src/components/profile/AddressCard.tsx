@@ -32,9 +32,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
   }, ${address.country}`;
 
   const handleDelete = () => {
-    if (window.confirm(t('profile.addresses.confirmDelete'))) {
-      onDelete(address.id);
-    }
+    onDelete(address.id);
   };
 
   const handleSetPrimary = () => {
@@ -61,7 +59,7 @@ export const AddressCard: React.FC<AddressCardProps> = ({
           </p>
         )}
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex flex-wrap gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -70,7 +68,6 @@ export const AddressCard: React.FC<AddressCardProps> = ({
         >
           <Edit3 className="mr-2 h-4 w-4" /> {t('common.edit')}
         </Button>
-        {/* Only show 'Set Primary' if it's not already primary */}
         {!address.is_primary && (
           <Button
             variant="ghost"

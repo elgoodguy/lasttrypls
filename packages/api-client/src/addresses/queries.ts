@@ -112,33 +112,18 @@ export const deleteAddress = async (
 
   console.log('[deleteAddress] Attempting to delete address:', { addressId, userId: user.id });
 
-  // First verify the address belongs to the user
-  const { data: addressData, error: fetchError } = await supabase
-    .from('addresses')
-    .select('id')
-    .eq('id', addressId)
-    .eq('user_id', user.id)
-    .single();
-
-  if (fetchError) {
-    console.error('[deleteAddress] Error verifying address ownership:', fetchError);
-    throw new Error('Failed to verify address ownership');
-  }
-
-  if (!addressData) {
-    console.error('[deleteAddress] Address not found or does not belong to user');
-    throw new Error('Address not found or unauthorized');
-  }
-
-  // Proceed with deletion
+  // Let RLS handle the authorization check
   const { error: deleteError } = await supabase
     .from('addresses')
     .delete()
-    .eq('id', addressId)
-    .eq('user_id', user.id); // Add user_id check for extra security
+    .eq('id', addressId);
 
   if (deleteError) {
     console.error('[deleteAddress] Error deleting address:', deleteError);
+    // Throw a more user-friendly error based on the error type
+    if (deleteError.code === 'PGRST116') {
+      throw new Error('Address not found or unauthorized');
+    }
     throw deleteError;
   }
 
