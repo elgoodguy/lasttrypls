@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import i18n from '../../i18n';
 import {
   Sheet,
   SheetContent,
@@ -24,7 +23,7 @@ interface CartSheetProps {
 }
 
 export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const {
     items,
@@ -74,7 +73,7 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
     return () => {
       console.log('[CartSheet] Component unmounting');
     };
-  }, [i18n.language]); // Re-run when language changes
+  }, [i18n]); // Re-run when i18n instance changes
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity > 0) {

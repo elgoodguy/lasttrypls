@@ -61,6 +61,7 @@ export interface AddressTranslations {
   googleMapsError: string;
   locationError: string;
   manualEntryRequired: string;
+  primary: string;
   details: {
     street: string;
     interior: string;

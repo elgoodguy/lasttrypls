@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import i18n from './i18n'; // Import i18n configuration as a promise
+import initI18n from './i18n'; // Import the initialization function
 import App from './App.tsx';
 import './index.css';
 import '@repo/ui/styles.css';
@@ -48,8 +48,12 @@ const queryClient = new QueryClient({
 // Initialize i18n before rendering
 const init = async () => {
   try {
-    // Wait for i18n to be initialized
-    await i18n;
+    // Initialize i18n and wait for it to complete
+    const i18nInstance = await initI18n();
+
+    if (!i18nInstance.isInitialized) {
+      throw new Error('i18n failed to initialize properly');
+    }
 
     // Render the app
     ReactDOM.createRoot(document.getElementById('root')!).render(

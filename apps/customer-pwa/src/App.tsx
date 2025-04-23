@@ -11,7 +11,7 @@ import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import i18n from './i18n';
+import { useTranslation } from 'react-i18next';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
@@ -60,6 +60,7 @@ function App() {
     activeAddress
   } = useAddressStore();
   const supabase = useSupabase();
+  const { i18n } = useTranslation();
   const [isI18nReady, setIsI18nReady] = useState(i18n.isInitialized);
 
   // Initialize address store
@@ -122,7 +123,7 @@ function App() {
       i18n.off('loaded', handleLoaded);
       console.log('[App] Cleaned up i18n listeners');
     };
-  }, [isI18nReady]);
+  }, [isI18nReady, i18n]);
 
   // Log state changes that affect rendering
   useEffect(() => {

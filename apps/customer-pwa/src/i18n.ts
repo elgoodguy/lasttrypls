@@ -181,5 +181,7 @@ const initI18n = async () => {
   }
 };
 
-// Export a promise that resolves to the initialized i18n instance
-export default await initI18n(); 
+// Export the initialization function instead of the awaited instance
+export { initI18n as default };
+// Also export the named function for flexibility
+export { initI18n }; 
