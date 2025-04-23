@@ -48,10 +48,8 @@ export function ThemeProvider({
         ? 'dark'
         : 'light';
       root.classList.add(systemTheme);
-      console.log(`ThemeProvider: Applied system theme -> ${systemTheme}`); // Log para debug
     } else {
       root.classList.add(theme);
-       console.log(`ThemeProvider: Applied theme -> ${theme}`); // Log para debug
     }
 
     // Guardar en localStorage

@@ -29,9 +29,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Memoize the signOut function
   const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('[AuthProvider] Error signing out:', error);
-    }
   }, [supabase]);
 
   // Memoize the store reset functions
@@ -48,8 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Efecto para la carga inicial de sesión
   useEffect(() => {
-    console.log('[AuthProvider Initial Load] Running initial session check.');
-    
     supabase.auth
       .getSession()
       .then(({ data: { session } }) => {
@@ -57,10 +52,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(session?.user ?? null);
         setInitialSessionProcessed(true);
         setIsLoadingSession(false);
-        console.log('[AuthProvider Initial Load] Finished. Session available:', !!session);
       })
       .catch(error => {
-        console.error('[AuthProvider Initial Load] Error getting session:', error);
         setSession(null);
         setUser(null);
         setInitialSessionProcessed(true);
@@ -73,41 +66,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // No configures el listener hasta que la carga inicial esté completa
     if (!initialSessionProcessed) return;
 
-    console.log('[AuthProvider Listener] Setting up auth state change listener.');
-
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('[AuthProvider Listener] Event:', _event, 'Session:', !!session);
-
       if (_event === 'SIGNED_IN' && session) {
         const currentUser = user; // Captura el estado actual ANTES de los sets
         if (!currentUser && session.user) {
-          console.log('[AuthProvider Listener] SIGNED_IN - Guest-to-User transition');
           resetForNewUser();
-        } else {
-          console.log('[AuthProvider Listener] SIGNED_IN - Event received (likely refresh)');
         }
         setSession(session);
         setUser(session.user);
 
       } else if (_event === 'SIGNED_OUT') {
-        console.log('[AuthProvider Listener] SIGNED_OUT - Clearing stores');
         resetStores();
         setSession(null);
         setUser(null);
         window.location.assign('/');
 
       } else if (_event === 'INITIAL_SESSION' && session) {
-        console.log('[AuthProvider Listener] INITIAL_SESSION - Updating state');
         setSession(session);
         setUser(session.user);
       }
     });
 
     return () => {
-      console.log('[AuthProvider Listener] Cleaning up auth state change listener');
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase, initialSessionProcessed, resetStores, resetForNewUser]);
+  }, [supabase, initialSessionProcessed, resetStores, resetForNewUser, user]);
 
   const value = useMemo(
     () => ({

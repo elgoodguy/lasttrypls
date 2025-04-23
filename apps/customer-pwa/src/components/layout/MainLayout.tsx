@@ -13,9 +13,6 @@ export const MainLayout: React.FC = () => {
   const totalItems = useCartStore(state => state.getTotalItems());
   const [isCartSheetOpen, setIsCartSheetOpen] = useState(false);
 
-  // Debug log to verify re-renders
-  console.log('[MainLayout] Rendering FAB check. Total Items:', totalItems);
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Top Navigation - Fixed */}

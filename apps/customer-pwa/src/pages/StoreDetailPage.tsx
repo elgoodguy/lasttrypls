@@ -8,15 +8,12 @@ import { ProductDetailModal } from '@/components/product/ProductDetailModal';
 
 export default function StoreDetailPage() {
   const { storeId } = useParams<{ storeId: string }>();
-  console.log('[StoreDetailPage] storeId from useParams:', storeId);
-
   const supabase = useSupabase();
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   const { data: store, isLoading: isLoadingStore, error: storeError } = useQuery<StoreDetails | null>({
     queryKey: ['storeDetails', storeId],
     queryFn: () => {
-      console.log(`[StoreDetailPage] queryFn for storeDetails executing with storeId: ${storeId}`);
       if (!storeId) return null;
       return getStoreDetailsById(supabase, storeId);
     },
@@ -36,7 +33,6 @@ export default function StoreDetailPage() {
   } = useQuery<ProductWithModifiers | null>({
     queryKey: ['productDetails', selectedProductId],
     queryFn: async () => {
-      console.log(`[StoreDetailPage] queryFn for productDetails executing with selectedProductId: ${selectedProductId}`);
       if (!selectedProductId) return null;
       return getProductDetailsById(supabase, selectedProductId);
     },
@@ -44,12 +40,10 @@ export default function StoreDetailPage() {
   });
 
   const handleProductClick = (product: Product) => {
-    console.log(`[StoreDetailPage] Product clicked: ${product.id}`);
     setSelectedProductId(product.id);
   };
 
   const handleCloseModal = () => {
-    console.log('[StoreDetailPage] Closing modal.');
     setSelectedProductId(null);
   };
 

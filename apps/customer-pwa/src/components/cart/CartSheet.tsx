@@ -33,48 +33,6 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
     removeItem,
   } = useCartStore();
 
-  // Add diagnostic logging on mount and when language changes
-  useEffect(() => {
-    console.group('[CartSheet] i18n Status');
-    console.log('Current Language:', i18n.language);
-    console.log('Is Initialized:', i18n.isInitialized);
-    console.log('Has Resource Bundle:', i18n.hasResourceBundle(i18n.language, 'translation'));
-    
-    // Log specific keys we're using
-    const keysToTest = [
-      'cart.title',
-      'cart.description',
-      'cart.empty',
-      'cart.storeIdLabel',
-      'cart.productImageAlt',
-      'cart.notesPlaceholder',
-      'cart.continueShopping',
-      'cart.proceedToCheckout',
-      'checkout.labels.subtotal'
-    ];
-
-    console.group('Translation Keys Status');
-    keysToTest.forEach(key => {
-      console.log(`[CartSheet] Check BEFORE t("${key}"): Lang=`, i18n.language, 'Initialized=', i18n.isInitialized);
-      console.log(`[CartSheet] Check BEFORE t("${key}"): Exists=`, i18n.exists(key));
-      console.log(`[CartSheet] Check BEFORE t("${key}"): GetResource=`, JSON.stringify(i18n.getResource(i18n.language, 'translation', key)));
-      console.log(`[CartSheet] Check BEFORE t("${key}"): Full Bundle Exists?`, !!i18n.getResourceBundle(i18n.language, 'translation'));
-    });
-    console.groupEnd();
-
-    // Log full resource bundle for current language
-    console.group('Current Language Resource Bundle');
-    console.log(JSON.stringify(i18n.getResourceBundle(i18n.language, 'translation'), null, 2));
-    console.groupEnd();
-
-    console.groupEnd();
-
-    // Cleanup
-    return () => {
-      console.log('[CartSheet] Component unmounting');
-    };
-  }, [i18n]); // Re-run when i18n instance changes
-
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity > 0) {
       updateQuantity(itemId, newQuantity);
@@ -86,16 +44,6 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
     navigate('/checkout');
   };
 
-  // Add pre-translation checks for each t() call
-  const checkTranslation = (key: string) => {
-    console.group(`[CartSheet] Translation Check for "${key}"`);
-    console.log('Language:', i18n.language, 'Initialized:', i18n.isInitialized);
-    console.log('Key Exists:', i18n.exists(key));
-    console.log('Resource:', JSON.stringify(i18n.getResource(i18n.language, 'translation', key)));
-    console.log('Bundle Exists:', !!i18n.getResourceBundle(i18n.language, 'translation'));
-    console.groupEnd();
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
@@ -105,12 +53,10 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
         {/* Header */}
         <SheetHeader className="p-6 border-b">
           <div className="flex items-center">
-            {(() => { checkTranslation('cart.title'); return null; })()}
             <SheetTitle className="flex">
               {t('cart.title')}
             </SheetTitle>
           </div>
-          {(() => { checkTranslation('cart.description'); return null; })()}
           <SheetDescription className="flex">
             {t('cart.description')}
           </SheetDescription>
@@ -121,20 +67,17 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
           <div className="p-6 space-y-6">
             {items.length === 0 ? (
               <div className="text-center py-8">
-                {(() => { checkTranslation('cart.empty'); return null; })()}
                 <p className="text-muted-foreground">{t('cart.empty')}</p>
               </div>
             ) : (
               Object.entries(getItemsByStore()).map(([storeId, storeItems]) => (
                 <div key={storeId} className="space-y-4">
-                  {(() => { checkTranslation('cart.storeIdLabel'); return null; })()}
                   <h3 className="font-medium">{t('cart.storeIdLabel')}: {storeId}</h3>
                   {storeItems.map((item) => (
                     <Card key={item.id} className="p-4">
                       <div className="flex items-start gap-4">
                         <Avatar className="h-16 w-16">
                           <div className="h-full w-full bg-muted flex items-center justify-center">
-                            {(() => { checkTranslation('cart.productImageAlt'); return null; })()}
                             <span className="text-xs text-muted-foreground">{t('cart.productImageAlt')}</span>
                           </div>
                         </Avatar>
@@ -188,7 +131,6 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
             )}
 
             <div className="space-y-4">
-              {(() => { checkTranslation('cart.notesPlaceholder'); return null; })()}
               <Textarea
                 placeholder={t('cart.notesPlaceholder')}
                 className="resize-none"
@@ -201,18 +143,15 @@ export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
         <div className="border-t p-6 bg-background">
           <div className="flex flex-col space-y-4">
             <div className="flex justify-between items-center">
-              {(() => { checkTranslation('checkout.labels.subtotal'); return null; })()}
               <span className="font-medium">{t('checkout.labels.subtotal')}:</span>
               <span className="font-medium">${getSubtotal().toFixed(2)}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {(() => { checkTranslation('cart.continueShopping'); return null; })()}
               <SheetClose asChild>
                 <Button variant="outline" className="flex">
                   {t('cart.continueShopping')}
                 </Button>
               </SheetClose>
-              {(() => { checkTranslation('cart.proceedToCheckout'); return null; })()}
               <Button
                 onClick={handleCheckout}
                 disabled={items.length === 0}

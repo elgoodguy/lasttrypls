@@ -30,48 +30,6 @@ export const CheckoutPage = () => {
   const { addOrUpdateAddress } = useAddressStore();
   const { isGuest } = useAuth();
   
-  // Add diagnostic logging on mount and when language changes
-  useEffect(() => {
-    console.group('[CheckoutPage] i18n Status');
-    console.log('Current Language:', i18n.language);
-    console.log('Is Initialized:', i18n.isInitialized);
-    console.log('Has Resource Bundle:', i18n.hasResourceBundle(i18n.language, 'translation'));
-    
-    // Log specific keys we're using
-    const keysToTest = [
-      'checkout.title',
-      'checkout.sections.deliveryAddress',
-      'checkout.sections.payment',
-      'checkout.sections.contact',
-      'checkout.sections.tip',
-      'checkout.sections.order',
-      'checkout.buttons.selectPayment',
-      'checkout.buttons.addContact',
-      'checkout.buttons.addTip',
-      'checkout.noDeliveryAddress',
-      'common.buttons.change'
-    ];
-
-    console.group('Translation Keys Status');
-    keysToTest.forEach(key => {
-      const value = i18n.exists(key) ? i18n.t(key) : 'MISSING';
-      console.log(`${key}:`, value);
-    });
-    console.groupEnd();
-
-    // Log full resource bundle for current language
-    console.group('Current Language Resource Bundle');
-    console.log(JSON.stringify(i18n.getResourceBundle(i18n.language, 'translation'), null, 2));
-    console.groupEnd();
-
-    console.groupEnd();
-
-    // Cleanup
-    return () => {
-      console.log('[CheckoutPage] Component unmounting');
-    };
-  }, [i18n.language]); // Re-run when language changes
-  
   // Fixed delivery fee placeholder
   const deliveryFee = 62.00;
   const total = getSubtotal() + deliveryFee;

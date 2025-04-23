@@ -116,13 +116,6 @@ export const getStoresForHome = async (
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // Descending order
   });
 
-  // Log the number of stores found for debugging
-  console.log(
-    `Found ${sortedStores.length} stores` +
-      `${filters.postalCode ? ` for postal code ${filters.postalCode}` : ''}` +
-      `${filters.categoryId ? ` in category ${filters.categoryId}` : ''}`
-  );
-
   return sortedStores;
 };
 
@@ -133,89 +126,28 @@ export const getStoreDetailsById = async (
   supabase: SupabaseClient<Database>,
   storeId: string
 ): Promise<StoreDetails | null> => {
-  console.log(`[getStoreDetailsById] Called for storeId: ${storeId}`);
-
   if (!storeId) {
-    console.warn('[getStoreDetailsById] No storeId provided.');
     return null;
   }
 
   try {
-    console.log('[getStoreDetailsById] Executing Supabase query...');
-    // Intenta con un select simple primero para descartar problemas de join
     const { data, error, status } = await supabase
       .from('stores')
-      .select('*') // <-- SELECT SIMPLE PRIMERO
+      .select('*')
       .eq('id', storeId)
-      .maybeSingle(); // Usa maybeSingle para que no lance error si no encuentra
+      .maybeSingle();
 
-    console.log('[getStoreDetailsById] Query finished.');
-    console.log('[getStoreDetailsById] Status:', status);
-    console.log('[getStoreDetailsById] Error:', error);
-    console.log('[getStoreDetailsById] Data received:', JSON.stringify(data, null, 2));
-
-    if (error && status !== 406) { // 406 = Not found con maybeSingle, no es un error real
-      console.error('[getStoreDetailsById] Supabase Error:', error);
-      throw error; // Lanza otros errores
+    if (error && status !== 406) {
+      throw error;
     }
 
     if (!data) {
-      console.log('[getStoreDetailsById] Store not found in DB.');
       return null;
     }
 
-    // Si el select simple funciona, puedes intentar añadir los joins de nuevo
-    // comentando el select simple y descomentando/ajustando el complejo:
-    /*
-    const { data, error, status } = await supabase
-      .from('stores')
-      .select(`
-        *,
-        store_categories ( // Join con categorías
-          product_categories (
-            id,
-            name
-          )
-        ),
-        cashback_rules ( // Join con cashback
-          percentage,
-          minimum_order_amount,
-          maximum_cashback_amount
-        )
-      `)
-      .eq('id', storeId)
-      .maybeSingle(); 
-     
-     // ... mismos logs de status, error, data ...
-
-     if (!data) return null;
-
-     // Transformación necesaria si usas el select complejo
-     const storeWithRelations = data as any; // Temporal any para transformación
-     const storeDetails: StoreDetails = {
-       ...storeWithRelations,
-       categories: storeWithRelations.store_categories?.map((sc: any) => ({
-         category_id: sc.product_categories.id,
-         name: sc.product_categories.name,
-       })) || [],
-       cashback_rule: storeWithRelations.cashback_rules?.[0] || null,
-     };
-     console.log('[getStoreDetailsById] Transformed StoreDetails:', JSON.stringify(storeDetails, null, 2));
-     return storeDetails;
-    */
-
-    // Por ahora, con select simple, solo hacemos cast al tipo base Store
-    console.log('[getStoreDetailsById] Returning store data (simple select).');
-    // Nota: Devolver `data as Store` aquí causará error de tipo en StoreDetailPage
-    // si espera StoreDetails. Ajusta el tipo esperado en StoreDetailPage o devuelve
-    // un objeto compatible con StoreDetails (con arrays vacíos para categories/cashback).
-    // Devolvemos 'any' temporalmente para evitar error de build mientras depuramos.
     return data as any;
 
   } catch (catchError) {
-    console.error('[getStoreDetailsById] Exception caught:', catchError);
-    // Decide si quieres relanzar o devolver null
-    // throw catchError; 
     return null;
   }
 };

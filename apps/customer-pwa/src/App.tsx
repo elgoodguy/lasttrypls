@@ -66,78 +66,26 @@ function App() {
   // Initialize address store
   useInitializeAddressStore();
 
-  // Monitor i18n initialization and add diagnostic logging
+  // Monitor i18n initialization
   useEffect(() => {
-    console.group('[App] i18n Initialization Status');
-    console.log('Initial State:', {
-      isInitialized: i18n.isInitialized,
-      language: i18n.language,
-      isI18nReady,
-      hasResourceBundle: i18n.hasResourceBundle(i18n.language, 'translation')
-    });
-
     const handleInitialized = () => {
-      console.log('[App] i18n initialized event fired');
-      console.log('State at initialization:', {
-        language: i18n.language,
-        hasResourceBundle: i18n.hasResourceBundle(i18n.language, 'translation'),
-        resourceKeys: Object.keys(i18n.getResourceBundle(i18n.language, 'translation') || {})
-      });
       setIsI18nReady(true);
-    };
-
-    const handleLanguageChanged = (lng: string) => {
-      console.log('[App] Language changed:', {
-        newLanguage: lng,
-        hasBundle: i18n.hasResourceBundle(lng, 'translation'),
-        resourceKeys: Object.keys(i18n.getResourceBundle(lng, 'translation') || {})
-      });
-    };
-
-    const handleLoaded = (loaded: Record<string, boolean>) => {
-      console.log('[App] Resources loaded:', {
-        loaded,
-        currentLanguage: i18n.language,
-        hasBundle: i18n.hasResourceBundle(i18n.language, 'translation'),
-        resourceKeys: Object.keys(i18n.getResourceBundle(i18n.language, 'translation') || {})
-      });
     };
 
     if (i18n.isInitialized) {
-      console.log('[App] i18n was already initialized');
       setIsI18nReady(true);
     } else {
-      console.log('[App] Waiting for i18n initialization...');
       i18n.on('initialized', handleInitialized);
     }
 
-    // Add listeners for additional diagnostics
-    i18n.on('languageChanged', handleLanguageChanged);
-    i18n.on('loaded', handleLoaded);
-
-    console.groupEnd();
-
     return () => {
       i18n.off('initialized', handleInitialized);
-      i18n.off('languageChanged', handleLanguageChanged);
-      i18n.off('loaded', handleLoaded);
-      console.log('[App] Cleaned up i18n listeners');
     };
   }, [isI18nReady, i18n]);
 
-  // Log state changes that affect rendering
+  // Monitor state changes that affect rendering
   useEffect(() => {
-    console.log('[App] Render State Update:', {
-      isLoadingAuth,
-      isLoadingAddr,
-      isAddrInitialized,
-      isI18nReady,
-      hasUser: !!user,
-      hasAddresses: addresses.length > 0,
-      hasActiveAddress: !!activeAddress,
-      showLoader: isLoadingAuth || (!isAddrInitialized && !!user) || !isI18nReady,
-      requiresAddress: !!user && !isLoadingAuth && isAddrInitialized && addresses.length === 0 && !isLoadingAddr
-    });
+    // State monitoring logic without logging
   }, [isLoadingAuth, isLoadingAddr, isAddrInitialized, isI18nReady, user, addresses.length, activeAddress]);
 
   // Show loader if either Auth is loading OR if Address is not initialized yet OR i18n is not ready

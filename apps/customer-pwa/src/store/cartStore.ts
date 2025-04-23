@@ -32,9 +32,6 @@ interface CartState {
 
 const STORAGE_KEY = 'customer-cart-storage';
 
-// Debug log for initial store creation
-console.log('[cartStore] Initializing cart store');
-
 // Helper function to compare selected options
 const areOptionsEqual = (a: Record<string, any>, b: Record<string, any>): boolean => {
   const aKeys = Object.keys(a).sort();
