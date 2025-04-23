@@ -250,23 +250,31 @@ export const enTranslations: TranslationResources = {
       deliveryAddress: 'Delivery Address',
       payment: 'Payment Method',
       contact: 'Contact Information',
-      tip: 'Driver Tip',
-      order: 'My Order',
-      note: 'Note'
+      tip: 'Add a Tip',
+      order: 'Order Summary',
+      note: 'Order Notes'
     },
     labels: {
-      notes: 'Order Notes'
+      subtotal: 'Subtotal',
+      total: 'Total',
+      deliveryFee: 'Delivery Fee',
+      tip: 'Tip',
+      notes: 'Additional Notes'
     },
     placeholders: {
-      notes: 'Add any notes for your order...'
+      notes: 'Add any special instructions or requests'
     },
     buttons: {
       placeOrder: 'Place Order',
-      addNewAddress: 'Add new address',
+      addNewAddress: 'Add New Address',
+      selectPayment: 'Select Payment Method',
+      addContact: 'Add Contact Info',
+      addTip: 'Add Tip',
       change: 'Change'
     },
     addressSelector: {
-      title: 'Select a delivery address'
-    }
+      title: 'Select Delivery Address'
+    },
+    noDeliveryAddress: 'Please add a delivery address'
   }
 }; 

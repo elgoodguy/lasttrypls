@@ -250,23 +250,31 @@ export const esTranslations: TranslationResources = {
       deliveryAddress: 'Dirección de Entrega',
       payment: 'Método de Pago',
       contact: 'Información de Contacto',
-      tip: 'Propina para el Repartidor',
-      order: 'Mi Orden',
-      note: 'Nota'
+      tip: 'Agregar Propina',
+      order: 'Resumen del Pedido',
+      note: 'Notas del Pedido'
     },
     labels: {
-      notes: 'Notas del Pedido'
+      subtotal: 'Subtotal',
+      total: 'Total',
+      deliveryFee: 'Costo de Envío',
+      tip: 'Propina',
+      notes: 'Notas Adicionales'
     },
     placeholders: {
-      notes: 'Agrega notas para tu pedido...'
+      notes: 'Agrega instrucciones o solicitudes especiales'
     },
     buttons: {
       placeOrder: 'Realizar Pedido',
-      addNewAddress: 'Agregar nueva dirección',
+      addNewAddress: 'Agregar Nueva Dirección',
+      selectPayment: 'Seleccionar Método de Pago',
+      addContact: 'Agregar Información de Contacto',
+      addTip: 'Agregar Propina',
       change: 'Cambiar'
     },
     addressSelector: {
-      title: 'Selecciona una dirección de entrega'
-    }
+      title: 'Seleccionar Dirección de Entrega'
+    },
+    noDeliveryAddress: 'Por favor agrega una dirección de entrega'
   }
 }; 

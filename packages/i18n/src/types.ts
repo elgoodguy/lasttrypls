@@ -250,6 +250,10 @@ export interface CheckoutTranslations {
     note: string;
   };
   labels: {
+    subtotal: string;
+    total: string;
+    deliveryFee: string;
+    tip: string;
     notes: string;
   };
   placeholders: {
@@ -258,11 +262,15 @@ export interface CheckoutTranslations {
   buttons: {
     placeOrder: string;
     addNewAddress: string;
+    selectPayment: string;
+    addContact: string;
+    addTip: string;
     change: string;
   };
   addressSelector: {
     title: string;
   };
+  noDeliveryAddress: string;
 }
 
 export interface TranslationResources {
