@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '@/store/cartStore';
 import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/components/ui/card';
@@ -26,6 +27,48 @@ export const CheckoutPage: React.FC = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const supabase = useSupabase();
   const { addOrUpdateAddress } = useAddressStore();
+  
+  // Add diagnostic logging on mount and when language changes
+  useEffect(() => {
+    console.group('[CheckoutPage] i18n Status');
+    console.log('Current Language:', i18n.language);
+    console.log('Is Initialized:', i18n.isInitialized);
+    console.log('Has Resource Bundle:', i18n.hasResourceBundle(i18n.language, 'translation'));
+    
+    // Log specific keys we're using
+    const keysToTest = [
+      'checkout.title',
+      'checkout.sections.deliveryAddress',
+      'checkout.sections.payment',
+      'checkout.sections.contact',
+      'checkout.sections.tip',
+      'checkout.sections.order',
+      'checkout.buttons.selectPayment',
+      'checkout.buttons.addContact',
+      'checkout.buttons.addTip',
+      'checkout.noDeliveryAddress',
+      'common.buttons.change'
+    ];
+
+    console.group('Translation Keys Status');
+    keysToTest.forEach(key => {
+      const value = i18n.exists(key) ? i18n.t(key) : 'MISSING';
+      console.log(`${key}:`, value);
+    });
+    console.groupEnd();
+
+    // Log full resource bundle for current language
+    console.group('Current Language Resource Bundle');
+    console.log(JSON.stringify(i18n.getResourceBundle(i18n.language, 'translation'), null, 2));
+    console.groupEnd();
+
+    console.groupEnd();
+
+    // Cleanup
+    return () => {
+      console.log('[CheckoutPage] Component unmounting');
+    };
+  }, [i18n.language]); // Re-run when language changes
   
   // Fixed delivery fee placeholder
   const deliveryFee = 62.00;
@@ -207,52 +250,51 @@ export const CheckoutPage: React.FC = () => {
               </div>
             ))
           ) : (
-            <p className="text-muted-foreground text-center py-2">
-              {t('checkout.noItems')}
+            <p className="text-muted-foreground text-center py-4">
+              {t('checkout.emptyCart')}
             </p>
           )}
 
           <Separator className="my-4" />
 
-          {/* Order Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="notes">{t('checkout.labels.notes')}</Label>
-            <Textarea
-              id="notes"
-              placeholder={t('checkout.placeholders.notes')}
-              className="resize-none"
-            />
-          </div>
-
-          <Separator className="my-4" />
-
-          {/* Totals */}
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>{t('checkout.labels.subtotal')}</span>
               <span>${getSubtotal().toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span>{t('checkout.labels.delivery')}</span>
+              <span>{t('checkout.labels.deliveryFee')}</span>
               <span>${deliveryFee.toFixed(2)}</span>
             </div>
-            <Separator className="my-2" />
-            <div className="flex justify-between font-bold">
+            <Separator className="my-4" />
+            <div className="flex justify-between font-medium">
               <span>{t('checkout.labels.total')}</span>
               <span>${total.toFixed(2)}</span>
             </div>
           </div>
-
-          {/* Place Order Button */}
-          <Button
-            className="w-full mt-4"
-            size="lg"
-            disabled={!activeAddress || items.length === 0}
-          >
-            {t('checkout.buttons.placeOrder')}
-          </Button>
         </CardContent>
       </Card>
+
+      {/* Order Notes */}
+      <section>
+        <Label htmlFor="notes">{t('checkout.sections.note')}</Label>
+        <Textarea
+          id="notes"
+          placeholder={t('checkout.placeholders.notes')}
+          className="mt-2"
+        />
+      </section>
+
+      {/* Place Order Button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
+        <Button
+          className="w-full"
+          size="lg"
+          disabled={!activeAddress || items.length === 0}
+        >
+          {t('checkout.buttons.placeOrder')}
+        </Button>
+      </div>
     </div>
   );
 }; 

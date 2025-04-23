@@ -1,0 +1,164 @@
+{
+  "address": {
+    "addError": "addError",
+    "addNew": "addNew",
+    "addSuccess": "addSuccess",
+    "addTitle": "addTitle",
+    "deliverTo": "deliverTo",
+    "details": {
+      "city": "city",
+      "example": "example",
+      "instructions": "instructions",
+      "interior": "interior",
+      "neighborhood": "neighborhood",
+      "street": "street",
+      "zipCode": "zipCode"
+    },
+    "editTitle": "editTitle",
+    "forceModalDescription": "forceModalDescription",
+    "gettingLocation": "gettingLocation",
+    "manage": "manage",
+    "modalDescription": "modalDescription",
+    "noAddresses": "noAddresses",
+    "primary": "primary",
+    "save": "save",
+    "searchAddress": "searchAddress",
+    "searchPlaceholder": "searchPlaceholder",
+    "searchTitle": "searchTitle",
+    "selectSuccess": "selectSuccess",
+    "setPrimary": "setPrimary",
+    "useMyLocation": "useMyLocation"
+  },
+  "auth": {
+    "form": {
+      "email": "email",
+      "emailPlaceholder": "emailPlaceholder",
+      "password": "password"
+    },
+    "login": {
+      "button": "button",
+      "description": "description",
+      "haveAccount": "haveAccount",
+      "title": "title"
+    },
+    "messages": {
+      "checkEmail": "checkEmail",
+      "loginSuccess": "loginSuccess",
+      "oauthError": "oauthError",
+      "signupSuccess": "signupSuccess",
+      "unexpectedError": "unexpectedError",
+      "verificationNeeded": "verificationNeeded"
+    },
+    "oauth": {
+      "continueWith": "continueWith",
+      "google": "google",
+      "phone": "phone"
+    },
+    "signIn": "signIn",
+    "signOut": "signOut",
+    "signUp": "signUp",
+    "signup": {
+      "button": "button",
+      "description": "description",
+      "noAccount": "noAccount",
+      "title": "title"
+    }
+  },
+  "cart": {
+    "continueShopping": "continueShopping",
+    "description": "description",
+    "empty": "empty",
+    "notesPlaceholder": "notesPlaceholder",
+    "proceedToCheckout": "proceedToCheckout",
+    "productImageAlt": "productImageAlt",
+    "storeIdLabel": "storeIdLabel",
+    "title": "title"
+  },
+  "checkout": {
+    "addressSelector": {
+      "title": "Selecciona una dirección"
+    },
+    "buttons": {
+      "addContact": "addContact",
+      "addNewAddress": "Agregar nueva dirección",
+      "addTip": "addTip",
+      "placeOrder": "placeOrder",
+      "selectPayment": "selectPayment"
+    },
+    "emptyCart": "emptyCart",
+    "labels": {
+      "deliveryFee": "deliveryFee",
+      "subtotal": "subtotal",
+      "total": "total"
+    },
+    "noDeliveryAddress": "noDeliveryAddress",
+    "placeholders": {
+      "notes": "notes"
+    },
+    "sections": {
+      "contact": "contact",
+      "deliveryAddress": "deliveryAddress",
+      "note": "note",
+      "order": "order",
+      "payment": "payment",
+      "tip": "tip"
+    },
+    "title": "title"
+  },
+  "common": {
+    "buttons": {
+      "change": "change"
+    },
+    "continue": "continue",
+    "free": "free",
+    "hi": "hi",
+    "included": "included",
+    "loading": "loading",
+    "saving": "saving",
+    "search": "search",
+    "user": "user"
+  },
+  "landing": {
+    "benefits": {
+      "manageWallet": "manageWallet",
+      "saveAddresses": "saveAddresses",
+      "saveFavorites": "saveFavorites",
+      "title": "title",
+      "trackOrders": "trackOrders"
+    },
+    "continueAsGuest": "continueAsGuest"
+  },
+  "navigation": {
+    "favorites": "favorites",
+    "home": "home",
+    "orders": "orders",
+    "profile": "profile",
+    "setlocation": "setlocation",
+    "wallet": "wallet"
+  },
+  "product": {
+    "addToCart": "addToCart",
+    "addedToCart": "addedToCart",
+    "loadingDetails": "loadingDetails",
+    "notes": "notes",
+    "notesPlaceholder": "notesPlaceholder",
+    "quantity": "quantity"
+  },
+  "store": {
+    "cashback": "cashback",
+    "deliveryTime": "deliveryTime",
+    "list": {
+      "all": "all",
+      "inCategory": "inCategory",
+      "near": "near",
+      "noStores": "noStores"
+    },
+    "minOrder": "minOrder",
+    "noMinimum": "noMinimum",
+    "status": {
+      "closed": "closed",
+      "open": "open",
+      "schedule": "schedule"
+    }
+  }
+}

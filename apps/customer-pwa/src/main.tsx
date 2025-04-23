@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import './i18n'; // Import i18n configuration
+import i18n from './i18n'; // Import i18n configuration as a promise
 import App from './App.tsx';
 import './index.css';
 import '@repo/ui/styles.css';
@@ -45,19 +45,43 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Suspense fallback={<LoadingScreen />}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
-          <SupabaseProvider supabase={supabase}>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          </SupabaseProvider>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </Suspense>
-  </React.StrictMode>
-);
+// Initialize i18n before rendering
+const init = async () => {
+  try {
+    // Wait for i18n to be initialized
+    await i18n;
+
+    // Render the app
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <React.StrictMode>
+        <Suspense fallback={<LoadingScreen />}>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider defaultTheme="dark" storageKey="customer-pwa-theme">
+              <SupabaseProvider supabase={supabase}>
+                <AuthProvider>
+                  <App />
+                </AuthProvider>
+              </SupabaseProvider>
+            </ThemeProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </Suspense>
+      </React.StrictMode>
+    );
+  } catch (error) {
+    console.error('Failed to initialize the application:', error);
+    // Show error state in the root element
+    const root = document.getElementById('root');
+    if (root) {
+      root.innerHTML = `
+        <div style="display: flex; height: 100vh; align-items: center; justify-content: center; flex-direction: column; color: #ef4444;">
+          <h1 style="margin-bottom: 1rem;">Application Error</h1>
+          <p>Failed to initialize translations. Please refresh the page.</p>
+        </div>
+      `;
+    }
+  }
+};
+
+// Start the application
+init();

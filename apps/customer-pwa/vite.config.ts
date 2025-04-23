@@ -24,12 +24,16 @@ export default defineConfig({
       '@repo/api-client',
       '@repo/hooks',
       '@repo/ui',
-      '@repo/i18n > i18next'
-    ]
+      '@repo/i18n',
+      'i18next',
+      'react-i18next',
+      'i18next-browser-languagedetector'
+    ],
+    exclude: []
   },
   build: {
     commonjsOptions: {
-      include: [/node_modules/]
+      include: [/node_modules/, /@repo\/i18n/]
     }
   },
   json: {
@@ -40,7 +44,14 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ['!**/node_modules/@repo/i18n/**'] // Watch changes in the linked package
+      // Watch the i18n package for changes
+      ignored: ['!**/node_modules/@repo/i18n/**'],
+    },
+    hmr: {
+      // Force HMR for i18n package
+      overlay: true,
+      clientPort: 5173,
+      timeout: 5000
     }
   }
 });
