@@ -17,8 +17,9 @@ import { useSupabase } from '@/providers/SupabaseProvider';
 import { useMutation } from '@tanstack/react-query';
 import { addAddress } from '@repo/api-client';
 import { toast } from 'sonner';
+import { useAuth } from '@/providers/AuthProvider';
 
-export const CheckoutPage: React.FC = () => {
+export const CheckoutPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { items = [], getSubtotal } = useCartStore();
@@ -27,6 +28,7 @@ export const CheckoutPage: React.FC = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const supabase = useSupabase();
   const { addOrUpdateAddress } = useAddressStore();
+  const { isGuest } = useAuth();
   
   // Add diagnostic logging on mount and when language changes
   useEffect(() => {
@@ -107,7 +109,25 @@ export const CheckoutPage: React.FC = () => {
   };
 
   const handleAddressSubmit = (data: AddressFormData) => {
-    addAddressMutation.mutate(data);
+    if (isGuest) {
+      // Para usuarios invitados, creamos una dirección con ID especial
+      const guestAddress = {
+        ...data,
+        id: 'guest-address',
+        is_primary: true,
+        user_id: 'guest-user',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      // Actualizamos el estado local y localStorage
+      addOrUpdateAddress(guestAddress);
+      setActiveAddress(guestAddress);
+      setIsAddressModalOpen(false);
+      toast.success(t('address.updateSuccess'));
+    } else {
+      // Para usuarios registrados, usamos la mutación existente
+      addAddressMutation.mutate(data);
+    }
   };
 
   return (
@@ -134,7 +154,13 @@ export const CheckoutPage: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setIsAddressSelectorOpen(true)}
+            onClick={() => {
+              if (isGuest) {
+                setIsAddressModalOpen(true);
+              } else {
+                setIsAddressSelectorOpen(true);
+              }
+            }}
           >
             {t('common.buttons.change')}
           </Button>
@@ -183,6 +209,7 @@ export const CheckoutPage: React.FC = () => {
         onClose={() => setIsAddressModalOpen(false)}
         onSubmit={handleAddressSubmit}
         isLoading={addAddressMutation.isPending}
+        addressToEdit={isGuest ? activeAddress : undefined}
       />
 
       {/* Payment Method Section */}
@@ -275,7 +302,7 @@ export const CheckoutPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Order Notes */}
+      {/* Order Notes Section */}
       <section>
         <Label htmlFor="notes">{t('checkout.sections.note')}</Label>
         <Textarea
