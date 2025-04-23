@@ -95,6 +95,7 @@ export const esTranslations: TranslationResources = {
   auth: {
     signIn: 'Iniciar Sesión',
     signUp: 'Registrarse',
+    signOut: 'Cerrar Sesión',
     login: {
       title: 'Iniciar Sesión',
       description: 'Inicia sesión para acceder a tu cuenta',
@@ -239,13 +240,14 @@ export const esTranslations: TranslationResources = {
     addedToCart: '¡Producto añadido al carrito!'
   },
   cart: {
-    title: 'Tu Carrito',
-    description: 'Revisa tus productos antes de proceder al checkout',
-    storeIdLabel: 'Tienda ID:',
-    productImageAlt: 'Imagen',
-    notesPlaceholder: 'Notas Generales del Pedido',
-    continueShopping: 'Seguir Comprando',
-    proceedToCheckout: 'Proceder al Checkout'
+    title: 'Carrito de Compras',
+    description: 'Tu carrito de compras',
+    empty: 'Tu carrito está vacío',
+    storeIdLabel: 'ID de Tienda',
+    productImageAlt: 'Imagen del producto',
+    notesPlaceholder: 'Agregar instrucciones especiales',
+    continueShopping: 'Continuar Comprando',
+    proceedToCheckout: 'Proceder al Pago'
   },
   checkout: {
     title: 'Finalizar Compra',

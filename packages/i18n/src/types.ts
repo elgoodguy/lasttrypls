@@ -79,6 +79,7 @@ export interface AddressTranslations {
 export interface AuthTranslations {
   signIn: string;
   signUp: string;
+  signOut: string;
   login: {
     title: string;
     description: string;
@@ -235,6 +236,7 @@ export interface LandingTranslations {
 export interface CartTranslations {
   title: string;
   description: string;
+  empty: string;
   storeIdLabel: string;
   productImageAlt: string;
   notesPlaceholder: string;

@@ -95,6 +95,7 @@ export const enTranslations: TranslationResources = {
   auth: {
     signIn: 'Sign In',
     signUp: 'Sign Up',
+    signOut: 'Sign Out',
     login: {
       title: 'Log In',
       description: 'Log in to access your account',
@@ -239,11 +240,12 @@ export const enTranslations: TranslationResources = {
     addedToCart: 'Item added to cart!'
   },
   cart: {
-    title: 'Your Cart',
-    description: 'Review your products before proceeding to checkout',
-    storeIdLabel: 'Store ID:',
-    productImageAlt: 'Image',
-    notesPlaceholder: 'General Order Notes',
+    title: 'Shopping Cart',
+    description: 'Your shopping cart',
+    empty: 'Your cart is empty',
+    storeIdLabel: 'Store ID',
+    productImageAlt: 'Product image',
+    notesPlaceholder: 'Add any special instructions',
     continueShopping: 'Continue Shopping',
     proceedToCheckout: 'Proceed to Checkout'
   },
