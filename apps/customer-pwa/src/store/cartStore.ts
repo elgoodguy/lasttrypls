@@ -59,15 +59,6 @@ const createInitialState = (): Omit<CartState, 'addItem' | 'removeItem' | 'updat
   items: [],
 });
 
-// Wrapper for state updates to log all changes
-const logStateUpdate = (state: CartState, description: string) => {
-  console.log(`[cartStore ${description}]`, {
-    itemCount: state.items.length,
-    items: state.items,
-    timestamp: new Date().toISOString()
-  });
-};
-
 export const useCartStore = create<CartState>()(
   devtools(
     persist(
