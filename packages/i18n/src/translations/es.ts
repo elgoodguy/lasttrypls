@@ -33,7 +33,10 @@ export const esTranslations: TranslationResources = {
     min: 'Mín.',
     search: 'Buscar tiendas o productos...',
     hi: '¡Hola!',
-    back: 'Volver'
+    back: 'Volver',
+    buttons: {
+      change: 'Cambiar'
+    }
   },
   navigation: {
     home: 'Inicio',
@@ -232,29 +235,38 @@ export const esTranslations: TranslationResources = {
     included: 'Incluido',
     addedToCart: '¡Producto añadido al carrito!'
   },
+  cart: {
+    title: 'Tu Carrito',
+    description: 'Revisa tus productos antes de proceder al checkout',
+    storeIdLabel: 'Tienda ID:',
+    productImageAlt: 'Imagen',
+    notesPlaceholder: 'Notas Generales del Pedido',
+    continueShopping: 'Seguir Comprando',
+    proceedToCheckout: 'Proceder al Checkout'
+  },
   checkout: {
     title: 'Finalizar Compra',
     sections: {
-      address: 'Dirección de Entrega',
+      deliveryAddress: 'Dirección de Entrega',
       payment: 'Método de Pago',
       contact: 'Información de Contacto',
       tip: 'Propina para el Repartidor',
       order: 'Mi Orden',
       note: 'Nota'
     },
-    buttons: {
-      selectAddress: 'Seleccionar Dirección',
-      selectPayment: 'Seleccionar Método de Pago',
-      addContact: 'Agregar Información de Contacto',
-      addTip: 'Agregar Propina',
-      pay: 'Pagar'
-    },
     labels: {
-      subtotal: 'Subtotal',
-      delivery: 'Envío',
-      total: 'Total',
-      noteToRestaurant: 'Nota para el restaurante',
-      notePlaceholder: 'Agregar nota...'
+      notes: 'Notas del Pedido'
+    },
+    placeholders: {
+      notes: 'Agrega notas para tu pedido...'
+    },
+    buttons: {
+      placeOrder: 'Realizar Pedido',
+      addNewAddress: 'Agregar nueva dirección',
+      change: 'Cambiar'
+    },
+    addressSelector: {
+      title: 'Selecciona una dirección de entrega'
     }
   }
 }; 

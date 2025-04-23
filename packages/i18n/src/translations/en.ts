@@ -33,7 +33,10 @@ export const enTranslations: TranslationResources = {
     min: 'Min.',
     search: 'Search stores or products...',
     hi: 'Hi',
-    back: 'Back'
+    back: 'Back',
+    buttons: {
+      change: 'Change'
+    }
   },
   navigation: {
     home: 'Home',
@@ -232,29 +235,38 @@ export const enTranslations: TranslationResources = {
     included: 'Included',
     addedToCart: 'Item added to cart!'
   },
+  cart: {
+    title: 'Your Cart',
+    description: 'Review your products before proceeding to checkout',
+    storeIdLabel: 'Store ID:',
+    productImageAlt: 'Image',
+    notesPlaceholder: 'General Order Notes',
+    continueShopping: 'Continue Shopping',
+    proceedToCheckout: 'Proceed to Checkout'
+  },
   checkout: {
     title: 'Checkout',
     sections: {
-      address: 'Delivery Address',
+      deliveryAddress: 'Delivery Address',
       payment: 'Payment Method',
       contact: 'Contact Information',
       tip: 'Driver Tip',
       order: 'My Order',
       note: 'Note'
     },
-    buttons: {
-      selectAddress: 'Select Address',
-      selectPayment: 'Select Payment Method',
-      addContact: 'Add Contact Information',
-      addTip: 'Add Tip',
-      pay: 'Pay'
-    },
     labels: {
-      subtotal: 'Subtotal',
-      delivery: 'Delivery',
-      total: 'Total',
-      noteToRestaurant: 'Note to restaurant',
-      notePlaceholder: 'Add a note...'
+      notes: 'Order Notes'
+    },
+    placeholders: {
+      notes: 'Add any notes for your order...'
+    },
+    buttons: {
+      placeOrder: 'Place Order',
+      addNewAddress: 'Add new address',
+      change: 'Change'
+    },
+    addressSelector: {
+      title: 'Select a delivery address'
     }
   }
 }; 

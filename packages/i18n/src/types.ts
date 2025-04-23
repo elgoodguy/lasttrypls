@@ -15,6 +15,9 @@ export interface CommonTranslations {
   search: string;
   hi: string;
   back: string;
+  buttons: {
+    change: string;
+  };
 }
 
 export interface NavigationTranslations {
@@ -226,29 +229,39 @@ export interface LandingTranslations {
   };
 }
 
+export interface CartTranslations {
+  title: string;
+  description: string;
+  storeIdLabel: string;
+  productImageAlt: string;
+  notesPlaceholder: string;
+  continueShopping: string;
+  proceedToCheckout: string;
+}
+
 export interface CheckoutTranslations {
   title: string;
   sections: {
-    address: string;
+    deliveryAddress: string;
     payment: string;
     contact: string;
     tip: string;
     order: string;
     note: string;
   };
-  buttons: {
-    selectAddress: string;
-    selectPayment: string;
-    addContact: string;
-    addTip: string;
-    pay: string;
-  };
   labels: {
-    subtotal: string;
-    delivery: string;
-    total: string;
-    noteToRestaurant: string;
-    notePlaceholder: string;
+    notes: string;
+  };
+  placeholders: {
+    notes: string;
+  };
+  buttons: {
+    placeOrder: string;
+    addNewAddress: string;
+    change: string;
+  };
+  addressSelector: {
+    title: string;
   };
 }
 
@@ -267,4 +280,5 @@ export interface TranslationResources {
   landing: LandingTranslations;
   notifications: NotificationsTranslations;
   checkout: CheckoutTranslations;
+  cart: CartTranslations;
 } 

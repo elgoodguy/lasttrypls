@@ -24,6 +24,7 @@ const resources = {
 
 console.log('DEBUG: Translations object loaded into i18n.ts:', JSON.stringify(translations, null, 2));
 
+// Initialize i18next
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -42,11 +43,15 @@ i18n
     ns: ['translation'],
     defaultNS: 'translation',
     react: {
-      useSuspense: false
+      useSuspense: true
     }
   });
 
-// Force a language change to ensure translations are properly loaded
-// i18n.changeLanguage(i18n.language);
+// Add error handling for missing translations in development
+if (import.meta.env.DEV) {
+  i18n.on('missingKey', (lngs, namespace, key, res) => {
+    console.warn(`Missing translation key: ${key} for language(s):`, lngs, 'in namespace:', namespace);
+  });
+}
 
 export default i18n; 
