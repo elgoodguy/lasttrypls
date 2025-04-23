@@ -144,6 +144,7 @@ export interface ProfileTranslations {
     primary: string;
     noAddresses: string;
     confirmDelete: string;
+    address: string;
   };
   loginRequired: string;
   loginMessage: string;
@@ -213,6 +214,7 @@ export interface ProductTranslations {
   notesPlaceholder: string;
   included: string;
   addedToCart: string;
+  loadingDetails: string;
 }
 
 export interface LandingTranslations {

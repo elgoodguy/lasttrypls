@@ -158,7 +158,8 @@ export const esTranslations: TranslationResources = {
       add: 'Agregar Dirección',
       primary: 'Dirección Principal',
       noAddresses: 'No has agregado ninguna dirección. Agrega tu primera dirección de entrega.',
-      confirmDelete: '¿Estás seguro que deseas eliminar esta dirección?'
+      confirmDelete: '¿Estás seguro que deseas eliminar esta dirección?',
+      address: 'Dirección'
     },
     loginRequired: 'Inicio de sesión requerido',
     loginMessage: 'Inicia sesión para ver esta página'
@@ -237,7 +238,8 @@ export const esTranslations: TranslationResources = {
     notes: 'Instrucciones Especiales',
     notesPlaceholder: 'Agrega instrucciones o solicitudes especiales',
     included: 'Incluido',
-    addedToCart: '¡Producto añadido al carrito!'
+    addedToCart: '¡Producto añadido al carrito!',
+    loadingDetails: 'Cargando detalles del producto...'
   },
   cart: {
     title: 'Carrito de Compras',

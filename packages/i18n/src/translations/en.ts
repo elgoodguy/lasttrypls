@@ -158,7 +158,8 @@ export const enTranslations: TranslationResources = {
       add: 'Add Address',
       primary: 'Primary Address',
       noAddresses: 'You haven\'t added any addresses. Add your first delivery address.',
-      confirmDelete: 'Are you sure you want to delete this address?'
+      confirmDelete: 'Are you sure you want to delete this address?',
+      address: 'Address'
     },
     loginRequired: 'Login required',
     loginMessage: 'Log in to see this page'
@@ -237,7 +238,8 @@ export const enTranslations: TranslationResources = {
     notes: 'Special Instructions',
     notesPlaceholder: 'Add any special instructions or requests',
     included: 'Included',
-    addedToCart: 'Item added to cart!'
+    addedToCart: 'Item added to cart!',
+    loadingDetails: 'Loading product details...'
   },
   cart: {
     title: 'Shopping Cart',
