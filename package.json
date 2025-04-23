@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "predev": "turbo run clean",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
@@ -16,16 +17,23 @@
     "clean": "turbo run clean"
   },
   "devDependencies": {
+    "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "i18next": "^24.2.3",
+    "i18next-browser-languagedetector": "^8.0.4",
     "prettier": "^3.0.0",
+    "react-i18next": "^15.4.1",
     "rimraf": "^6.0.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "vite": "^4.4.5",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "packageManager": "pnpm@8.6.0",
   "dependencies": {

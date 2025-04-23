@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -11,6 +11,7 @@ import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';
 import { useSupabase } from '@/providers/SupabaseProvider';
+import i18n from './i18n';
 
 // Lazy load pages
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(module => ({ default: module.LandingPage })));
@@ -59,12 +60,26 @@ function App() {
     activeAddress
   } = useAddressStore();
   const supabase = useSupabase();
+  const [isI18nReady, setIsI18nReady] = useState(i18n.isInitialized);
 
   // Initialize address store
   useInitializeAddressStore();
 
-  // Show loader if either Auth is loading OR if Address is not initialized yet
-  const showLoader = isLoadingAuth || (!isAddrInitialized && !!user);
+  // Monitor i18n initialization
+  useEffect(() => {
+    const handleInitialized = () => setIsI18nReady(true);
+    if (i18n.isInitialized) {
+      setIsI18nReady(true);
+    } else {
+      i18n.on('initialized', handleInitialized);
+    }
+    return () => {
+      i18n.off('initialized', handleInitialized);
+    };
+  }, []);
+
+  // Show loader if either Auth is loading OR if Address is not initialized yet OR i18n is not ready
+  const showLoader = isLoadingAuth || (!isAddrInitialized && !!user) || !isI18nReady;
 
   // Show force address modal only for logged-in users with no addresses
   const requiresAddress = !!user && !isLoadingAuth && isAddrInitialized && addresses.length === 0 && !isLoadingAddr;
@@ -80,8 +95,8 @@ function App() {
             {/* Show force address modal only if not loading and address is required */}
             {!showLoader && requiresAddress && <ForceAddressModal isOpen={true} />}
 
-            {/* Render router when not loading and address not required */}
-            {!showLoader && !requiresAddress && (
+            {/* Render router when not loading, address not required, and i18n is ready */}
+            {!showLoader && !requiresAddress && isI18nReady && (
               <Router>
                 <Routes>
                   {/* Landing Page Route: Render ONLY if no user AND no active address */}

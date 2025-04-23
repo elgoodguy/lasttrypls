@@ -14,11 +14,12 @@
       "cache": false
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "clean": {
-      "cache": false
+      "outputs": ["dist/**", ".turbo/**", "node_modules/.cache/turbo/**"]
     },
     "db:generate": {
       "cache": false,

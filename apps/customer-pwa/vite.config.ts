@@ -1,3 +1,6 @@
+/// <reference types="vite/client" />
+/// <reference types="node" />
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -16,8 +19,13 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['@repo/types', '@repo/api-client', '@repo/hooks', '@repo/ui'],
-    exclude: ['i18next']
+    include: [
+      '@repo/types',
+      '@repo/api-client',
+      '@repo/hooks',
+      '@repo/ui',
+      '@repo/i18n > i18next'
+    ]
   },
   build: {
     commonjsOptions: {
@@ -27,4 +35,12 @@ export default defineConfig({
   json: {
     stringify: true,
   },
+  ssr: {
+    noExternal: ['@repo/i18n']
+  },
+  server: {
+    watch: {
+      ignored: ['!**/node_modules/@repo/i18n/**'] // Watch changes in the linked package
+    }
+  }
 });
