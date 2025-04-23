@@ -92,6 +92,8 @@ export const esTranslations: TranslationResources = {
     noneSaved: 'No hay direcciones guardadas'
   },
   auth: {
+    signIn: 'Iniciar Sesión',
+    signUp: 'Registrarse',
     login: {
       title: 'Iniciar Sesión',
       description: 'Inicia sesión para acceder a tu cuenta',
@@ -259,7 +261,7 @@ export const esTranslations: TranslationResources = {
       total: 'Total',
       deliveryFee: 'Costo de Envío',
       tip: 'Propina',
-      notes: 'Notas Adicionales'
+      notes: 'Notas'
     },
     placeholders: {
       notes: 'Agrega instrucciones o solicitudes especiales'
@@ -268,7 +270,7 @@ export const esTranslations: TranslationResources = {
       placeOrder: 'Realizar Pedido',
       addNewAddress: 'Agregar Nueva Dirección',
       selectPayment: 'Seleccionar Método de Pago',
-      addContact: 'Agregar Información de Contacto',
+      addContact: 'Agregar Contacto',
       addTip: 'Agregar Propina',
       change: 'Cambiar'
     },

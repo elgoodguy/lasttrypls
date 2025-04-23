@@ -29,7 +29,8 @@ export default defineConfig({
       'react-i18next',
       'i18next-browser-languagedetector'
     ],
-    exclude: []
+    exclude: [],
+    force: true
   },
   build: {
     commonjsOptions: {
@@ -48,7 +49,7 @@ export default defineConfig({
       ignored: ['!**/node_modules/@repo/i18n/**'],
     },
     hmr: {
-      // Force HMR for i18n package
+      // Improve HMR configuration
       overlay: true,
       clientPort: 5173,
       timeout: 5000

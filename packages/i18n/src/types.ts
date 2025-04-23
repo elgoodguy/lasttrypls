@@ -76,6 +76,8 @@ export interface AddressTranslations {
 }
 
 export interface AuthTranslations {
+  signIn: string;
+  signUp: string;
   login: {
     title: string;
     description: string;

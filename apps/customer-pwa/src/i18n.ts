@@ -14,6 +14,34 @@ const initI18n = async () => {
       es: Object.keys(esTranslations)
     });
 
+    // Verify translations are loaded correctly
+    const verifyTranslations = (trans: any, lang: string) => {
+      const criticalKeys = [
+        'checkout.labels.subtotal',
+        'checkout.buttons.selectPayment',
+        'auth.signIn',
+        'auth.signUp'
+      ];
+      
+      const missingKeys = criticalKeys.filter(key => {
+        const parts = key.split('.');
+        let current = trans;
+        for (const part of parts) {
+          if (!current || !current[part]) return true;
+          current = current[part];
+        }
+        return false;
+      });
+
+      if (missingKeys.length > 0) {
+        console.warn(`[i18n] Missing critical keys in ${lang}:`, missingKeys);
+      }
+    };
+
+    // Verify translations before initialization
+    verifyTranslations(enTranslations, 'en');
+    verifyTranslations(esTranslations, 'es');
+
     await i18n
       // First add the language detector
       .use(LanguageDetector)
@@ -45,7 +73,17 @@ const initI18n = async () => {
           bindI18n: 'languageChanged loaded',
           bindI18nStore: 'added removed',
           transEmptyNodeValue: '',
-        }
+        },
+        // Add returnNull: false to prevent returning null for missing keys
+        returnNull: false,
+        // Add returnEmptyString: false to prevent returning empty string for missing keys
+        returnEmptyString: false,
+        // Add saveMissing: true in development to help identify missing keys
+        saveMissing: import.meta.env.DEV,
+        // Add missing key handler in development
+        missingKeyHandler: import.meta.env.DEV ? (lng, ns, key) => {
+          console.warn(`[i18n] Missing key: ${key} in ${lng}:${ns}`);
+        } : undefined
       });
 
     // Enhanced debug logs
@@ -119,6 +157,21 @@ const initI18n = async () => {
       });
 
       console.groupEnd();
+    }
+
+    // Verify initialization was successful
+    if (!i18n.isInitialized) {
+      throw new Error('i18n failed to initialize properly');
+    }
+
+    // Verify all required bundles are loaded
+    const requiredBundles = ['en', 'es', 'en-US', 'es-ES', 'es-MX'];
+    const missingBundles = requiredBundles.filter(
+      lng => !i18n.hasResourceBundle(lng, 'translation')
+    );
+
+    if (missingBundles.length > 0) {
+      throw new Error(`Missing resource bundles for: ${missingBundles.join(', ')}`);
     }
 
     return i18n;

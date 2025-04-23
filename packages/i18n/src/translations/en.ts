@@ -92,6 +92,8 @@ export const enTranslations: TranslationResources = {
     noneSaved: 'No saved addresses'
   },
   auth: {
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
     login: {
       title: 'Log In',
       description: 'Log in to access your account',
@@ -259,7 +261,7 @@ export const enTranslations: TranslationResources = {
       total: 'Total',
       deliveryFee: 'Delivery Fee',
       tip: 'Tip',
-      notes: 'Additional Notes'
+      notes: 'Notes'
     },
     placeholders: {
       notes: 'Add any special instructions or requests'
@@ -268,7 +270,7 @@ export const enTranslations: TranslationResources = {
       placeOrder: 'Place Order',
       addNewAddress: 'Add New Address',
       selectPayment: 'Select Payment Method',
-      addContact: 'Add Contact Info',
+      addContact: 'Add Contact',
       addTip: 'Add Tip',
       change: 'Change'
     },
