@@ -7,7 +7,7 @@ import { Button } from '@repo/ui/components/ui/button';
 import { Textarea } from '@repo/ui/components/ui/textarea';
 import { Label } from '@repo/ui/components/ui/label';
 import { Separator } from '@repo/ui/components/ui/separator';
-import { CreditCard, User, Gift, ArrowLeft } from 'lucide-react';
+import { CreditCard, User, Gift, ArrowLeft, Clock } from 'lucide-react';
 import { AddressSelectorSheet } from '@/components/profile/AddressSelectorSheet';
 import { AddressModal } from '@/components/profile/AddressModal';
 import type { AddressFormData } from '@/lib/validations/address';
@@ -17,6 +17,7 @@ import { useMutation } from '@tanstack/react-query';
 import { addAddress } from '@repo/api-client';
 import { toast } from 'sonner';
 import { useAuth } from '@/providers/AuthProvider';
+import { DeliveryTimeModal, DeliveryType } from '@/components/checkout/DeliveryTimeModal';
 
 export const CheckoutPage = () => {
   const { t } = useTranslation();
@@ -25,6 +26,9 @@ export const CheckoutPage = () => {
   const { addresses, activeAddress, setActiveAddress } = useAddressStore();
   const [isAddressSelectorOpen, setIsAddressSelectorOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [isDeliveryTimeModalOpen, setIsDeliveryTimeModalOpen] = useState(false);
+  const [deliveryType, setDeliveryType] = useState<DeliveryType>('now');
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>();
   const supabase = useSupabase();
   const { addOrUpdateAddress } = useAddressStore();
   const { isGuest } = useAuth();
@@ -87,6 +91,24 @@ export const CheckoutPage = () => {
     }
   };
 
+  const handleDeliveryTimeConfirm = (type: DeliveryType, date?: Date) => {
+    setDeliveryType(type);
+    setScheduledDate(date);
+  };
+
+  const getDeliveryTimeText = () => {
+    if (deliveryType === 'now') {
+      return '20-45 mins';
+    }
+    if (scheduledDate) {
+      return new Intl.DateTimeFormat('es', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+      }).format(scheduledDate);
+    }
+    return t('checkout.deliveryTime.selectTime');
+  };
+
   return (
     <div className="flex flex-col gap-6 pb-32">
       {/* Back Button */}
@@ -103,6 +125,26 @@ export const CheckoutPage = () => {
           {t('checkout.title')}
         </h1>
       </div>
+
+      {/* Delivery Time Section */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">{t('checkout.deliveryTime.title')}</h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsDeliveryTimeModalOpen(true)}
+          >
+            {t('checkout.deliveryTime.change')}
+          </Button>
+        </div>
+        <Card className="p-4">
+          <div className="flex items-center gap-2">
+            <Clock className="h-5 w-5 text-muted-foreground" />
+            <span className="font-medium">{getDeliveryTimeText()}</span>
+          </div>
+        </Card>
+      </section>
 
       {/* Delivery Address Section */}
       <section>
@@ -167,6 +209,15 @@ export const CheckoutPage = () => {
         onSubmit={handleAddressSubmit}
         isLoading={addAddressMutation.isPending}
         addressToEdit={isGuest ? activeAddress : undefined}
+      />
+
+      {/* Delivery Time Modal */}
+      <DeliveryTimeModal
+        isOpen={isDeliveryTimeModalOpen}
+        onOpenChange={setIsDeliveryTimeModalOpen}
+        onConfirm={handleDeliveryTimeConfirm}
+        initialType={deliveryType}
+        initialDate={scheduledDate}
       />
 
       {/* Payment Method Section */}

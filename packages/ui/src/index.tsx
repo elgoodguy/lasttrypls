@@ -27,4 +27,8 @@ export * from './components/navigation/BottomNavBar';
 export * from './components/navigation/UserMenu';
 export * from './components/address/AddressSelector';
 export { ProductCard } from './components/ProductCard';
+export * from './components/ui/radio-group';
+export * from './components/ui/calendar';
+export * from './components/ui/time-picker';
+export * from './components/ui/select';
 // export * from './MyComponent'; // Ejemplo componente propio

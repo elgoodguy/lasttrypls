@@ -256,28 +256,32 @@ export interface CheckoutTranslations {
     order: string;
     note: string;
   };
+  deliveryTime: {
+    title: string;
+    express: string;
+    expressDescription: string;
+    scheduled: string;
+    scheduledDescription: string;
+    selectTime: string;
+    confirm: string;
+    change: string;
+  };
+  buttons: {
+    selectPayment: string;
+    addContact: string;
+    addTip: string;
+    placeOrder: string;
+  };
   labels: {
     subtotal: string;
-    total: string;
     deliveryFee: string;
-    tip: string;
-    notes: string;
+    total: string;
   };
   placeholders: {
     notes: string;
   };
-  buttons: {
-    placeOrder: string;
-    addNewAddress: string;
-    selectPayment: string;
-    addContact: string;
-    addTip: string;
-    change: string;
-  };
-  addressSelector: {
-    title: string;
-  };
   noDeliveryAddress: string;
+  emptyCart: string;
 }
 
 export interface TranslationResources {

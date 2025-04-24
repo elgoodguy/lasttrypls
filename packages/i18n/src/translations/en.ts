@@ -257,31 +257,38 @@ export const enTranslations: TranslationResources = {
       deliveryAddress: 'Delivery Address',
       payment: 'Payment Method',
       contact: 'Contact Information',
-      tip: 'Add a Tip',
-      order: 'Order Summary',
-      note: 'Order Notes'
+      tip: 'Driver Tip',
+      order: 'Your Order',
+      note: 'Order Notes',
+    },
+    deliveryTime: {
+      title: 'Delivery Time',
+      express: 'Express Delivery',
+      expressDescription: 'Get your order as soon as possible (20-45 mins)',
+      scheduled: 'Scheduled Delivery',
+      scheduledDescription: 'Choose a specific date and time for your delivery',
+      selectTime: 'Select Time',
+      confirm: 'Confirm Time',
+      change: 'Change Time',
     },
     labels: {
       subtotal: 'Subtotal',
-      total: 'Total',
       deliveryFee: 'Delivery Fee',
-      tip: 'Tip',
-      notes: 'Notes'
+      total: 'Total',
     },
     placeholders: {
-      notes: 'Add any special instructions or requests'
+      notes: 'Add any special instructions...',
     },
     buttons: {
-      placeOrder: 'Place Order',
-      addNewAddress: 'Add New Address',
       selectPayment: 'Select Payment Method',
-      addContact: 'Add Contact',
+      addContact: 'Add Contact Information',
       addTip: 'Add Tip',
-      change: 'Change'
+      placeOrder: 'Place Order',
     },
     addressSelector: {
       title: 'Select Delivery Address'
     },
-    noDeliveryAddress: 'Please add a delivery address'
+    noDeliveryAddress: 'Please select a delivery address',
+    emptyCart: 'Your cart is empty',
   }
 }; 

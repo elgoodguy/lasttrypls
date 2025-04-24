@@ -252,36 +252,43 @@ export const esTranslations: TranslationResources = {
     proceedToCheckout: 'Proceder al Pago'
   },
   checkout: {
-    title: 'Finalizar Compra',
+    title: 'Finalizar Pedido',
     sections: {
       deliveryAddress: 'Dirección de Entrega',
       payment: 'Método de Pago',
       contact: 'Información de Contacto',
-      tip: 'Agregar Propina',
-      order: 'Resumen del Pedido',
-      note: 'Notas del Pedido'
+      tip: 'Propina',
+      order: 'Tu Pedido',
+      note: 'Notas del Pedido',
+    },
+    deliveryTime: {
+      title: 'Horario de Entrega',
+      express: 'Entrega Express',
+      expressDescription: 'Recibe tu pedido lo antes posible (20-45 mins)',
+      scheduled: 'Entrega Programada',
+      scheduledDescription: 'Elige una fecha y hora específica para tu entrega',
+      selectTime: 'Seleccionar Hora',
+      confirm: 'Confirmar Horario',
+      change: 'Cambiar Horario',
     },
     labels: {
       subtotal: 'Subtotal',
-      total: 'Total',
       deliveryFee: 'Costo de Envío',
-      tip: 'Propina',
-      notes: 'Notas'
+      total: 'Total',
     },
     placeholders: {
-      notes: 'Agrega instrucciones o solicitudes especiales'
+      notes: 'Agrega instrucciones especiales...',
     },
     buttons: {
-      placeOrder: 'Realizar Pedido',
-      addNewAddress: 'Agregar Nueva Dirección',
       selectPayment: 'Seleccionar Método de Pago',
-      addContact: 'Agregar Contacto',
+      addContact: 'Agregar Información de Contacto',
       addTip: 'Agregar Propina',
-      change: 'Cambiar'
+      placeOrder: 'Realizar Pedido',
     },
     addressSelector: {
       title: 'Seleccionar Dirección de Entrega'
     },
-    noDeliveryAddress: 'Por favor agrega una dirección de entrega'
+    noDeliveryAddress: 'Por favor selecciona una dirección de entrega',
+    emptyCart: 'Tu carrito está vacío',
   }
 }; 
