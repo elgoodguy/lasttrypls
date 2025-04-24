@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Memoize the signOut function
   const signOut = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
+    await supabase.auth.signOut();
   }, [supabase]);
 
   // Memoize the store reset functions
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setInitialSessionProcessed(true);
         setIsLoadingSession(false);
       })
-      .catch(error => {
+      .catch(_error => {
         setSession(null);
         setUser(null);
         setInitialSessionProcessed(true);

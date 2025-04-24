@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,7 +23,7 @@ interface CartSheetProps {
 }
 
 export const CartSheet: React.FC<CartSheetProps> = ({ open, onOpenChange }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     items,
