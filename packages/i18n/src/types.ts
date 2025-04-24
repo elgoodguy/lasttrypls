@@ -280,6 +280,9 @@ export interface CheckoutTranslations {
   placeholders: {
     notes: string;
   };
+  addressSelector: {
+    title: string;
+  };
   noDeliveryAddress: string;
   emptyCart: string;
 }
