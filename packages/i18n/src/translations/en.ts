@@ -290,11 +290,18 @@ export const enTranslations: TranslationResources = {
     placeholders: {
       notes: 'Add any special instructions...'
     },
+    addressSelector: {
+      title: 'Select Delivery Address',
+      addNew: 'Add New Address',
+      noAddresses: 'No addresses found',
+      loading: 'Loading addresses...'
+    },
     buttons: {
       selectPayment: 'Select Payment Method',
       addContact: 'Add Contact Information',
       addTip: 'Add Tip',
-      placeOrder: 'Place Order'
+      placeOrder: 'Place Order',
+      change: 'Change'
     },
     noDeliveryAddress: 'Please add a delivery address',
     emptyCart: 'Your cart is empty'

@@ -287,11 +287,18 @@ export interface CheckoutTranslations {
   placeholders: {
     notes: string;
   };
+  addressSelector: {
+    title: string;
+    addNew: string;
+    noAddresses: string;
+    loading: string;
+  };
   buttons: {
     selectPayment: string;
     addContact: string;
     addTip: string;
     placeOrder: string;
+    change: string;
   };
   noDeliveryAddress: string;
   emptyCart: string;

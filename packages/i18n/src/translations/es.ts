@@ -290,11 +290,18 @@ export const esTranslations: TranslationResources = {
     placeholders: {
       notes: 'Agregar instrucciones especiales...'
     },
+    addressSelector: {
+      title: 'Seleccionar Dirección de Entrega',
+      addNew: 'Agregar Nueva Dirección',
+      noAddresses: 'No se encontraron direcciones',
+      loading: 'Cargando direcciones...'
+    },
     buttons: {
       selectPayment: 'Seleccionar Método de Pago',
       addContact: 'Agregar Información de Contacto',
       addTip: 'Agregar Propina',
-      placeOrder: 'Realizar Pedido'
+      placeOrder: 'Realizar Pedido',
+      change: 'Cambiar'
     },
     noDeliveryAddress: 'Por favor agrega una dirección de entrega',
     emptyCart: 'Tu carrito está vacío'
