@@ -16,7 +16,9 @@ export default defineConfig({
       '@repo/hooks': path.resolve(__dirname, '../../packages/hooks/src'),
       '@repo/ui': path.resolve(__dirname, '../../packages/ui/src'),
       '@repo/i18n': path.resolve(__dirname, '../../packages/i18n/src/index.ts'),
+      'react/jsx-runtime': 'react/jsx-runtime'
     },
+    dedupe: ['react', 'react-dom']
   },
   optimizeDeps: {
     include: [
@@ -27,15 +29,22 @@ export default defineConfig({
       '@repo/i18n',
       'i18next',
       'react-i18next',
-      'i18next-browser-languagedetector'
+      'i18next-browser-languagedetector',
+      'react',
+      'react-dom',
+      'react/jsx-runtime'
     ],
     exclude: [],
-    force: true
+    force: true,
+    esbuildOptions: {
+      target: 'es2020'
+    }
   },
   build: {
     commonjsOptions: {
       include: [/node_modules/, /@repo\/i18n/]
-    }
+    },
+    target: 'es2020'
   },
   json: {
     stringify: true,
