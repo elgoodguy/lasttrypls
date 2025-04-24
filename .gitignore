@@ -9,6 +9,7 @@ build/
 .env.*
 !.env.example
 
+
 # Supabase specific
 supabase/.branches/
 supabase/.temp/
