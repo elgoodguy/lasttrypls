@@ -255,40 +255,48 @@ export const enTranslations: TranslationResources = {
     title: 'Checkout',
     sections: {
       deliveryAddress: 'Delivery Address',
-      payment: 'Payment Method',
-      contact: 'Contact Information',
-      tip: 'Driver Tip',
-      order: 'Your Order',
-      note: 'Order Notes',
+      payment: 'Payment',
+      contact: 'Contact',
+      tip: 'Tip',
+      order: 'Order',
+      note: 'Note'
     },
     deliveryTime: {
       title: 'Delivery Time',
       express: 'Express Delivery',
-      expressDescription: 'Get your order as soon as possible (20-45 mins)',
+      expressDescription: 'Delivery within 45-60 minutes',
       scheduled: 'Scheduled Delivery',
-      scheduledDescription: 'Choose a specific date and time for your delivery',
+      scheduledDescription: 'Choose your preferred delivery time',
       selectTime: 'Select Time',
-      confirm: 'Confirm Time',
-      change: 'Change Time',
+      confirm: 'Confirm',
+      change: 'Change',
+      modalTitle: 'Select Delivery Time',
+      deliveryDate: 'Delivery Date',
+      deliveryWindow: 'Delivery Window',
+      today: 'Today',
+      tomorrow: 'Tomorrow',
+      nextDay: 'Next Day',
+      morning: 'Morning (9:00 - 12:00)',
+      afternoon: 'Afternoon (12:00 - 17:00)',
+      evening: 'Evening (17:00 - 22:00)',
+      selectDate: 'Select Date',
+      selectWindow: 'Select Window'
     },
     labels: {
       subtotal: 'Subtotal',
       deliveryFee: 'Delivery Fee',
-      total: 'Total',
+      total: 'Total'
     },
     placeholders: {
-      notes: 'Add any special instructions...',
+      notes: 'Add any special instructions...'
     },
     buttons: {
       selectPayment: 'Select Payment Method',
       addContact: 'Add Contact Information',
       addTip: 'Add Tip',
-      placeOrder: 'Place Order',
+      placeOrder: 'Place Order'
     },
-    addressSelector: {
-      title: 'Select Delivery Address'
-    },
-    noDeliveryAddress: 'Please select a delivery address',
-    emptyCart: 'Your cart is empty',
+    noDeliveryAddress: 'Please add a delivery address',
+    emptyCart: 'Your cart is empty'
   }
 }; 

@@ -252,43 +252,51 @@ export const esTranslations: TranslationResources = {
     proceedToCheckout: 'Proceder al Pago'
   },
   checkout: {
-    title: 'Finalizar Pedido',
+    title: 'Pago',
     sections: {
       deliveryAddress: 'Dirección de Entrega',
-      payment: 'Método de Pago',
-      contact: 'Información de Contacto',
+      payment: 'Pago',
+      contact: 'Contacto',
       tip: 'Propina',
-      order: 'Tu Pedido',
-      note: 'Notas del Pedido',
+      order: 'Pedido',
+      note: 'Nota'
     },
     deliveryTime: {
-      title: 'Horario de Entrega',
+      title: 'Hora de Entrega',
       express: 'Entrega Express',
-      expressDescription: 'Recibe tu pedido lo antes posible (20-45 mins)',
+      expressDescription: 'Entrega en 45-60 minutos',
       scheduled: 'Entrega Programada',
-      scheduledDescription: 'Elige una fecha y hora específica para tu entrega',
+      scheduledDescription: 'Elige tu hora de entrega preferida',
       selectTime: 'Seleccionar Hora',
-      confirm: 'Confirmar Horario',
-      change: 'Cambiar Horario',
+      confirm: 'Confirmar',
+      change: 'Cambiar',
+      modalTitle: 'Seleccionar Hora de Entrega',
+      deliveryDate: 'Fecha de Entrega',
+      deliveryWindow: 'Ventana de Entrega',
+      today: 'Hoy',
+      tomorrow: 'Mañana',
+      nextDay: 'Pasado Mañana',
+      morning: 'Mañana (9:00 - 12:00)',
+      afternoon: 'Tarde (12:00 - 17:00)',
+      evening: 'Noche (17:00 - 22:00)',
+      selectDate: 'Seleccionar Fecha',
+      selectWindow: 'Seleccionar Ventana'
     },
     labels: {
       subtotal: 'Subtotal',
       deliveryFee: 'Costo de Envío',
-      total: 'Total',
+      total: 'Total'
     },
     placeholders: {
-      notes: 'Agrega instrucciones especiales...',
+      notes: 'Agregar instrucciones especiales...'
     },
     buttons: {
       selectPayment: 'Seleccionar Método de Pago',
       addContact: 'Agregar Información de Contacto',
       addTip: 'Agregar Propina',
-      placeOrder: 'Realizar Pedido',
+      placeOrder: 'Realizar Pedido'
     },
-    addressSelector: {
-      title: 'Seleccionar Dirección de Entrega'
-    },
-    noDeliveryAddress: 'Por favor selecciona una dirección de entrega',
-    emptyCart: 'Tu carrito está vacío',
+    noDeliveryAddress: 'Por favor agrega una dirección de entrega',
+    emptyCart: 'Tu carrito está vacío'
   }
 }; 

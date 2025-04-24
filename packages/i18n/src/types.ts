@@ -246,6 +246,28 @@ export interface CartTranslations {
   proceedToCheckout: string;
 }
 
+export interface DeliveryTimeTranslations {
+  title: string;
+  express: string;
+  expressDescription: string;
+  scheduled: string;
+  scheduledDescription: string;
+  selectTime: string;
+  confirm: string;
+  change: string;
+  modalTitle: string;
+  deliveryDate: string;
+  deliveryWindow: string;
+  today: string;
+  tomorrow: string;
+  nextDay: string;
+  morning: string;
+  afternoon: string;
+  evening: string;
+  selectDate: string;
+  selectWindow: string;
+}
+
 export interface CheckoutTranslations {
   title: string;
   sections: {
@@ -256,22 +278,7 @@ export interface CheckoutTranslations {
     order: string;
     note: string;
   };
-  deliveryTime: {
-    title: string;
-    express: string;
-    expressDescription: string;
-    scheduled: string;
-    scheduledDescription: string;
-    selectTime: string;
-    confirm: string;
-    change: string;
-  };
-  buttons: {
-    selectPayment: string;
-    addContact: string;
-    addTip: string;
-    placeOrder: string;
-  };
+  deliveryTime: DeliveryTimeTranslations;
   labels: {
     subtotal: string;
     deliveryFee: string;
@@ -279,6 +286,12 @@ export interface CheckoutTranslations {
   };
   placeholders: {
     notes: string;
+  };
+  buttons: {
+    selectPayment: string;
+    addContact: string;
+    addTip: string;
+    placeOrder: string;
   };
   noDeliveryAddress: string;
   emptyCart: string;
