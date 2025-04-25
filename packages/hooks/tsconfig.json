@@ -10,7 +10,9 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "composite": true
+    "composite": true,
+    "declarationDir": "dist/types",
+    "rootDir": "src"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

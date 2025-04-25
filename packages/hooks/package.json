@@ -4,18 +4,21 @@
   "private": true,
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.es.js",
       "require": "./dist/index.umd.js"
     }
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && pnpm build:types && pnpm copy:types",
+    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist/types",
+    "copy:types": "cp -r dist/types/index.d.ts dist/index.d.ts && cp -r dist/types/index.d.ts dist/index.d.mts",
     "dev": "vite build --watch",
+    "dev:with-types": "concurrently \"vite build --watch\" \"pnpm build:types -- --watch\"",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "clean": "rimraf dist .turbo"
   },
