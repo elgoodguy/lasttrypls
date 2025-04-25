@@ -388,3 +388,97 @@ Recomendaciones adicionales para seguir mejorando:
 1. Implementar pruebas automatizadas para verificar que se siguen estas convenciones
 2. Revisar periódicamente la estructura del proyecto para identificar áreas de mejora
 3. Mantener actualizada la documentación conforme evoluciona el proyecto
+
+# Estrategia para Mejoras de Estructura y Seguridad del Proyecto
+
+## Background and Motivation
+Durante la implementación de la Fase 3 (Estandarización de patrones de importación/exportación), descubrimos diversos problemas y oportunidades de mejora en el proyecto:
+- Dependencias faltantes: La falta de la dependencia @radix-ui/react-select causó errores de compilación, aunque el componente Select estaba siendo utilizado.
+- Vulnerabilidades de seguridad: La auditoría reveló múltiples vulnerabilidades, principalmente en Vite y react-router.
+- Dependencias desactualizadas: Varias bibliotecas están significativamente desactualizadas.
+- Falta de validación automatizada: No hay un sistema que valide automáticamente las convenciones de código establecidas.
+
+Estos hallazgos sugieren la necesidad de una estrategia integral para fortalecer la estructura del proyecto y garantizar su mantenibilidad a largo plazo.
+
+## Key Challenges and Analysis
+Analizando los resultados de nuestra investigación, identificamos estos desafíos clave:
+
+1. **Gestión de dependencias inconsistente**: Existe una brecha entre lo que se usa en el código y lo que está declarado en los package.json, creando problemas de compilación imprevistos.
+2. **Deuda técnica de seguridad**: Las vulnerabilidades detectadas (especialmente en Vite) representan un riesgo de seguridad, especialmente en entornos de desarrollo.
+3. **Automatización insuficiente**: La falta de validación automatizada de las convenciones de código (como los patrones de importación/exportación) dificulta su cumplimiento consistente.
+4. **Falta de documentación técnica centralizada**: Aunque creamos documentación para las convenciones de importación, no hay un proceso claro para mantenerla actualizada.
+
+## High-level Task Breakdown
+
+### Fase 1: Actualización de Seguridad y Dependencias
+1. **Objetivo**: Resolver vulnerabilidades y actualizar dependencias críticas
+   - Actualizar Vite y plugins relacionados
+   - Actualizar react-router-dom
+   - Actualizar bibliotecas React (con consideración de cambios de breaking changes)
+   - Asegurar que todas las dependencias usadas estén correctamente declaradas
+   - Criterio de éxito: Auditoría limpia o con vulnerabilidades menores aceptables
+
+### Fase 2: Implementación de Validación Automatizada
+1. **Objetivo**: Crear herramientas para verificar el cumplimiento de convenciones
+   - Implementar validación de barrel files
+   - Implementar detección de dependencias no declaradas
+   - Configurar ESLint para detectar importaciones no utilizadas
+   - Agregar estas validaciones al proceso de CI/CD
+   - Criterio de éxito: Sistema automatizado capaz de detectar desviaciones de las convenciones
+
+### Fase 3: Integración con Flujo de Trabajo
+1. **Objetivo**: Asegurar que las validaciones se ejecuten en momentos clave
+   - Configurar hooks de pre-commit
+   - Implementar verificaciones en el proceso de build
+   - Documentar el proceso para desarrolladores
+   - Criterio de éxito: Validaciones integradas en el flujo de trabajo sin interferir con la productividad
+
+### Fase 4: Documentación Técnica Mejorada
+1. **Objetivo**: Centralizar y mejorar la documentación técnica
+   - Crear un índice de documentación técnica
+   - Documentar proceso de actualización de dependencias
+   - Documentar arquitectura y estructura del proyecto con diagramas
+   - Criterio de éxito: Documentación completa, accesible y actualizada
+
+## Project Status Board
+- [ ] Fase 1: Actualización de Seguridad y Dependencias
+  - [ ] 1.1. Actualizar Vite y plugins relacionados
+  - [ ] 1.2. Actualizar react-router-dom
+  - [ ] 1.3. Evaluar actualización de React
+  - [ ] 1.4. Verificar dependencias declaradas vs utilizadas
+  - [ ] 1.5. Ejecutar auditoría final
+- [ ] Fase 2: Implementación de Validación Automatizada
+  - [ ] 2.1. Crear script para validación de barrel files
+  - [ ] 2.2. Crear script para detección de dependencias no declaradas
+  - [ ] 2.3. Configurar ESLint para importaciones no utilizadas
+  - [ ] 2.4. Integrar con proceso de CI/CD
+- [ ] Fase 3: Integración con Flujo de Trabajo
+  - [ ] 3.1. Configurar Husky para hooks de pre-commit
+  - [ ] 3.2. Implementar verificaciones en build script
+  - [ ] 3.3. Crear guía para desarrolladores
+- [ ] Fase 4: Documentación Técnica Mejorada
+  - [ ] 4.1. Crear índice de documentación
+  - [ ] 4.2. Documentar proceso de actualización
+  - [ ] 4.3. Crear diagramas de arquitectura
+
+## Evaluación de Riesgos y Mitigación
+1. **Riesgo**: Actualizaciones de dependencias pueden introducir breaking changes
+   - **Mitigación**: Actualizar paso a paso, con pruebas entre actualizaciones
+   - **Plan B**: Mantener versiones específicas si se detectan incompatibilidades
+
+2. **Riesgo**: Scripts de validación muy estrictos pueden obstaculizar el desarrollo
+   - **Mitigación**: Implementar gradualmente, empezando con warnings antes de errores
+   - **Plan B**: Permitir override en casos excepcionales con documentación
+
+3. **Riesgo**: Resistencia a adoptar nuevos procesos
+   - **Mitigación**: Documentar claramente los beneficios y proporcionar ejemplos
+   - **Plan B**: Programar sesiones de capacitación y recibir feedback
+
+## Conclusión y Próximos Pasos
+La implementación de estas fases fortalecerá significativamente la estructura y seguridad del proyecto. Propongo comenzar con la Fase 1 (Actualización de Seguridad y Dependencias) como prioridad inmediata, ya que aborda riesgos de seguridad activos.
+
+Para proceder:
+1. Confirmar priorización de fases
+2. Establecer tiempos estimados para cada fase
+3. Determinar recursos necesarios (tiempo de desarrolladores, herramientas)
+4. Obtener aprobación para implementar la Fase 1

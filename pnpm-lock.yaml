@@ -48,8 +48,8 @@ importers:
         specifier: ^9.6.7
         version: 9.6.7(react@18.2.0)
       react-router-dom:
-        specifier: ^6.20.1
-        version: 6.20.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.6.3
@@ -76,8 +76,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.8.2)
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       async:
         specifier: ^3.2.6
         version: 3.2.6
@@ -105,6 +105,9 @@ importers:
       i18next-browser-languagedetector:
         specifier: ^8.0.4
         version: 8.0.4
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
@@ -124,11 +127,11 @@ importers:
         specifier: latest
         version: 2.5.1
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-tsconfig-paths:
         specifier: ^4.2.1
-        version: 4.2.1(typescript@5.8.2)(vite@4.4.5)
+        version: 4.2.1(typescript@5.8.2)(vite@4.5.13)
 
   apps/admin-panel:
     dependencies:
@@ -151,8 +154,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: ^6.20.1
-        version: 6.20.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
@@ -170,11 +173,11 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.3.3)
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       autoprefixer:
         specifier: ^10.4.15
-        version: 10.4.15(postcss@8.4.29)
+        version: 10.4.15(postcss@8.4.31)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
@@ -188,8 +191,8 @@ importers:
         specifier: ^13.24.0
         version: 13.24.0
       postcss:
-        specifier: ^8.4.29
-        version: 8.4.29
+        specifier: ^8.4.31
+        version: 8.4.31
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
@@ -197,11 +200,11 @@ importers:
         specifier: ^5.0.2
         version: 5.3.3
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-tsconfig-paths:
         specifier: ^4.2.1
-        version: 4.2.1(typescript@5.3.3)(vite@4.4.5)
+        version: 4.2.1(typescript@5.3.3)(vite@4.5.13)
 
   apps/customer-pwa:
     dependencies:
@@ -260,8 +263,8 @@ importers:
         specifier: ^15.4.1
         version: 15.4.1(i18next@24.2.3)(react-dom@18.2.0)(react@18.2.0)
       react-router-dom:
-        specifier: ^6.20.1
-        version: 6.20.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
       sonner:
         specifier: ^2.0.3
         version: 2.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -297,11 +300,11 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.3.3)
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       autoprefixer:
         specifier: ^10.4.15
-        version: 10.4.15(postcss@8.4.29)
+        version: 10.4.15(postcss@8.4.31)
       babel-plugin-i18next-extract:
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.3.3)
@@ -315,8 +318,8 @@ importers:
         specifier: ^0.4.3
         version: 0.4.3(eslint@8.45.0)
       postcss:
-        specifier: ^8.4.29
-        version: 8.4.29
+        specifier: ^8.4.31
+        version: 8.4.31
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
@@ -324,11 +327,11 @@ importers:
         specifier: ^5.0.2
         version: 5.3.3
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-tsconfig-paths:
         specifier: ^4.2.1
-        version: 4.2.1(typescript@5.3.3)(vite@4.4.5)
+        version: 4.2.1(typescript@5.3.3)(vite@4.5.13)
 
   apps/driver-app:
     dependencies:
@@ -351,8 +354,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-router-dom:
-        specifier: ^6.20.1
-        version: 6.20.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
@@ -370,11 +373,11 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.3.3)
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       autoprefixer:
         specifier: ^10.4.15
-        version: 10.4.15(postcss@8.4.29)
+        version: 10.4.15(postcss@8.4.31)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
@@ -388,8 +391,8 @@ importers:
         specifier: ^13.24.0
         version: 13.24.0
       postcss:
-        specifier: ^8.4.29
-        version: 8.4.29
+        specifier: ^8.4.31
+        version: 8.4.31
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
@@ -397,11 +400,11 @@ importers:
         specifier: ^5.0.2
         version: 5.3.3
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-tsconfig-paths:
         specifier: ^4.2.1
-        version: 4.2.1(typescript@5.3.3)(vite@4.4.5)
+        version: 4.2.1(typescript@5.3.3)(vite@4.5.13)
 
   packages/api-client:
     dependencies:
@@ -417,21 +420,37 @@ importers:
       react:
         specifier: ^18.0.0
         version: 18.2.0
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
       tsup:
         specifier: ^7.2.0
-        version: 7.2.0(postcss@8.4.29)(typescript@5.3.3)
+        version: 7.2.0(postcss@8.4.31)(typescript@5.3.3)
       typescript:
         specifier: ^5.0.2
         version: 5.3.3
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
   packages/eslint-config:
+    dependencies:
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.0.0
@@ -439,6 +458,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.8.2)
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
       eslint-config-prettier:
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.45.0)
@@ -448,12 +470,21 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.45.0)
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
   packages/hooks:
     dependencies:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
       sonner:
         specifier: ^2.0.3
         version: 2.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -477,54 +508,111 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(eslint@8.45.0)(typescript@5.3.3)
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.45.0)
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
       typescript:
         specifier: ^5.0.2
         version: 5.3.3
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-plugin-dts:
         specifier: ^4.5.3
-        version: 4.5.3(@types/node@20.11.0)(typescript@5.3.3)(vite@4.4.5)
+        version: 4.5.3(@types/node@20.11.0)(typescript@5.3.3)(vite@4.5.13)
 
   packages/i18n:
+    dependencies:
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@types/node':
         specifier: ^20.11.0
         version: 20.11.0
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
       tsup:
         specifier: ^8.0.2
-        version: 8.0.2(typescript@5.3.3)
+        version: 8.0.2(postcss@8.4.31)(typescript@5.3.3)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
-  packages/tsconfig: {}
+  packages/tsconfig:
+    dependencies:
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
   packages/types:
+    dependencies:
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
       tsup:
         specifier: ^7.2.0
-        version: 7.2.0(postcss@8.4.29)(typescript@5.3.3)
+        version: 7.2.0(postcss@8.4.31)(typescript@5.3.3)
       typescript:
         specifier: ^5.0.2
         version: 5.3.3
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
-  packages/typescript-config: {}
+  packages/typescript-config:
+    dependencies:
+      react-router-dom:
+        specifier: 7.5.2
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@4.5.13)
+      postcss:
+        specifier: 8.4.31
+        version: 8.4.31
+      vite:
+        specifier: 4.5.13
+        version: 4.5.13(@types/node@20.11.0)
 
   packages/ui:
     dependencies:
@@ -581,7 +669,7 @@ importers:
         version: 14.0.5(i18next@24.2.3)(react-dom@18.2.0)(react@18.2.0)
       react-router-dom:
         specifier: ^6.0.0
-        version: 6.20.1(react-dom@18.2.0)(react@18.2.0)
+        version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.0.0
@@ -602,17 +690,17 @@ importers:
         specifier: ^18.2.7
         version: 18.2.7
       '@vitejs/plugin-react':
-        specifier: ^4.0.3
-        version: 4.0.3(vite@4.4.5)
+        specifier: ^4.2.1
+        version: 4.2.1(vite@4.5.13)
       autoprefixer:
         specifier: ^10.4.15
-        version: 10.4.15(postcss@8.4.29)
+        version: 10.4.15(postcss@8.4.31)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
       postcss:
-        specifier: ^8.4.29
-        version: 8.4.29
+        specifier: ^8.4.31
+        version: 8.4.31
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -624,16 +712,16 @@ importers:
         version: 3.3.3
       tsup:
         specifier: ^7.2.0
-        version: 7.2.0(postcss@8.4.29)(typescript@5.3.3)
+        version: 7.2.0(postcss@8.4.31)(typescript@5.3.3)
       typescript:
         specifier: ^5.0.2
         version: 5.3.3
       vite:
-        specifier: ^4.4.5
-        version: 4.4.5(@types/node@20.11.0)
+        specifier: ^4.5.13
+        version: 4.5.13(@types/node@20.11.0)
       vite-plugin-dts:
         specifier: ^3.9.1
-        version: 3.9.1(@types/node@20.11.0)(typescript@5.3.3)(vite@4.4.5)
+        version: 3.9.1(@types/node@20.11.0)(typescript@5.3.3)(vite@4.5.13)
 
 packages:
 
@@ -3373,11 +3461,6 @@ packages:
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
     dev: false
 
-  /@remix-run/router@1.13.1:
-    resolution: {integrity: sha512-so+DHzZKsoOcoXrILB4rqDkMDy7NLMErRdOxvzvOKb507YINKUP4Di+shbTZDhSE/pBZ+vr7XGIpcOO0VLSA+Q==}
-    engines: {node: '>=14.0.0'}
-    dev: false
-
   /@rollup/pluginutils@5.1.4:
     resolution: {integrity: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==}
     engines: {node: '>=14.0.0'}
@@ -3800,6 +3883,35 @@ packages:
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
     dev: true
 
+  /@types/babel__core@7.20.5:
+    resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
+    dependencies:
+      '@babel/parser': 7.27.0
+      '@babel/types': 7.27.0
+      '@types/babel__generator': 7.27.0
+      '@types/babel__template': 7.4.4
+      '@types/babel__traverse': 7.20.7
+    dev: true
+
+  /@types/babel__generator@7.27.0:
+    resolution: {integrity: sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==}
+    dependencies:
+      '@babel/types': 7.27.0
+    dev: true
+
+  /@types/babel__template@7.4.4:
+    resolution: {integrity: sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==}
+    dependencies:
+      '@babel/parser': 7.27.0
+      '@babel/types': 7.27.0
+    dev: true
+
+  /@types/babel__traverse@7.20.7:
+    resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
+    dependencies:
+      '@babel/types': 7.27.0
+    dev: true
+
   /@types/estree@1.0.7:
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
     dev: true
@@ -4156,17 +4268,18 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@vitejs/plugin-react@4.0.3(vite@4.4.5):
-    resolution: {integrity: sha512-pwXDog5nwwvSIzwrvYYmA2Ljcd/ZNlcsSG2Q9CNDBwnsd55UGAyr2doXtB5j+2uymRCnCfExlznzzSFbBRcoCg==}
+  /@vitejs/plugin-react@4.2.1(vite@4.5.13):
+    resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^4.2.0
+      vite: ^4.2.0 || ^5.0.0
     dependencies:
       '@babel/core': 7.26.10
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.10)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.10)
+      '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 4.4.5(@types/node@20.11.0)
+      vite: 4.5.13(@types/node@20.11.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4484,7 +4597,7 @@ packages:
     resolution: {integrity: sha512-htCUDlxyyCLMgaM3xXg0C0LW2xqfuQ6p05pCEIsXuyQ+a1koYKTuBMzRNwmybfLgvJDMd0r1LTn4+E0Ti6C2AA==}
     dev: true
 
-  /autoprefixer@10.4.15(postcss@8.4.29):
+  /autoprefixer@10.4.15(postcss@8.4.31):
     resolution: {integrity: sha512-KCuPB8ZCIqFdA4HwKXsvz7j6gvSDNhDP7WnUjBleRkKjPdvCmHFuQ77ocavI8FT6NdvlBnE2UFr2H4Mycn8Vew==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
@@ -4496,7 +4609,7 @@ packages:
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
-      postcss: 8.4.29
+      postcss: 8.4.31
       postcss-value-parser: 4.2.0
     dev: true
 
@@ -4755,6 +4868,11 @@ packages:
   /convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
     dev: true
+
+  /cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+    dev: false
 
   /cosmiconfig@7.1.0:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
@@ -5736,6 +5854,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.27.0
       typescript: 5.8.2
+    dev: true
 
   /ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -6638,27 +6757,27 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /postcss-import@15.1.0(postcss@8.4.29):
+  /postcss-import@15.1.0(postcss@8.4.31):
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       postcss: ^8.0.0
     dependencies:
-      postcss: 8.4.29
+      postcss: 8.4.31
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.10
 
-  /postcss-js@4.0.1(postcss@8.4.29):
+  /postcss-js@4.0.1(postcss@8.4.31):
     resolution: {integrity: sha512-dDLF8pEO191hJMtlHFPRa8xsizHaM82MLfNkUHdUtVEV3tgTp5oj+8qbEqYM57SLfc74KSbw//4SeJma2LRVIw==}
     engines: {node: ^12 || ^14 || >= 16}
     peerDependencies:
       postcss: ^8.4.21
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.29
+      postcss: 8.4.31
 
-  /postcss-load-config@4.0.2(postcss@8.4.29):
+  /postcss-load-config@4.0.2(postcss@8.4.31):
     resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
     engines: {node: '>= 14'}
     peerDependencies:
@@ -6671,16 +6790,16 @@ packages:
         optional: true
     dependencies:
       lilconfig: 3.1.3
-      postcss: 8.4.29
+      postcss: 8.4.31
       yaml: 2.7.1
 
-  /postcss-nested@6.2.0(postcss@8.4.29):
+  /postcss-nested@6.2.0(postcss@8.4.31):
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
     dependencies:
-      postcss: 8.4.29
+      postcss: 8.4.31
       postcss-selector-parser: 6.1.2
 
   /postcss-selector-parser@6.1.2:
@@ -6693,8 +6812,8 @@ packages:
   /postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  /postcss@8.4.29:
-    resolution: {integrity: sha512-cbI+jaqIeu/VGqXEarWkRCCffhjgXc0qjBtXpqJhTBohMUjUQnbBr0xqX3vEKudc4iviTewcJo5ajcec5+wdJw==}
+  /postcss@8.4.31:
+    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.11
@@ -6814,7 +6933,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.27.0
       html-parse-stringify: 3.0.1
-      i18next: 24.2.3(typescript@5.8.2)
+      i18next: 24.2.3(typescript@5.3.3)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
@@ -6872,27 +6991,33 @@ packages:
       use-sidecar: 1.1.3(@types/react@18.2.15)(react@18.2.0)
     dev: false
 
-  /react-router-dom@6.20.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-npzfPWcxfQN35psS7rJgi/EW0Gx6EsNjfdJSAk73U/HqMEJZ2k/8puxfwHFgDQhBGmS3+sjnGbMdMSV45axPQw==}
-    engines: {node: '>=14.0.0'}
+  /react-router-dom@7.5.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-yk1XW8Fj7gK7flpYBXF3yzd2NbX6P7Kxjvs2b5nu1M04rb5pg/Zc4fGdBNTeT4eDYL2bvzWNyKaIMJX/RKHTTg==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
+      react: '>=18'
+      react-dom: '>=18'
     dependencies:
-      '@remix-run/router': 1.13.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-router: 6.20.1(react@18.2.0)
+      react-router: 7.5.2(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /react-router@6.20.1(react@18.2.0):
-    resolution: {integrity: sha512-ccvLrB4QeT5DlaxSFFYi/KR8UMQ4fcD8zBcR71Zp1kaYTC5oJKYAp1cbavzGrogwxca+ubjkd7XjFZKBW8CxPA==}
-    engines: {node: '>=14.0.0'}
+  /react-router@7.5.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-9Rw8r199klMnlGZ8VAsV/I8WrIF6IyJ90JQUdboupx1cdkgYqwnrYjH+I/nY/7cA1X5zia4mDJqH36npP7sxGQ==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
-      react: '>=16.8'
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
     dependencies:
-      '@remix-run/router': 1.13.1
+      cookie: 1.0.2
       react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      set-cookie-parser: 2.7.1
+      turbo-stream: 2.4.0
     dev: false
 
   /react-style-singleton@2.2.3(@types/react@18.2.15)(react@18.2.0):
@@ -7144,6 +7269,10 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dev: true
+
+  /set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
+    dev: false
 
   /set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -7455,11 +7584,11 @@ packages:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.4.29
-      postcss-import: 15.1.0(postcss@8.4.29)
-      postcss-js: 4.0.1(postcss@8.4.29)
-      postcss-load-config: 4.0.2(postcss@8.4.29)
-      postcss-nested: 6.2.0(postcss@8.4.29)
+      postcss: 8.4.31
+      postcss-import: 15.1.0(postcss@8.4.31)
+      postcss-js: 4.0.1(postcss@8.4.31)
+      postcss-load-config: 4.0.2(postcss@8.4.31)
+      postcss-nested: 6.2.0(postcss@8.4.31)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.10
       sucrase: 3.35.0
@@ -7552,7 +7681,7 @@ packages:
   /tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  /tsup@7.2.0(postcss@8.4.29)(typescript@5.3.3):
+  /tsup@7.2.0(postcss@8.4.31)(typescript@5.3.3):
     resolution: {integrity: sha512-vDHlczXbgUvY3rWvqFEbSqmC1L7woozbzngMqTtL2PGBODTtWlRwGDDawhvWzr5c1QjKe4OAKqJGfE1xeXUvtQ==}
     engines: {node: '>=16.14'}
     hasBin: true
@@ -7576,8 +7705,8 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss: 8.4.29
-      postcss-load-config: 4.0.2(postcss@8.4.29)
+      postcss: 8.4.31
+      postcss-load-config: 4.0.2(postcss@8.4.31)
       resolve-from: 5.0.0
       rollup: 3.29.5
       source-map: 0.8.0-beta.0
@@ -7589,7 +7718,7 @@ packages:
       - ts-node
     dev: true
 
-  /tsup@8.0.2(typescript@5.3.3):
+  /tsup@8.0.2(postcss@8.4.31)(typescript@5.3.3):
     resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
     engines: {node: '>=18'}
     hasBin: true
@@ -7616,7 +7745,8 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.2(postcss@8.4.29)
+      postcss: 8.4.31
+      postcss-load-config: 4.0.2(postcss@8.4.31)
       resolve-from: 5.0.0
       rollup: 4.40.0
       source-map: 0.8.0-beta.0
@@ -7659,6 +7789,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /turbo-stream@2.4.0:
+    resolution: {integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==}
+    dev: false
 
   /turbo-windows-64@2.5.1:
     resolution: {integrity: sha512-6XnfSxE8xPETVAlAwfMqCuVuZbq9gXTj8H/Eggv/i3Tjoh2l5xMVTOmg3/zV4RlDtTcwhnvXgXx8LEXrSRZmQQ==}
@@ -7760,6 +7894,7 @@ packages:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: true
 
   /ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
@@ -7844,7 +7979,7 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
-  /vite-plugin-dts@3.9.1(@types/node@20.11.0)(typescript@5.3.3)(vite@4.4.5):
+  /vite-plugin-dts@3.9.1(@types/node@20.11.0)(typescript@5.3.3)(vite@4.5.13):
     resolution: {integrity: sha512-rVp2KM9Ue22NGWB8dNtWEr+KekN3rIgz1tWD050QnRGlriUCmaDwa7qA5zDEjbXg5lAXhYMSBJtx3q3hQIJZSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -7861,7 +7996,7 @@ packages:
       kolorist: 1.8.0
       magic-string: 0.30.17
       typescript: 5.3.3
-      vite: 4.4.5(@types/node@20.11.0)
+      vite: 4.5.13(@types/node@20.11.0)
       vue-tsc: 1.8.27(typescript@5.3.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -7869,7 +8004,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-dts@4.5.3(@types/node@20.11.0)(typescript@5.3.3)(vite@4.4.5):
+  /vite-plugin-dts@4.5.3(@types/node@20.11.0)(typescript@5.3.3)(vite@4.5.13):
     resolution: {integrity: sha512-P64VnD00dR+e8S26ESoFELqc17+w7pKkwlBpgXteOljFyT0zDwD8hH4zXp49M/kciy//7ZbVXIwQCekBJjfWzA==}
     peerDependencies:
       typescript: '*'
@@ -7888,14 +8023,14 @@ packages:
       local-pkg: 1.1.1
       magic-string: 0.30.17
       typescript: 5.3.3
-      vite: 4.4.5(@types/node@20.11.0)
+      vite: 4.5.13(@types/node@20.11.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
     dev: true
 
-  /vite-tsconfig-paths@4.2.1(typescript@5.3.3)(vite@4.4.5):
+  /vite-tsconfig-paths@4.2.1(typescript@5.3.3)(vite@4.5.13):
     resolution: {integrity: sha512-GNUI6ZgPqT3oervkvzU+qtys83+75N/OuDaQl7HmOqFTb0pjZsuARrRipsyJhJ3enqV8beI1xhGbToR4o78nSQ==}
     peerDependencies:
       vite: '*'
@@ -7906,13 +8041,13 @@ packages:
       debug: 4.4.0
       globrex: 0.1.2
       tsconfck: 2.1.2(typescript@5.3.3)
-      vite: 4.4.5(@types/node@20.11.0)
+      vite: 4.5.13(@types/node@20.11.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
 
-  /vite-tsconfig-paths@4.2.1(typescript@5.8.2)(vite@4.4.5):
+  /vite-tsconfig-paths@4.2.1(typescript@5.8.2)(vite@4.5.13):
     resolution: {integrity: sha512-GNUI6ZgPqT3oervkvzU+qtys83+75N/OuDaQl7HmOqFTb0pjZsuARrRipsyJhJ3enqV8beI1xhGbToR4o78nSQ==}
     peerDependencies:
       vite: '*'
@@ -7923,14 +8058,14 @@ packages:
       debug: 4.4.0
       globrex: 0.1.2
       tsconfck: 2.1.2(typescript@5.8.2)
-      vite: 4.4.5(@types/node@20.11.0)
+      vite: 4.5.13(@types/node@20.11.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
 
-  /vite@4.4.5(@types/node@20.11.0):
-    resolution: {integrity: sha512-4m5kEtAWHYr0O1Fu7rZp64CfO1PsRGZlD3TAB32UmQlpd7qg15VF7ROqGN5CyqN7HFuwr7ICNM2+fDWRqFEKaA==}
+  /vite@4.5.13(@types/node@20.11.0):
+    resolution: {integrity: sha512-Hgp8IF/yZDzKsN1hQWOuQZbrKiaFsbQud+07jJ8h9m9PaHWkpvZ5u55Xw5yYjWRXwRQ4jwFlJvY7T7FUJG9MCA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -7959,7 +8094,7 @@ packages:
     dependencies:
       '@types/node': 20.11.0
       esbuild: 0.18.20
-      postcss: 8.4.29
+      postcss: 8.4.31
       rollup: 3.29.5
     optionalDependencies:
       fsevents: 2.3.3

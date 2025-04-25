@@ -29,7 +29,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.55.0",
     "react-i18next": "^15.4.1",
-    "react-router-dom": "^6.20.1",
+    "react-router-dom": "^7.5.2",
     "sonner": "^2.0.3",
     "tailwind-merge": "^2.0.0",
     "zod": "^3.24.2",
@@ -43,16 +43,16 @@
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.15",
     "babel-plugin-i18next-extract": "^1.0.0",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "postcss": "^8.4.29",
+    "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
+    "vite": "^4.5.13",
     "vite-tsconfig-paths": "^4.2.1"
   }
 }

@@ -21,7 +21,13 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "@vitejs/plugin-react": "4.2.1",
+    "postcss": "8.4.31",
     "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "4.5.13"
+  },
+  "dependencies": {
+    "react-router-dom": "7.5.2"
   }
 }

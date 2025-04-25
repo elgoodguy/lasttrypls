@@ -5,7 +5,7 @@ import { RadioGroup as RadioGroupRoot, RadioGroupItem as RadioGroupItemRoot } fr
 import { Label } from '@repo/ui/components/ui/label';
 import { Button } from '@repo/ui/components/ui/button';
 import { DayPicker } from 'react-day-picker';
-import { addDays, format, startOfToday, isBefore, isAfter } from 'date-fns';
+import { addDays, format, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import 'react-day-picker/dist/style.css';
