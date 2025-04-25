@@ -1,13 +1,11 @@
 import { ProfileForm } from '../components/profile/ProfileForm';
-import { Button } from '@repo/ui/components/ui/button';
-import { Separator } from '@repo/ui/components/ui/separator';
+import { Button, GlobalLoader, Separator } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
 import { AddressManager } from '../components/profile/AddressManager';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { AuthModal } from '@/components/auth/AuthModal';
-import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 export const ProfilePage = () => {
   const { signOut, isLoading, isGuest } = useAuth();

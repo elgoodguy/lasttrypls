@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { SupabaseProvider } from '@/providers/SupabaseProvider';
 import { AuthProvider, useAuth } from '@/providers/AuthProvider';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { GlobalLoader } from '@/components/common/GlobalLoader';
+import { GlobalLoader } from '@repo/ui';
 import { Toaster } from 'sonner';
 import { useAddressStore, useInitializeAddressStore } from './store/addressStore';
 import { ForceAddressModal } from '@/components/auth/ForceAddressModal';

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
-import { LanguageToggle } from '@/components/common/LanguageToggle';
+import { LanguageToggle } from '@repo/ui/components/common/LanguageToggle';
 import { useTheme } from '@/providers/ThemeProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/ui/avatar';
 import {

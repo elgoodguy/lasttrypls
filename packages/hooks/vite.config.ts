@@ -1,7 +1,8 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import dts from 'vite-plugin-dts';
+// Comentamos la importación de dts que está causando problemas
+// import dts from 'vite-plugin-dts';
 
 export default defineConfig(({ mode }) => {
   // Carga las variables de entorno desde el directorio raíz y local
@@ -13,9 +14,10 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      dts({
-        insertTypesEntry: true,
-      }),
+      // Comentamos el plugin dts que está causando problemas
+      // dts({
+      //   insertTypesEntry: true,
+      // }),
     ],
     build: {
       lib: {

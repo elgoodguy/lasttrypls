@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@repo/ui/components/ui/button';
+import { Button, GlobalLoader } from '@repo/ui';
 import { AuthModal } from '@/components/auth/AuthModal';
-import { GlobalLoader } from '@/components/common/GlobalLoader';
 
 export const FavoritesPage: React.FC = () => {
   const { isLoading, isGuest } = useAuth();

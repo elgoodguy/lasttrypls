@@ -7,7 +7,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { AddressModal } from '@/components/profile/AddressModal';
 import { useAddressStore } from '@/store/addressStore';
 import { ThemeToggle } from '@repo/ui/components/ui/theme-toggle';
-import { LanguageToggle } from '@/components/common/LanguageToggle';
+import { LanguageToggle } from '@repo/ui/components/common/LanguageToggle';
 import { BenefitsList } from '@/components/landing/BenefitsList';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useQueryClient } from '@tanstack/react-query';
