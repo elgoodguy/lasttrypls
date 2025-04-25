@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-// Comentamos la importación de dts que está causando problemas
+// Comentamos temporalmente la importación de dts para evitar el error de resolución de './lib/async'
 // import dts from 'vite-plugin-dts';
 
 export default defineConfig(({ mode }) => {
@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      // Comentamos el plugin dts que está causando problemas
+      // Comentamos temporalmente el plugin dts para evitar errores de dependencias
       // dts({
       //   insertTypesEntry: true,
       // }),
