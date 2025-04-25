@@ -1,10 +1,10 @@
-import { ProfileForm } from '../components/profile/ProfileForm';
 import { Button, GlobalLoader, Separator } from '@repo/ui';
 import { useAuth } from '@/providers/AuthProvider';
 import { Toaster } from 'sonner';
-import { AddressManager } from '../components/profile/AddressManager';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { ProfileForm } from '@/components/profile/ProfileForm';
+import { AddressManager } from '@/components/profile/AddressManager';
 import { AuthModal } from '@/components/auth/AuthModal';
 
 export const ProfilePage = () => {

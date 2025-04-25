@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Button } from '@repo/ui';
 
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -9,22 +10,20 @@ export const LanguageSwitcher = () => {
 
   return (
     <div className="flex gap-2">
-      <button
+      <Button
         onClick={() => changeLanguage('en')}
-        className={`px-3 py-1 rounded ${
-          i18n.language === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-        }`}
+        variant={i18n.language === 'en' ? 'default' : 'secondary'}
+        size="sm"
       >
         EN
-      </button>
-      <button
+      </Button>
+      <Button
         onClick={() => changeLanguage('es')}
-        className={`px-3 py-1 rounded ${
-          i18n.language === 'es' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-        }`}
+        variant={i18n.language === 'es' ? 'default' : 'secondary'}
+        size="sm"
       >
         ES
-      </button>
+      </Button>
     </div>
   );
 }; 

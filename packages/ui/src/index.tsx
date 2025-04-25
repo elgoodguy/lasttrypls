@@ -1,27 +1,28 @@
 // Exporta el CSS para que Tailwind funcione en las apps
 import './styles.css';
 
-// Exporta utilidades
+// Utilidades
 export { cn } from './lib/utils';
 
-// Exporta componentes comunes
-export * from './components/common';
+// Componentes comunes
+export { GlobalLoader } from './components/common/GlobalLoader';
+export { LanguageToggle } from './components/common/LanguageToggle';
 
-// Exporta componentes de UI
+// Componentes de UI
 export * from './components/ui';
 
-// Exporta componentes de navegación
-export * from './components/navigation/BottomNavBar';
-export * from './components/navigation/UserMenu';
+// Componentes de navegación
+export { BottomNavBar } from './components/navigation/BottomNavBar';
+export { UserMenu } from './components/navigation/UserMenu';
 
-// Exporta componentes de entrada
-export * from './components/input/AutocompleteInput';
+// Componentes de entrada
+export { AutocompleteInput } from './components/input/AutocompleteInput';
 
-// Exporta componentes de dirección
-export * from './components/address/AddressSelector';
+// Componentes de dirección
+export { AddressSelector } from './components/address/AddressSelector';
 
-// Exporta componentes de tienda
-export * from './components/store/StoreStatusIndicator';
+// Componentes de tienda
+export { StoreStatusIndicator } from './components/store/StoreStatusIndicator';
 
-// Exporta componentes de producto
+// Componentes de producto
 export { ProductCard } from './components/ProductCard';
